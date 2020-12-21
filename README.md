@@ -38,11 +38,23 @@ Get started with infrabot, learn how to configure infrabot for your organization
 - [GUI Tool][guitool]
 - [Infrabot Service][infrabotservice]
 
+## Setup
 
+### Prerequisites
+- Install [.NET Core 5.0.0][netcore50]
 
+### Download
+Go to [Download Page][downloadinfrabot] to download the latest release. 
+
+## Contributing
+You can contribute to infrabot by finding bugs, creating new functionality or writing addons for it.
+
+[![Like Infrabot](https://img.shields.io/badge/like-infrabot-orange)](https://github.com/infrabot-io/infrabot)
 
 [quickstart]: https://infrabot.io/documentation/gettingstarted
 [configurebot]: https://infrabot.io/documentation/configurebot
 [configoverview]: https://infrabot.io/documentation/configoverview
 [guitool]: https://infrabot.io/documentation/guitool
 [infrabotservice]: https://infrabot.io/documentation/infrabotservice
+[netcore50]: https://dotnet.microsoft.com/download/dotnet/5.0
+[downloadinfrabot]:https://infrabot.io/download
