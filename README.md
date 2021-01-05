@@ -38,6 +38,11 @@ Get started with infrabot, learn how to configure infrabot for your organization
 - [GUI Tool][guitool]
 - [Infrabot Service][infrabotservice]
 
+## Demo
+
+<img src="iio/assets/images/demo.gif" alt="infrabot-logo" width="400px" height="400px"/>
+
+
 ## Setup
 
 ### Prerequisites
