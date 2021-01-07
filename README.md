@@ -24,6 +24,10 @@
   <a href="https://img.shields.io/github/downloads/infrabot-io/infrabot/total">
     <img src="https://img.shields.io/github/downloads/infrabot-io/infrabot/total" alt="Downloads" />
   </a>
+  <br><br>
+  <a href="https://www.buymeacoffee.com/infrabot.io" target="_blank">
+    <img width="168px" height="48px" src="iio/assets/images/bymeabeer.png" alt="Buy Me A Beer">
+  </a>
 </p>
 
 <hr>
