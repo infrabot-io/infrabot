@@ -4,20 +4,15 @@
     "telegram_enable_reminder": true,
     "telegram_enable_reloadconfig": true,
     "telegram_enable_emergency": true,
+    "telegram_enable_showmyid": false,
     "telegram_powershell_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
     "telegram_powershell_executionpolicy": "-ExecutionPolicy Unrestricted",
-    "telegram_logs_path": "C:\\Program Files\\infrabot.io\\logs",
     "telegram_result_max_length": 12000,
-    "telegram_allowed_chats_id": [],
     "telegram_allowed_users_id": [],
     "telegram_allowed_users_id_emergency": [],
-    "telegram_allowed_chats_id_emergency": [],
     "telegram_allowed_users_id_reloadconfig": [],
-    "telegram_allowed_chats_id_reloadconfig": [],
     "telegram_allowed_users_id_getcommands": [],
-    "telegram_allowed_chats_id_getcommands": [],
     "telegram_allowed_users_id_remindme": [],
-    "telegram_allowed_chats_id_remindme": [],
     "telegram_commands": [
         {
             "command_starts_with": "/unlock user",
@@ -30,7 +25,6 @@
             "command_default_error": "User `{DATA}` was not unlocked! Unexpected error!",
             "command_execute_type": 3,
             "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
             "command_show_in_get_commands_list": true,
             "command_execute_results": [
                 {
@@ -45,7 +39,7 @@
                 },
                 {
                     "result_value": "2",
-                    "result_output": "User `{DATA}` was not unlocked! Error occured! May be no access to DC or wrong admin user credentials or User not found!!",
+                    "result_output": "User `{DATA}` was not unlocked! Error occured! May be no access to DC or wrong WMI user credentials or User not found!!",
                     "result_checktype": 1
                 }
             ]
@@ -61,7 +55,6 @@
             "command_default_error": "{RESULT}",
             "command_execute_type": 3,
             "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
             "command_show_in_get_commands_list": true,
             "command_execute_results": [
                 {
@@ -87,7 +80,6 @@
             "command_default_error": "{RESULT}",
             "command_execute_type": 3,
             "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
             "command_show_in_get_commands_list": true,
             "command_execute_results": [
                 {
@@ -113,7 +105,6 @@
             "command_default_error": "User `{DATA}` was not locked! Unexpected error!",
             "command_execute_type": 3,
             "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
             "command_show_in_get_commands_list": true,
             "command_execute_results": [
                 {
@@ -128,7 +119,7 @@
                 },
                 {
                     "result_value": "2",
-                    "result_output": "User `{DATA}` was not locked! Error occured! May be no access to DC or wrong admin user credentials or User not found!!",
+                    "result_output": "User `{DATA}` was not locked! Error occured! May be no access to DC or wrong WMI user credentials or User not found!!",
                     "result_checktype": 1
                 }
             ]
@@ -144,7 +135,6 @@
             "command_default_error": "",
             "command_execute_type": 4,
             "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
             "command_show_in_get_commands_list": true,
             "command_execute_results": []
         },
@@ -159,7 +149,6 @@
             "command_default_error": "",
             "command_execute_type": 4,
             "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
             "command_show_in_get_commands_list": true,
             "command_execute_results": []
         }
