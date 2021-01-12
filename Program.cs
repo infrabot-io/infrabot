@@ -11,6 +11,7 @@ namespace InfraBot
         public const string ServiceName = "InfraBot.IO";
         static CommandCenter commandCenter;
         static ITelegramBotClient botClient;
+        static PluginsManager pluginsManager;
 
         public class Service : ServiceBase
         {
@@ -57,11 +58,12 @@ namespace InfraBot
                         Console.WriteLine("Something went wrong. Service has not been installed. Make sure that you have admin rights!");
                         Console.WriteLine("");
                     }
-                    Console.WriteLine("Task finihed!");
+                    Console.WriteLine("Task finished!");
                     return;
                 }
             }
 
+            pluginsManager = new PluginsManager();
             commandCenter = new CommandCenter();
             botClient = new TelegramBotClient(commandCenter.GetTelegramToken());
             var me = botClient.GetMeAsync().Result;
