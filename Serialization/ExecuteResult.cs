@@ -1,5 +1,3 @@
-using System;
-
 namespace InfraBot.Core
 {
     public class ExecuteResult

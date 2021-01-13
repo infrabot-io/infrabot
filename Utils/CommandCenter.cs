@@ -13,10 +13,10 @@ namespace InfraBot.Core
 {
     public class CommandCenter
     {
-        Config config;
-        string JsonConfigFileName = "config.json";
-        string JsonConfigFile = "";
-        public CommandCenter()
+        public static Config config;
+        static string JsonConfigFileName = "config.json";
+        static string JsonConfigFile = "";
+        static CommandCenter()
         {
             if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + JsonConfigFileName))
             {
@@ -26,6 +26,7 @@ namespace InfraBot.Core
 
             JsonConfigFile = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + JsonConfigFileName);
             config = JsonConvert.DeserializeObject<Config>(JsonConfigFile);
+            config.telegram_commands = PluginsManager.LoadPlugins();
         }
 
         public async Task ExecuteCommand(ITelegramBotClient botClient, object sender, MessageEventArgs e)
@@ -94,6 +95,7 @@ namespace InfraBot.Core
                 JsonConfigFile = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\" + JsonConfigFileName);
                 config = null;
                 config = JsonConvert.DeserializeObject<Config>(JsonConfigFile);
+                config.telegram_commands = PluginsManager.LoadPlugins();
                 WriteToLog("Somebody with `" + FromUserId.ToString() + "` from chat with id `" + FromChatId.ToString() + "` sent /reloadconfig command!");
                 await botClient.SendTextMessageAsync(
                     chatId: e.Message.Chat,
@@ -413,7 +415,7 @@ namespace InfraBot.Core
             return maxInt;
         }
 
-        public void WriteToLog(string Log)
+        public static void WriteToLog(string Log)
         {
             if (config.telegram_enable_logging)
             {
