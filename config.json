@@ -1,167 +1,17 @@
 {
-    "telegram_bot_token": "Your_Bot_Token",
+    "telegram_bot_token": "Your_Telegram_Token",
     "telegram_enable_logging": false,
     "telegram_enable_reminder": true,
     "telegram_enable_reloadconfig": true,
     "telegram_enable_emergency": true,
+    "telegram_enable_showmyid": false,
     "telegram_powershell_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
     "telegram_powershell_executionpolicy": "-ExecutionPolicy Unrestricted",
-    "telegram_logs_path": "C:\\Program Files\\infrabot.io\\logs",
     "telegram_result_max_length": 12000,
-    "telegram_allowed_chats_id": [],
     "telegram_allowed_users_id": [],
     "telegram_allowed_users_id_emergency": [],
-    "telegram_allowed_chats_id_emergency": [],
     "telegram_allowed_users_id_reloadconfig": [],
-    "telegram_allowed_chats_id_reloadconfig": [],
     "telegram_allowed_users_id_getcommands": [],
-    "telegram_allowed_chats_id_getcommands": [],
     "telegram_allowed_users_id_remindme": [],
-    "telegram_allowed_chats_id_remindme": [],
-    "telegram_commands": [
-        {
-            "command_starts_with": "/unlock user",
-            "command_data_id": [
-                3
-            ],
-            "command_execute_file": "C:\\Program Files\\infrabot.io\\tools\\UnlockADUser.ps1",
-            "command_help_manual": "Unlocks AD user. Write `/unlock user USER_SamAccountName` to unlock user",
-            "command_help_short": "Unlocks AD user",
-            "command_default_error": "User `{DATA}` was not unlocked! Unexpected error!",
-            "command_execute_type": 3,
-            "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
-            "command_show_in_get_commands_list": true,
-            "command_execute_results": [
-                {
-                    "result_value": "0",
-                    "result_output": "User `{DATA}` was not unlocked! User was not sent as an argument to executable",
-                    "result_checktype": 1
-                },
-                {
-                    "result_value": "1",
-                    "result_output": "User `{DATA}` was unlocked!",
-                    "result_checktype": 1
-                },
-                {
-                    "result_value": "2",
-                    "result_output": "User `{DATA}` was not unlocked! Error occured! May be no access to DC or wrong admin user credentials or User not found!!",
-                    "result_checktype": 1
-                }
-            ]
-        },
-        {
-            "command_starts_with": "/getdnshostip",
-            "command_data_id": [
-                2
-            ],
-            "command_execute_file": "C:\\Program Files\\infrabot.io\\tools\\GetDNSHostIP.ps1",
-            "command_help_manual": "Gets IP by host name from DNS. Write `/getdnshostip server01` to get server01 IP address",
-            "command_help_short": "Gets IP by host name from DNS",
-            "command_default_error": "{RESULT}",
-            "command_execute_type": 3,
-            "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
-            "command_show_in_get_commands_list": true,
-            "command_execute_results": [
-                {
-                    "result_value": "1",
-                    "result_output": "Computer with `{DATA}` was not found! Make sure that you are writing right DNS name!",
-                    "result_checktype": 1
-                },
-                {
-                    "result_value": "0",
-                    "result_output": "Computer with `{DATA}` was not found! No valid argument was sent to executable!",
-                    "result_checktype": 1
-                }
-            ]
-        },
-        {
-            "command_starts_with": "/getdnshostname",
-            "command_data_id": [
-                2
-            ],
-            "command_execute_file": "C:\\Program Files\\infrabot.io\\tools\\GetDNSHostName.ps1",
-            "command_help_manual": "Gets DNS name by host IP from DNS. Write `/getdnshostname 10.100.1.100` to get 10.100.1.100 DNS A record",
-            "command_help_short": "Gets DNS name by host IP from DNS",
-            "command_default_error": "{RESULT}",
-            "command_execute_type": 3,
-            "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
-            "command_show_in_get_commands_list": true,
-            "command_execute_results": [
-                {
-                    "result_value": "1",
-                    "result_output": "Computer with `{DATA}` was not found! Make sure that you are writing right IP!",
-                    "result_checktype": 1
-                },
-                {
-                    "result_value": "0",
-                    "result_output": "Computer with `{DATA}` was not found! No valid argument was sent to executable!",
-                    "result_checktype": 1
-                }
-            ]
-        },
-        {
-            "command_starts_with": "/lockaduser",
-            "command_data_id": [
-                2
-            ],
-            "command_execute_file": "C:\\Program Files\\infrabot.io\\tools\\LockADUser.ps1",
-            "command_help_manual": "Locks AD user. Write `/lockaduser USER_SamAccountName` to lockout AD user",
-            "command_help_short": "Locks specified AD user",
-            "command_default_error": "User `{DATA}` was not locked! Unexpected error!",
-            "command_execute_type": 3,
-            "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
-            "command_show_in_get_commands_list": true,
-            "command_execute_results": [
-                {
-                    "result_value": "0",
-                    "result_output": "User `{DATA}` was not locked! User was not sent as an argument to executable",
-                    "result_checktype": 1
-                },
-                {
-                    "result_value": "1",
-                    "result_output": "User `{DATA}` was locked out!",
-                    "result_checktype": 1
-                },
-                {
-                    "result_value": "2",
-                    "result_output": "User `{DATA}` was not locked! Error occured! May be no access to DC or wrong admin user credentials or User not found!!",
-                    "result_checktype": 1
-                }
-            ]
-        },
-        {
-            "command_starts_with": "/gethostname",
-            "command_data_id": [
-                0
-            ],
-            "command_execute_file": "C:\\Program Files\\infrabot.io\\tools\\GetHostName.ps1",
-            "command_help_manual": "Shows host name where BOT works. Write `/gethostname` to get host name",
-            "command_help_short": "Shows host name where BOT works",
-            "command_default_error": "",
-            "command_execute_type": 4,
-            "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
-            "command_show_in_get_commands_list": true,
-            "command_execute_results": []
-        },
-        {
-            "command_starts_with": "/gethostipconfig",
-            "command_data_id": [
-                0
-            ],
-            "command_execute_file": "C:\\Program Files\\infrabot.io\\tools\\GetHostIpConfig.ps1",
-            "command_help_manual": "Shows IPCONFIG of the host where BOT works. Write `/gethostipconfig` to get host IPCONFIG",
-            "command_help_short": "Shows IPCONFIG of the host where BOT works",
-            "command_default_error": "",
-            "command_execute_type": 4,
-            "command_allowed_users_id": [],
-            "command_allowed_chats_id": [],
-            "command_show_in_get_commands_list": true,
-            "command_execute_results": []
-        }
-    ]
+    "telegram_commands": []
 }

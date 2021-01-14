@@ -7,24 +7,27 @@ using Newtonsoft.Json;
 using Telegram.Bot.Args;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using InfraBot.Enums;
+using InfraBot.Serialization;
 
 namespace InfraBot.Core
 {
     public class CommandCenter
     {
-        Config config;
-        string JsonConfigFileName = "config.json";
-        string JsonConfigFile = "";
-        public CommandCenter()
+        public static Config config;
+        static string JsonConfigFileName = "config.json";
+        static string JsonConfigFile = "";
+        static CommandCenter()
         {
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\" + JsonConfigFileName))
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + JsonConfigFileName))
             {
-                Console.WriteLine("File \"" + AppDomain.CurrentDomain.BaseDirectory + "\\" + JsonConfigFileName + "\" was not found. Please check if this file exists!");
+                Console.WriteLine("File \"" + AppDomain.CurrentDomain.BaseDirectory + JsonConfigFileName + "\" was not found. Please check if this file exists!");
                 Environment.Exit(0);
             }
 
-            JsonConfigFile = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\" + JsonConfigFileName);
+            JsonConfigFile = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + JsonConfigFileName);
             config = JsonConvert.DeserializeObject<Config>(JsonConfigFile);
+            config.telegram_commands = PluginsManager.LoadPlugins();
         }
 
         public async Task ExecuteCommand(ITelegramBotClient botClient, object sender, MessageEventArgs e)
@@ -32,33 +35,33 @@ namespace InfraBot.Core
             long FromChatId = e.Message.Chat.Id;
             int FromUserId = e.Message.From.Id;
             string FromUserName = e.Message.From.Username;
-            if (config.telegram_allowed_chats_id.Count > 0)
+
+            // SHOWMYID
+            if (e.Message.Text.ToLower() == "/showmyid" && config.telegram_enable_showmyid == true)
             {
-                if (config.telegram_allowed_chats_id.Contains(FromChatId) == false)
-                {
-                    WriteToLog("Somebody from chat with Username `" + FromUserName + "` and chat ID `" + FromChatId.ToString() + "` sent message to Bot. Command was not executed, because group is not in access list!");
-                    return;
-                }
+                WriteToLog("Somebody with `" + FromUserId.ToString() + "` from chat with id `" + FromChatId.ToString() + "` sent /showmyid command!");
+                await botClient.SendTextMessageAsync(
+                    chatId: e.Message.Chat,
+                    text: "Your command was: " + e.Message.Text + "\n" + "Result: Your id is: " + FromUserId.ToString()
+                );
+                return;
             }
+
             if (config.telegram_allowed_users_id.Count > 0)
             {
                 if (config.telegram_allowed_users_id.Contains(FromUserId) == false)
                 {
-                    WriteToLog("User with Username `" + FromUserName + "` and id `" + FromUserId.ToString() + "` sent message to Bot. Command was not executed, because user is not in access list!");
+                    WriteToLog("User with Username `" + FromUserName + "` and id `" + FromUserId.ToString() + "` sent message to Bot. Command was not executed, because user is not in the access list!");
                     return;
                 }
             }
 
+            // GETCOMMANDS
             if (e.Message.Text.ToLower() == "/getcommands")
             {
                 if (config.telegram_allowed_users_id_getcommands.Count > 0 && !config.telegram_allowed_users_id_getcommands.Contains(FromUserId))
                 {
                     WriteToLog("User is not in access Users list for /getcommands");
-                    return;
-                }
-                if (config.telegram_allowed_chats_id_getcommands.Count > 0 && !config.telegram_allowed_chats_id_getcommands.Contains(Convert.ToInt32(FromChatId)))
-                {
-                    WriteToLog("User is not in access Group list for /getcommands");
                     return;
                 }
                 string CommandsList = "";
@@ -83,16 +86,12 @@ namespace InfraBot.Core
                 }
             }
 
+            // RELOADCONFIG
             if (e.Message.Text.ToLower() == "/reloadconfig" && config.telegram_enable_reloadconfig == true)
             {
                 if (config.telegram_allowed_users_id_reloadconfig.Count > 0 && !config.telegram_allowed_users_id_reloadconfig.Contains(FromUserId))
                 {
-                    WriteToLog("User is not in access Users list for /reloadconfig");
-                    return;
-                }
-                if (config.telegram_allowed_chats_id_reloadconfig.Count > 0 && !config.telegram_allowed_chats_id_reloadconfig.Contains(Convert.ToInt32(FromChatId)))
-                {
-                    WriteToLog("User is not in access Group list for /reloadconfig");
+                    WriteToLog("User is not in the access Users list for /reloadconfig");
                     return;
                 }
 
@@ -100,6 +99,7 @@ namespace InfraBot.Core
                 JsonConfigFile = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\" + JsonConfigFileName);
                 config = null;
                 config = JsonConvert.DeserializeObject<Config>(JsonConfigFile);
+                config.telegram_commands = PluginsManager.LoadPlugins();
                 WriteToLog("Somebody with `" + FromUserId.ToString() + "` from chat with id `" + FromChatId.ToString() + "` sent /reloadconfig command!");
                 await botClient.SendTextMessageAsync(
                     chatId: e.Message.Chat,
@@ -108,16 +108,12 @@ namespace InfraBot.Core
                 return;
             }
 
+            // EMERGENCY
             if (e.Message.Text.ToLower() == "/emergency" && config.telegram_enable_emergency == true)
             {
                 if (config.telegram_allowed_users_id_emergency.Count > 0 && !config.telegram_allowed_users_id_emergency.Contains(FromUserId))
                 {
-                    WriteToLog("User is not in access Users list for /emergency");
-                    return;
-                }
-                if (config.telegram_allowed_chats_id_emergency.Count > 0 && !config.telegram_allowed_chats_id_emergency.Contains(Convert.ToInt32(FromChatId)))
-                {
-                    WriteToLog("User is not in access Group list for /emergency");
+                    WriteToLog("User is not in the access Users list for /emergency");
                     return;
                 }
                 WriteToLog("Somebody with Username `" + FromUserName + "` and with ID `" + FromUserId.ToString() + "` from chat with id `" + FromChatId.ToString() + "` sent /emergency command! Shutting down application!");
@@ -128,16 +124,12 @@ namespace InfraBot.Core
                 Environment.Exit(0);
             }
 
+            // REMINDME
             if (e.Message.Text.ToLower().StartsWith("/remindme ") && config.telegram_enable_reminder == true)
             {
                 if (config.telegram_allowed_users_id_remindme.Count > 0 && !config.telegram_allowed_users_id_remindme.Contains(FromUserId))
                 {
-                    WriteToLog("User is not in access Users list for /emergency");
-                    return;
-                }
-                if (config.telegram_allowed_chats_id_remindme.Count > 0 && !config.telegram_allowed_chats_id_remindme.Contains(Convert.ToInt32(FromChatId)))
-                {
-                    WriteToLog("User is not in access Group list for /emergency");
+                    WriteToLog("User is not in the access Users list for /emergency");
                     return;
                 }
                 WriteToLog("Somebody with Username `" + FromUserName + "` and with ID `" + FromUserId.ToString() + "` from chat with id `" + FromChatId.ToString() + "` created Reminder Task in Task Scheduler.");
@@ -164,7 +156,7 @@ namespace InfraBot.Core
                     {
                         await botClient.SendTextMessageAsync(
                             chatId: e.Message.Chat,
-                            text: "Please provide normal arguments. Hour and minute must be number! Example: `/remindme 16 45 \"Say hi\"`. Write `/remindme ?` for help"
+                            text: "Please provide normal arguments. Hour and minute must be number! Example: `/remindme 16 45 Say hi to world`. Write `/remindme ?` for help"
                         );
                         return;
                     }
@@ -205,10 +197,10 @@ namespace InfraBot.Core
 
             foreach (Command command in config.telegram_commands)
             {
-                if (e.Message.Text.ToLower().StartsWith(command.command_starts_with) && ((command.command_allowed_users_id.Count > 0 && command.command_allowed_users_id.Contains(FromUserId)) || command.command_allowed_users_id.Count == 0) && ((command.command_allowed_chats_id.Count > 0 && command.command_allowed_chats_id.Contains(Convert.ToInt32(FromChatId))) || command.command_allowed_chats_id.Count == 0))
+                if (e.Message.Text.ToLower().StartsWith(command.command_starts_with) && ((command.command_allowed_users_id.Count > 0 && command.command_allowed_users_id.Contains(FromUserId)) || command.command_allowed_users_id.Count == 0))
                 {
                     WriteToLog("Got command: `" + e.Message.Text + "`. This command is in your commands list! Processing further!");
-                    if (command.command_execute_type == 1 || command.command_execute_type == 3)
+                    if (command.command_execute_type == (int)CommandExecuteTypes.AppWithArgs || command.command_execute_type == (int)CommandExecuteTypes.PSScriptWithArgs)
                     {
                         WriteToLog("Got command: `" + e.Message.Text + "`. This command execute type is `" + command.command_execute_type.ToString() + "`!");
                         string Message = e.Message.Text.ToLower().Replace("/", "");
@@ -272,28 +264,28 @@ namespace InfraBot.Core
                         bool ContainsResultType4 = false;
                         foreach (ExecuteResult executeresult in command.command_execute_results)
                         {
-                            if (executeresult.result_checktype == 1) //if Equals
+                            if (executeresult.result_checktype == (int)ResultCheckTypes.Equals)
                             {
                                 if (ExecuteCommand.Result == executeresult.result_value)
                                 {
                                     ContainsResultType1 = true;
                                 }
                             }
-                            else if (executeresult.result_checktype == 2) //if Contains
+                            else if (executeresult.result_checktype == (int)ResultCheckTypes.Contains)
                             {
                                 if (ExecuteCommand.Result.Contains(executeresult.result_value))
                                 {
                                     ContainsResultType2 = true;
                                 }
                             }
-                            else if (executeresult.result_checktype == 3) //if Starts With
+                            else if (executeresult.result_checktype == (int)ResultCheckTypes.StartsWith)
                             {
                                 if (ExecuteCommand.Result.StartsWith(executeresult.result_value))
                                 {
                                     ContainsResultType3 = true;
                                 }
                             }
-                            else if (executeresult.result_checktype == 4) //if Ends With
+                            else if (executeresult.result_checktype == (int)ResultCheckTypes.EndsWith)
                             {
                                 if (ExecuteCommand.Result.EndsWith(executeresult.result_value))
                                 {
@@ -313,7 +305,7 @@ namespace InfraBot.Core
 
                         foreach (ExecuteResult executeresult in command.command_execute_results)
                         {
-                            if (executeresult.result_checktype == 1) //if Equals
+                            if (executeresult.result_checktype == (int)ResultCheckTypes.Equals)
                             {
                                 if (ExecuteCommand.Result == executeresult.result_value)
                                 {
@@ -325,7 +317,7 @@ namespace InfraBot.Core
                                     break;
                                 }
                             }
-                            else if (executeresult.result_checktype == 2) //if Contains
+                            else if (executeresult.result_checktype == (int)ResultCheckTypes.Contains)
                             {
                                 if (ExecuteCommand.Result.Contains(executeresult.result_value))
                                 {
@@ -337,7 +329,7 @@ namespace InfraBot.Core
                                     break;
                                 }
                             }
-                            else if (executeresult.result_checktype == 3) //if Starts With
+                            else if (executeresult.result_checktype == (int)ResultCheckTypes.StartsWith)
                             {
                                 if (ExecuteCommand.Result.StartsWith(executeresult.result_value))
                                 {
@@ -349,7 +341,7 @@ namespace InfraBot.Core
                                     break;
                                 }
                             }
-                            else if (executeresult.result_checktype == 4) //if Ends With
+                            else if (executeresult.result_checktype == (int)ResultCheckTypes.EndsWith)
                             {
                                 if (ExecuteCommand.Result.EndsWith(executeresult.result_value))
                                 {
@@ -363,7 +355,7 @@ namespace InfraBot.Core
                             }
                         }
                     }
-                    else if (command.command_execute_type == 2 || command.command_execute_type == 4)
+                    else if (command.command_execute_type == (int)CommandExecuteTypes.AppWithoutArgs || command.command_execute_type == (int)CommandExecuteTypes.PSScriptWithoutArgs)
                     {
                         WriteToLog("Got command: `" + e.Message.Text + "`. Result execute type is " + command.command_execute_type.ToString());
                         string Message = e.Message.Text.ToLower().Replace("/", "");
@@ -429,18 +421,18 @@ namespace InfraBot.Core
             return maxInt;
         }
 
-        public void WriteToLog(string Log)
+        public static void WriteToLog(string Log)
         {
             if (config.telegram_enable_logging)
             {
                 try
                 {
-                    if (Directory.Exists(config.telegram_logs_path) == false)
+                    if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "logs") == false)
                     {
-                        Directory.CreateDirectory(config.telegram_logs_path);
+                        Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "logs");
                     }
                     DateTime localDate = DateTime.Now;
-                    File.AppendAllText(config.telegram_logs_path + @"\logs.log", localDate.ToString() + ": " + Log + Environment.NewLine);
+                    File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + @"logs\logs.log", localDate.ToString() + ": " + Log + Environment.NewLine);
                 }
                 catch { }
             }
