@@ -8,6 +8,7 @@ using Telegram.Bot.Args;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using InfraBot.Enums;
+using InfraBot.Serialization;
 
 namespace InfraBot.Core
 {
@@ -35,6 +36,7 @@ namespace InfraBot.Core
             int FromUserId = e.Message.From.Id;
             string FromUserName = e.Message.From.Username;
 
+            // SHOWMYID
             if (e.Message.Text.ToLower() == "/showmyid" && config.telegram_enable_showmyid == true)
             {
                 WriteToLog("Somebody with `" + FromUserId.ToString() + "` from chat with id `" + FromChatId.ToString() + "` sent /showmyid command!");
@@ -54,6 +56,7 @@ namespace InfraBot.Core
                 }
             }
 
+            // GETCOMMANDS
             if (e.Message.Text.ToLower() == "/getcommands")
             {
                 if (config.telegram_allowed_users_id_getcommands.Count > 0 && !config.telegram_allowed_users_id_getcommands.Contains(FromUserId))
@@ -83,6 +86,7 @@ namespace InfraBot.Core
                 }
             }
 
+            // RELOADCONFIG
             if (e.Message.Text.ToLower() == "/reloadconfig" && config.telegram_enable_reloadconfig == true)
             {
                 if (config.telegram_allowed_users_id_reloadconfig.Count > 0 && !config.telegram_allowed_users_id_reloadconfig.Contains(FromUserId))
@@ -104,6 +108,7 @@ namespace InfraBot.Core
                 return;
             }
 
+            // EMERGENCY
             if (e.Message.Text.ToLower() == "/emergency" && config.telegram_enable_emergency == true)
             {
                 if (config.telegram_allowed_users_id_emergency.Count > 0 && !config.telegram_allowed_users_id_emergency.Contains(FromUserId))
@@ -119,6 +124,7 @@ namespace InfraBot.Core
                 Environment.Exit(0);
             }
 
+            // REMINDME
             if (e.Message.Text.ToLower().StartsWith("/remindme ") && config.telegram_enable_reminder == true)
             {
                 if (config.telegram_allowed_users_id_remindme.Count > 0 && !config.telegram_allowed_users_id_remindme.Contains(FromUserId))

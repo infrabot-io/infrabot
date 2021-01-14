@@ -40,29 +40,7 @@ namespace InfraBot
 
         private static void Start(string[] args)
         {
-            if (args.Length > 0)
-            {
-                if (args[0] == "--install" || args[0] == "/i" || args[0] == "-i")
-                {
-                    Console.WriteLine("Got " + args[0] + " argument!");
-                    Console.WriteLine("Starting service installation");
-                    Console.WriteLine("");
-
-                    Console.WriteLine("Service Install output:");
-                    if (InfraBotInstaller.InstallService())
-                    {
-                        Console.WriteLine("");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Something went wrong. Service has not been installed. Make sure that you have admin rights!");
-                        Console.WriteLine("");
-                    }
-                    Console.WriteLine("Task finished!");
-                    return;
-                }
-            }
-
+            StartupArgsExecutor.ExecuteArgs(args);
             pluginsManager = new PluginsManager();
             commandCenter = new CommandCenter();
             botClient = new TelegramBotClient(commandCenter.GetTelegramToken());

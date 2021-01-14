@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace InfraBot.Core
+namespace InfraBot.Serialization
 {
     public class Config
     {

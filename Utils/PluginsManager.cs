@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using InfraBot.Serialization;
 
 namespace InfraBot.Core
 {
@@ -49,8 +50,8 @@ namespace InfraBot.Core
             try
             {
                 // We have to set "watcher.EnableRaisingEvents = false" because on each event
-                // this part may execute many times. To avoid this behaviour we temporarily 
-                // turn it off, and then turn it on again at the end
+                // this part will execute many times. To avoid this behaviour we temporarily 
+                // turn it off, and then turn it on again at the end of the execution
 
                 watcher.EnableRaisingEvents = false;
 

@@ -1,4 +1,4 @@
-namespace InfraBot.Core
+namespace InfraBot.Serialization
 {
     public class ExecuteResult
     {
