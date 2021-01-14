@@ -1,15 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <ApplicationIcon>images\infrabot.io.ico</ApplicationIcon>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />
-    <PackageReference Include="Telegram.Bot" Version="15.7.1" />
-  </ItemGroup>
-
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <ApplicationIcon>images\infrabot.io.ico</ApplicationIcon>
+        <VersionPrefix>1.0.0.1</VersionPrefix>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0"/>
+        <PackageReference Include="Telegram.Bot" Version="15.7.1"/>
+    </ItemGroup>
 </Project>
