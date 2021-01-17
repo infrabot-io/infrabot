@@ -39,7 +39,7 @@ Get started with infrabot, learn how to configure infrabot for your organization
 - [Getting Started][quickstart]
 - [Configure Bot][configurebot]
 - [Config file Overview][configurebot]
-- [GUI Tool][guitool]
+- [Config Editor][configeditor]
 - [Infrabot Service][infrabotservice]
 
 ## Demo
@@ -63,7 +63,7 @@ You can contribute to infrabot by finding bugs, creating new functionality or wr
 [quickstart]: https://infrabot.io/documentation/gettingstarted
 [configurebot]: https://infrabot.io/documentation/configurebot
 [configoverview]: https://infrabot.io/documentation/configoverview
-[guitool]: https://infrabot.io/documentation/guitool
+[configeditor]: https://infrabot.io/documentation/configeditor
 [infrabotservice]: https://infrabot.io/documentation/infrabotservice
 [netcore50]: https://dotnet.microsoft.com/download/dotnet/5.0
 [downloadinfrabot]:https://infrabot.io/download
