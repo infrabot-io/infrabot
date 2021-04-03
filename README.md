@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.infrabot.io"><strong>infrabot.io</strong></a>
+  <a href="https://infrabot-io.github.io"><strong>infrabot-io.github.io</strong></a>
   <br>
 </p>
 <p align="center">
@@ -60,10 +60,10 @@ You can contribute to infrabot by finding bugs, creating new functionality or wr
 
 [![Like Infrabot](https://img.shields.io/badge/like-infrabot-orange)](https://github.com/infrabot-io/infrabot)
 
-[quickstart]: https://infrabot.io/documentation/gettingstarted
-[configurebot]: https://infrabot.io/documentation/configurebot
-[configoverview]: https://infrabot.io/documentation/configoverview
-[configeditor]: https://infrabot.io/documentation/configeditor
-[infrabotservice]: https://infrabot.io/documentation/infrabotservice
+[quickstart]: https://infrabot-io.github.io/documentation/gettingstarted.html
+[configurebot]: https://infrabot-io.github.io/documentation/configurebot.html
+[configoverview]: https://infrabot-io.github.io/documentation/configoverview.html
+[configeditor]: https://infrabot-io.github.io/documentation/configeditor.html
+[infrabotservice]: https://infrabot-io.github.io/documentation/infrabotservice.html
 [netcore50]: https://dotnet.microsoft.com/download/dotnet/5.0
-[downloadinfrabot]:https://infrabot.io/download
+[downloadinfrabot]: https://infrabot-io.github.io/download.html
