@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<items>
+	<item>
+		<name>HelpConfigurationPluginName</name>
+		<heading>Name</heading>
+		<description>Specifies the plugin name.&#10;&#10;Example: "Server restarter"</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginGuid</name>
+		<heading>Guid</heading>
+		<description>Specifies the plugin Guid. Generated automatically when plugin is created. This value is unique and can not be changed.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginAuthor</name>
+		<heading>Author</heading>
+		<description>Specifies the plugin Author.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginVersion</name>
+		<heading>Version</heading>
+		<description>Specifies the plugin Version number.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginWebSite</name>
+		<heading>WebSite</heading>
+		<description>Specifies the plugin WebSite url address. Can be used if author would want to share some information or documentation about his plugin.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginHelp</name>
+		<heading>Help</heading>
+		<description>Specifies detailed plugin functionality description. User can see this description if he writes "/YOUR_CUSTOM_COMMAND ?"</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginHelpShort</name>
+		<heading>Help short</heading>
+		<description>Specifies short plugin description. This value will be used to send to telegram chat when requested. Maximum length of the short description must be less or equal to 128 characters.&#10;&#10;Example: "Restarts specified server"</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginExecutionCommand</name>
+		<heading>Execution command</heading>
+		<description>Specifies exact execution command. This plugin will be triggered when this command will sent to telegram bot. Maximum length of the command must be less or equal to 128 characters.&#10;&#10;Example: "/restartserver"</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginExecuteFile</name>
+		<heading>Execute file</heading>
+		<description>Specifies file to be executed. Based on Execute Type value, service will determine how to launch file (execute PowerShell script or any other custom executable).&#10;&#10;During plugin installation, plugin files will be automatically extracted into the folder named with the plugin`s GUID. Root directory for this plugin will be GUID extracted folder and determined by infrabot automatically. If execution file located in subdirectory (subfolder is in root directory), relative path must be specified (see examples).&#10;&#10;Example 1: "main_script.ps1"&#10;Note: This file is located in the plugin`s root directory&#10;&#10;Example 2: "data/main_script.ps1"&#10;Note: This file is located in the plugin`s sub directory&#10;&#10;Example 3: "path/to/folder/myApp.exe"&#10;Note: This file is located in the plugin`s sub directory&#10;&#10;Example 4: "myApp.exe"&#10;Note: This file is located in the plugin`s root directory</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginDefaultErrorMessage</name>
+		<heading>Default error message</heading>
+		<description>Specifies default error message shown when none of the answer results matches. {DATA} - is replaced with command arguments. {RESULT} - is replaced with execution result output.&#10;&#10;Example: "Command execution with arguments `{DATA}` was not succeded! Unexpected error! Result output was: {RESULT}"</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginExecuteType</name>
+		<heading>Execute type</heading>
+		<description>Specifies execute type.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginExecuteResults</name>
+		<heading>Execute results</heading>
+		<description>Specifies execute results.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationExecuteResultIfResult</name>
+		<heading>Execute results</heading>
+		<description>Determines how to match result got from Script or Executable with the Value parameter.&#10;&#10;Check types:&#10;&#10;Equals to &#10;Not equals &#10;Greater than &#10;Less than &#10;Contains &#10;Starts with &#10;Ends with &#10;Not contains &#10;Not starts with &#10;Not ends with &#10;Ignore case equals to &#10;Ignore case contains &#10;Ignore case starts with &#10;Ignore case ends with &#10;Ignore case not contains &#10;Ignore case not starts with &#10;Ignore case not ends with</description>
+		<used>Execute results</used>
+	</item>
+	<item>
+		<name>HelpConfigurationExecuteResultValue</name>
+		<heading>Value</heading>
+		<description>Expected Result value from Script or Executable to check.</description>
+		<used>Execute results</used>
+	</item>
+	<item>
+		<name>HelpConfigurationExecuteResultOutput</name>
+		<heading>Execute results</heading>
+		<description>Specifies what to show if result received from Script or Executable matches Value data. {DATA} - specified will be replaced with all arguments sent to command. {RESULT} - will be replaced with output received from your script or executable.</description>
+		<used>Execute results</used>
+	</item>
+</items>

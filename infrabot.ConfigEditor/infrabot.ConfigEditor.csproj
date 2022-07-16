@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+	<Version>2.0.0.0</Version>
+	<AssemblyVersion>2.0.0.0</AssemblyVersion>
+	<FileVersion>2.0.0.0</FileVersion>
+	<Company>infrabot</Company>
+	<Authors>Akshin Mustafayev</Authors>
+	<Product>infrabot Config Editor</Product>
+	<Description>Edit or create infrabot configuration file</Description>
+	<Copyright>infrabot</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Documentation\HelpDocumentation.xml" />
+    <None Remove="Images\about.png" />
+    <None Remove="Images\add.png" />
+    <None Remove="Images\close.png" />
+    <None Remove="Images\exit.png" />
+    <None Remove="Images\github.png" />
+    <None Remove="Images\help.png" />
+    <None Remove="Images\i.png" />
+    <None Remove="Images\icon.ico" />
+    <None Remove="Images\newfile.png" />
+    <None Remove="Images\openfile.png" />
+    <None Remove="Images\remove.png" />
+    <None Remove="Images\save.png" />
+    <None Remove="LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icon.ico" />
+    <Resource Include="Images\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Documentation\HelpDocumentation.xml" />
+    <EmbeddedResource Include="LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\about.png" />
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\close.png" />
+    <Resource Include="Images\exit.png" />
+    <Resource Include="Images\github.png" />
+    <Resource Include="Images\help.png" />
+    <Resource Include="Images\i.png" />
+    <Resource Include="Images\newfile.png" />
+    <Resource Include="Images\openfile.png" />
+    <Resource Include="Images\remove.png" />
+    <Resource Include="Images\save.png" />
+  </ItemGroup>
+
+</Project>
