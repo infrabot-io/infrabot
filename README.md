@@ -41,7 +41,7 @@ infrabot - is an on-premise service which allows you to create your own commandl
 
 ## :wrench: Installation
 
-- Donwload and install [.NET 6 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- Download and install [.NET 6 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 - Go to [releases](https://github.com/infrabot-io/infrabot/releases) page to download the latest release
 
 ## :clipboard: Documentation
