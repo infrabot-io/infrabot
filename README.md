@@ -1,7 +1,7 @@
 
 <img src="assets/images/header.svg"/>
 
-[![infrabot with <3](https://img.shields.io/badge/infrabot-orange)](https://github.com/infrabot-io/infrabot)
+[![infrabot](https://img.shields.io/badge/infrabot-orange)](https://github.com/infrabot-io/infrabot)
 <a href="https://img.shields.io/github/license/infrabot-io/infrabot">
   <img src="https://img.shields.io/github/license/infrabot-io/infrabot" alt="License" />
 </a>
@@ -16,13 +16,13 @@
 </a>
 <a href="https://img.shields.io/github/contributors/infrabot-io/infrabot">
   <img alt="GitHub repo file count" src="https://img.shields.io/github/contributors/infrabot-io/infrabot">
-</a>
+</a> 
 
 ---
 
 ## :newspaper: Description
 
-infrabot - is an on-premise service which allows you to create your own commandlets to control your infrastructure using a Telegram Bot. Built-in tools will allow to create, configure and manage plugins and application configuration.
+<img src="assets/images/infrabot.png" height="20" width="20"/> infrabot - is an on-premise service which allows you to create your own commandlets to control your infrastructure using a Telegram Bot. Built-in tools will allow to create, configure and manage plugins and application configuration.
 
 <img src="assets/images/demo.gif" alt="infrabot-logo" width="400px" height="400px"/>
 
