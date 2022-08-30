@@ -24,6 +24,7 @@
 
 <img src="assets/images/infrabot.png" height="20" width="20"/> infrabot - is an on-premise service which allows you to create your own commandlets to control your infrastructure using a Telegram Bot. Built-in tools will allow to create, configure and manage plugins and application configuration.
 
+## :eye_speech_bubble: Overview
 <img src="assets/images/demo.gif" alt="infrabot-logo" width="400px" height="400px"/>
 
 
