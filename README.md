@@ -46,6 +46,11 @@ Get started with infrabot, learn how to configure infrabot for your organization
 
 To add functionality to infrabot and extend its capabilities, plugin system was implemented. Each plugin determines which command infrabot can execute. One plugin - means one commandlet. See [examples](https://infrabot-io.github.io/documentation/examplescripts.html) to get to know how to create plugins.
 
+## :electric_plug: Compilation
+
+1. Download and install Visual Studio 2022
+2. Open project in Visual Studio and build it
+
 
 ## :dart: Contributing
 You can contribute to infrabot by finding bugs, creating new functionality or writing addons for it.
