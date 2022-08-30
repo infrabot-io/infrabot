@@ -1,4 +1,5 @@
-# <img src="assets/images/infrabot.png" height="32" width="32"/> InfraBot
+
+<img src="assets/images/header.svg"/>
 
 [![infrabot with <3](https://img.shields.io/badge/infrabot-orange)](https://github.com/infrabot-io/infrabot)
 <a href="https://img.shields.io/github/license/infrabot-io/infrabot">
@@ -16,19 +17,6 @@
 <a href="https://img.shields.io/github/contributors/infrabot-io/infrabot">
   <img alt="GitHub repo file count" src="https://img.shields.io/github/contributors/infrabot-io/infrabot">
 </a>
-
-<br><br>
-
-<p align="center">
-  <img src="assets/images/banner.png" alt="infrabot-logo"/>
-</p>
-
-<p align="center">
-  <br><br>
-  <a href="https://www.buymeacoffee.com/infrabot.io" target="_blank">
-    <img width="168px" height="48px" src="assets/images/bymeabeer.png" alt="Buy Me A Beer">
-  </a>
-</p>
 
 ---
 
@@ -62,4 +50,4 @@ To add functionality to infrabot and extend its capabilities, plugin system was 
 ## :dart: Contributing
 You can contribute to infrabot by finding bugs, creating new functionality or writing addons for it.
 
-
+<img src="assets/images/footer_fixed.svg"/>
