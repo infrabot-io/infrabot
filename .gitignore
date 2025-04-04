@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/infrabot/v17/TestStore/0/testlog.manifest
+*.vsidx
+/.vs/infrabot/v17/TestStore/0/testlog.manifest
+/.vs/infrabot/DesignTimeBuild/.dtbcache.v2
+/.vs/infrabot/FileContentIndex/3a8afa2a-a830-47f9-8445-d4330e84ee1e.vsidx
+/.vs/infrabot/FileContentIndex/4546fc84-7048-4f96-b0a3-d283671a54aa.vsidx
+/.vs/infrabot/v17/TestStore/0/066.testlog
