@@ -1,0 +1,60 @@
+﻿@model Infrabot.Common.Models.TelegramUser
+@{
+    ViewData["Title"] = "Create a telegram user";
+}
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Create</p>
+        <p class="blog-post-meta mt-1 text-muted">Create a new telegram user with the given parameters</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
+                    <div class="invalid-feedback">
+                        Please provide the name of the user.
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" class="form-control" id="surname" placeholder="" required="" asp-for="Surname">
+                    <div class="invalid-feedback">
+                        Please provide the surname of the user.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="telegramid" class="form-label">Telegram ID</label>
+                    <input type="number" class="form-control" id="telegramid" placeholder="" required="" asp-for="TelegramId">
+                    <div class="invalid-feedback">
+                        Please provide the telegram id.
+                    </div>
+                </div>
+            </div>
+
+            @if (ViewBag.TelegramUserAlreadyExists != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    User with the specified telegram ID already exists. Please provide unique value.
+                </div>
+            }
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Create</button>
+            <a class="btn btn-outline-orange" href="~/telegramusers">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>

@@ -1,0 +1,21 @@
+﻿@model Infrabot.Common.Models.PermissionAssignment
+@{
+    ViewData["Title"] = "Delete permission assignment";
+}
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Delete</p>
+        <p class="blog-post-meta mt-1 text-muted">Delete permission assignment. Performed actions are not reversable</p>
+    </div>
+</div>
+
+<p>Are you sure that you want to delete permission assignment <code class="fs-5">@Model.Name</code> ?</p>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" class="btn btn-orange" value="Delete" />
+    <a class="btn btn-outline-orange" href="~/permissionassignment">Cancel</a>
+</form>

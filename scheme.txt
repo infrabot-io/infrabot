@@ -1,0 +1,15 @@
+
++--------------------------+       +------------------------+       +------------------------+
+| Web Admin Service        |       | Telegram Service       |       | Worker Service         |
+| - Web UI                 |       | - Telegram Client      |       | - Health Checker       |
+| - User/Group Mgmt        |       | - Plugin Manager       |       | - Health Data Cleaner  |
+| - Plugin Access Mgmt     |       | - Command Manager      |       | - Message Cleaner      |
+| - AD Auth Integration    |       |                        |       |                        |
+|                          |       |                        |       |                        |
++--------------------------+       +------------------------+       +------------------------+
+                   |                           |                             |
+           +-----------------------------------+------------------------------------+
+           |                              SQLite Database                           |
+           |  - Users, Groups, Plugins, Permissions, Health, Logs, Audit events     |
+           +------------------------------------------------------------------------+
+

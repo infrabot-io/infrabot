@@ -1,0 +1,112 @@
+﻿@model Infrabot.Common.Models.User
+@{
+    ViewData["Title"] = "Create a user";
+}
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Create</p>
+        <p class="blog-post-meta mt-1 text-muted">Create a new user with the given parameters</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
+                    <div class="invalid-feedback">
+                        Please provide the name of the user.
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" class="form-control" id="surname" placeholder="" required="" asp-for="Surname">
+                    <div class="invalid-feedback">
+                        Please provide the surname of the user.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="login" class="form-label">Login</label>
+                    <input type="text" class="form-control" id="login" placeholder="" required="" asp-for="Login">
+                    <div class="invalid-feedback">
+                        Please provide the login of the user.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="" required="" asp-for="Email">
+                    <div class="invalid-feedback">
+                        Please provide the email of the user.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="" required="" asp-for="Password">
+                    <div class="invalid-feedback">
+                        Please provide the password of the user.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="" required="" asp-for="Phone">
+                    <div class="invalid-feedback">
+                        Please provide the phone of the user.
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="isadintegrated" asp-for="IsADIntegrated">
+                    <label class="form-check-label" for="isadintegrated">User is AD integrated</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="enbaled" asp-for="Enabled" checked>
+                    <label class="form-check-label" for="enbaled">Enabled</label>
+                </div>
+
+                <hr class="my-4">
+            </div>
+
+            @if (ViewBag.UserAlreadyExists != null)
+            {
+                <div class="alert alert-danger mt-2" role="alert">
+                    User with the specified login or email already exists. Please provide unique login and email values.
+                </div>
+            }
+
+            @if (ViewBag.PasswordDoesNotMeetComplexity != null)
+            {
+                <div class="alert alert-danger mt-2" role="alert">
+                    Specified password does not meet required complexity.
+                </div>
+            }
+
+            @if (ViewBag.ConfigurationError != null)
+            {
+                <div class="alert alert-danger mt-2" role="alert">
+                    Could not retrieve system configuration. Please fix system first.
+                </div>
+            }
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Create</button>
+            <a class="btn btn-outline-orange" href="~/users">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>

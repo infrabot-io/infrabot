@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Logs";
+}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    #logContainer {
+        overflow-y: auto;
+        background: #212529;
+        color: #fff;
+        padding: 10px;
+        font-family: monospace;
+        border-radius: 5px;
+        white-space: pre-wrap;
+    }
+
+    .highlight {
+        background-color: yellow;
+        color: black;
+        font-weight: bold;
+    }
+</style>
+
+<div class="mt-4">
+    <div class="mb-3">
+        <label for="searchInput" class="form-label">Search</label>
+        <input type="text" class="form-control" id="searchInput" placeholder="Type to search in logs...">
+    </div>
+
+    <div id="logContainer" class="border mb-4 mt-4">@ViewBag.Logs</div>
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        const logContainer = document.getElementById('logContainer');
+        let logText = logContainer.innerText;
+
+        if (!searchTerm) {
+            logContainer.innerHTML = logText.replace(/<\/?mark>/g, ""); // Remove highlights
+            return;
+        }
+
+        logContainer.innerHTML = logText.replace(new RegExp(searchTerm, "gi"), match => `<mark class="highlight">${match}</mark>`);
+    });
+</script>

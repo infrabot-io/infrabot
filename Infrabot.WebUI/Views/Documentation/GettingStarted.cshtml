@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Getting started";
+}
+
+<article class="blog-post">
+    <h2 class="display-5 link-body-emphasis mb-1 mt-3">Getting started</h2>
+    <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
+    <hr>
+
+    <h3>Installation</h3>
+    <p>Download the latest installation file from <a href="https://github.com/infrabot-io/infrabot/releases" target="_blank">here</a>, then follow the installation process to set up infrabot on your system.</p>
+    <p>The setup wizard will guide you through the installation process. By default, the installer places the binary files in the <code>C:\Program Files\infrabot.io</code> folder. Additionally, during installation, a Windows service named <code>infrabot.io</code> will be created.</p>
+    <p>The service will run using <code>Local System</code> credentials by default. However, you can configure it to use a different account if needed (refer to the <b>Service Account</b> section for details).</p>
+
+    <br>
+    <h3>Create Telegram Bot</h3>
+    <p>In order to get started with infrabot, you need to create a Telegram bot and acquire its API token from <code>@@BotFather</code>.</p>
+    <p>Here are some extra links that may prove helpful to you:</p>
+    <ul>
+        <li><a href="https://core.telegram.org/bots" target="_blank" rel="noopener"> telegram.org documentation</a></li>
+        <li><a href="https://telegra.ph/Awesome-Telegram-Bot-11-11" target="_blank" rel="noopener">telegra.ph article</a></li>
+        <li><a href="https://medium.com/shibinco/create-a-telegram-bot-using-botfather-and-get-the-api-token-900ba00e0f39" target="_blank" rel="noopener">medium.com article</a></li>
+    </ul>
+
+    <h4>Step 1</h4>
+    <p>Find telegram bot named <code>@@BotFather</code> - it will assist you in creating and managing your bot.</p>
+    <img class="img-fluid" src="../img/documentation/gettingstarted/1.png">
+
+    <br><br>
+    <h4>Step 2</h4>
+    <p>Type <code>/help</code> in the chat with <code>@@BotFather</code> and you'll see a list of all available commands it can execute.</p>
+    <img class="img-fluid" src="../img/documentation/gettingstarted/2.png">
+
+    <br>
+    <h4>Step 3</h4>
+    <p>To create a new bot, type <code>/newbot</code> or click on it. Follow the provided instructions and assign a unique name to your bot.</p>
+    <img class="img-fluid" src="../img/documentation/gettingstarted/3.png">
+
+    <br>
+    <h4>Step 4</h4>
+    <p>Congratulations! You’ve successfully created your Telegram bot. A new API token has been generated — make sure to save it for future use.</p>
+
+    <h4>Step 5</h4>
+    <p>Put Token into <code>Telegram bot Token</code> field on <a href="~/configuration" alt="Configuration">Configuration</a> page.</p>
+    <img class="img-fluid" src="../img/documentation/gettingstarted/4.png">
+
+    <br><br><br>
+    <h3>Service Account</h3>
+    <p>By default, the Infrabot service runs under the <code>Local System</code> account. However, you can change it to another user account or an <code>Active Directory Managed Service Account</code> if required.</p>
+    <p>Please refer to <a href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/group-managed-service-accounts/group-managed-service-accounts/group-managed-service-accounts-overview" alt="gMSA" target="_blank">this</a> article for more information</p>
+
+    <br><br><br><br>
+</article>

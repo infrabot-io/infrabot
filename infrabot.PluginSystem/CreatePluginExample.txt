@@ -1,0 +1,88 @@
+﻿
+Plugin plugin = new Plugin();
+plugin.Guid = Guid.NewGuid();
+plugin.Id = PluginUtility.GenerateUniquePluginId();
+plugin.Name = "Test1";
+plugin.PluginType = infrabot.PluginSystem.Enums.PluginType.Administration;
+plugin.Description = "Test1 plugin for test purposes";
+plugin.Author = "Akshin";
+plugin.Version = 0;
+plugin.WebSite = "aaa.com";
+plugin.PluginExecutions.Add(
+    new infrabot.PluginSystem.Execution.PluginExecution()
+    {
+        CommandName = "/test1",
+        Help = "Write /test1 to get output",
+        ExecutionFilePath = "test1.ps1",
+        ExecutionTimeout = 10,
+        DefaultErrorMessage = "Default error",
+        ExecuteType = infrabot.PluginSystem.Enums.CommandExecuteTypes.PSScript
+    }
+);
+plugin.PluginFiles = PluginUtility.ImportPluginFiles("D:\\1");
+PluginUtility.SavePlugin(plugin, "D:\\test1_plugin.plug");
+
+
+
+
+Plugin plugin2 = new Plugin();
+plugin2.Guid = Guid.NewGuid();
+plugin2.Id = PluginUtility.GenerateUniquePluginId();
+plugin2.Name = "Test2";
+plugin2.PluginType = infrabot.PluginSystem.Enums.PluginType.Infrastructure;
+plugin2.Description = "Test2 plugin for test purposes";
+plugin2.Author = "Akshin";
+plugin2.Version = 0;
+plugin2.WebSite = "aaa.com";
+plugin2.PluginExecutions.Add(
+    new infrabot.PluginSystem.Execution.PluginExecution()
+    {
+        CommandName = "/test2",
+        Help = "Write /test2 to get output",
+        ExecutionFilePath = "test2.ps1",
+        ExecutionTimeout = 10,
+        DefaultErrorMessage = "Default error",
+        ExecuteType = infrabot.PluginSystem.Enums.CommandExecuteTypes.PSScript,
+        ExecutionFileArguments = new List<ExecutionFileArgument> {
+            new ExecutionFileArgument
+            {
+                Name = "arg1",
+                Value = "some value",
+                Description = "specify argument with name arg1"
+            }
+        }
+    }
+);
+plugin2.PluginFiles = PluginUtility.ImportPluginFiles("D:\\1");
+PluginUtility.SavePlugin(plugin2, "D:\\test2_plugin.plug");
+
+
+
+
+
+Plugin plugin3 = new Plugin();
+plugin3.Guid = Guid.NewGuid();
+plugin3.Id = PluginUtility.GenerateUniquePluginId();
+plugin3.Name = "Test3";
+plugin3.PluginType = infrabot.PluginSystem.Enums.PluginType.Configuration;
+plugin3.Description = "Test3 plugin for test purposes";
+plugin3.Author = "Akshin";
+plugin3.Version = 0;
+plugin3.WebSite = "aaa.com";
+plugin3.PluginExecutions.Add(
+    new infrabot.PluginSystem.Execution.PluginExecution()
+    {
+        CommandName = "/test3",
+        Help = "Write /test3 to get output",
+        ExecutionFilePath = "test3.cs",
+        ExecutionTimeout = 0,
+        DefaultErrorMessage = "Default error",
+        ExecuteType = infrabot.PluginSystem.Enums.CommandExecuteTypes.CSharpScript
+    }
+);
+plugin3.PluginFiles = PluginUtility.ImportPluginFiles("D:\\1");
+PluginUtility.SavePlugin(plugin3, "D:\\test3_plugin.plug");
+
+
+
+

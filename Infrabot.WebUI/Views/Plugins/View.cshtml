@@ -1,0 +1,92 @@
+﻿@using Infrabot.PluginSystem.Execution;
+@model Infrabot.Common.Models.Plugin
+@{
+    ViewData["Title"] = "View plugin";
+}
+
+<br>
+<br>
+
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-header bg-orange"></div>
+    <div class="card-body">
+        <h5 class="mb-4">Plugin Details</h5>
+
+        <!-- Basic Information -->
+        <div class="mb-4">
+            <h6>Basic Information</h6>
+            <div class="row g-3">
+                <div class="col-sm-4"><strong>Name</strong></div>
+                <div class="col-sm-8 text-muted">@Model.Name</div>
+
+                <div class="col-sm-4"><strong>Guid</strong></div>
+                <div class="col-sm-8 text-muted">@Model.Guid</div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Details -->
+        <div class="mb-4">
+            <h6>Details</h6>
+            <div class="row g-3">
+                <div class="col-sm-4"><strong>Id</strong></div>
+                <div class="col-sm-8 text-muted">
+                    @if (ViewBag.Id is not null)
+                    {
+                        @ViewBag.Id
+                    }
+                </div>
+
+                <div class="col-sm-4"><strong>Description</strong></div>
+                <div class="col-sm-8 text-muted">
+                    @if (ViewBag.Description is not null)
+                    {
+                        @ViewBag.Description
+                    }
+                </div>
+
+                <div class="col-sm-4"><strong>Author</strong></div>
+                <div class="col-sm-8 text-muted">
+                    @if (ViewBag.Author is not null)
+                    {
+                        @ViewBag.Author
+                    }
+                </div>
+
+                <div class="col-sm-4"><strong>WebSite</strong></div>
+                <div class="col-sm-8 text-muted">
+                    @if (ViewBag.WebSite is not null)
+                    {
+                        @ViewBag.WebSite
+                    }
+                </div>
+
+                <div class="col-sm-4"><strong>Commands</strong></div>
+                <div class="col-sm-8 text-muted">
+                    @if (ViewBag.PluginExecutions is not null)
+                    {
+                        foreach (PluginExecution execution in ViewBag.PluginExecutions)
+                        {
+                            @execution.CommandName <text> - </text> @execution.ExecutionFilePath
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Audit Trail -->
+        <div class="mb-4">
+            <h6>Audit Trail</h6>
+            <div class="row g-3">
+                <div class="col-sm-4"><strong>Created Date</strong></div>
+                <div class="col-sm-8 text-muted">@Model.CreatedDate</div>
+
+                <div class="col-sm-4"><strong>Updated Date</strong></div>
+                <div class="col-sm-8 text-muted">@Model.UpdatedDate</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-outline-orange mb-4" href="~/plugins">Back</a>

@@ -1,5 +1,5 @@
 
-<img src="assets/images/header.svg"/>
+<img src="assets/header.svg"/>
 
 [![infrabot](https://img.shields.io/badge/infrabot-orange)](https://github.com/infrabot-io/infrabot)
 <a href="https://img.shields.io/github/license/infrabot-io/infrabot">
@@ -22,10 +22,10 @@
 
 ## :newspaper: Description
 
-<img src="assets/images/infrabot.png" height="20" width="20"/> infrabot - is an on-premise service which allows you to create your own commandlets to control your infrastructure using a Telegram Bot. Built-in tools will allow to create, configure and manage plugins and application configuration.
+<img src="assets/infrabot.png" height="20" width="20"/> infrabot - is an on-premise service which allows you to create your own commandlets to control your infrastructure using a Telegram Bot. Built-in tools will allow to create, configure and manage plugins and application configuration.
 
 ## :eye_speech_bubble: Overview
-<img src="assets/images/demo.gif" alt="infrabot-logo" width="400px" height="400px"/>
+<img src="assets/demo.gif" alt="infrabot-logo" width="400px" height="400px"/>
 
 
 ## :wrench: Installation
@@ -56,4 +56,4 @@ To add functionality to infrabot and extend its capabilities, plugin system was 
 ## :dart: Contributing
 You can contribute to infrabot by finding bugs, creating new functionality or writing addons for it.
 
-<img src="assets/images/footer_fixed.svg"/>
+<img src="assets/footer_fixed.svg"/>

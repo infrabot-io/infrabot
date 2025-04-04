@@ -1,0 +1,71 @@
+﻿@model Infrabot.WebUI.Models.GroupViewModel
+@{
+    ViewData["Title"] = "Edit a group";
+}
+
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2.css" />
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2-bootstrap-5-theme.min.css" />
+<script src="~/lib/select2/dist/js/select2.min.js"></script>
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Edit</p>
+        <p class="blog-post-meta mt-1 text-muted">Edit a group with the given parameters</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <input type="hidden" asp-for="Id">
+
+                <div class="col-sm-8">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
+                    <div class="invalid-feedback">
+                        Please provide the name of the group.
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <label for="users" class="form-label">Users</label>
+                    <select asp-for="SelectedTelegramUserIds" class="form-select select2" id="users" multiple="multiple" asp-items="Model.AvailableTelegramUsers"></select>
+                    <div class="invalid-feedback">
+                        Please provide users.
+                    </div>
+                </div>
+            </div>
+
+            @if (ViewBag.GroupAlreadyExists != null)
+            {
+                <div class="alert alert-danger mt-2" role="alert">
+                    Group with the specified name already exists. Please provide unique group name.
+                </div>
+            }
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Save</button>
+            <a class="btn btn-outline-orange" href="~/groups">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>
+
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 for the users dropdown
+        $('.select2').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+        });
+    });
+</script>
+

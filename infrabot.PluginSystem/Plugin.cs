@@ -1,38 +1,47 @@
-﻿using System.Collections.Generic;
-using infrabot.PluginSystem.Execution;
-using infrabot.PluginSystem.Data;
+﻿using Infrabot.PluginSystem.Data;
+using Infrabot.PluginSystem.Enums;
+using Infrabot.PluginSystem.Execution;
 using ProtoBuf;
 
-namespace infrabot.PluginSystem
+namespace Infrabot.PluginSystem
 {
     [ProtoContract]
     public class Plugin
     {
         [ProtoMember(1)]
-        public string Name;
+        public Guid Guid { get; set; } // Plugin GUID
 
         [ProtoMember(2)]
-        public string Guid;
+        public string Id { get; set; } // Plugin ID, used to specify from the chat
 
         [ProtoMember(3)]
-        public string Author;
+        public string Name { get; set; } // Plugin name
 
         [ProtoMember(4)]
-        public string Version;
+        public string? Description { get; set; } = string.Empty; // Description
 
         [ProtoMember(5)]
-        public string WebSite;
+        public PluginType PluginType { get; set; } // Type of the plugin
 
         [ProtoMember(6)]
-        public string Help;
+        public string? Author { get; set; } = string.Empty; // Author name
 
         [ProtoMember(7)]
-        public string HelpShort;
+        public int Version { get; set; } = 0; // Plugin version
 
         [ProtoMember(8)]
-        public PluginExecution PluginExecution;
+        public string? WebSite { get; set; } = string.Empty; // WebSite url of the author
 
         [ProtoMember(9)]
-        public List<PluginFile> PluginFiles;
+        public List<PluginExecution> PluginExecutions { get; set; } = new(); // List of commands which infrabot reacts to
+
+        [ProtoMember(10)]
+        public List<PluginFile> PluginFiles { get; set; } // List of embed plugin files
+
+        [ProtoMember(11)]
+        public List<PluginSetting>? Settings { get; set; } = new(); // Configurable plugin settings
+
+        [ProtoMember(12)]
+        public string Checksum { get; set; } // Plugin checksum to check against attacks
     }
 }

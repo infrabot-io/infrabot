@@ -1,0 +1,57 @@
+﻿body {
+    font-weight: 300;
+    background: linear-gradient(135deg, #FFF0F0, #FFEAE7);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+/* Login card styling */
+.login-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+/* Logo: using the accent as background with a white "I" for InfraBot */
+.logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1rem;
+    background: url('../img/infrabot.png');
+    background-size: 100% auto;
+    border-radius: 50%;
+}
+/* Title styling */
+.login-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+/* Input focus styling using the accent color (with a transparent overlay) */
+.form-control:focus {
+    border-color: #F75D55;
+    box-shadow: 0 0 0 0.2rem rgba(247, 93, 85, 0.25);
+}
+/* Custom button styling with a slight darkening on hover */
+.btn-custom {
+    background: #F75D55;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+    .btn-custom:hover {
+        background: #E64A45;
+    }
+/* Version note styling */
+.version {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #777;
+}

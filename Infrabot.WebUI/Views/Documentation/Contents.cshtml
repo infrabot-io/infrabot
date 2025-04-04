@@ -1,0 +1,280 @@
+﻿@{
+    ViewData["Title"] = "Contents";
+}
+
+<article class="blog-post">
+    <h2 class="display-5 link-body-emphasis mb-1 mt-3">Contents</h2>
+    <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
+    <hr>
+
+    <h3>Sending commands</h3>
+    <p>Each command must start with <code>/</code> character.</p>
+
+    <h5>Possible commands variations</h5>
+    <ul>
+        <li><code>/myCommand</code> - Executes the command found in a plugin. If multiple plugins contain the same command, you must specify the plugin ID</li>
+        <li><code>/myCommand arg1</code> - Runs the command and passes a single argument. There is no limit on the number of arguments.</li>
+        <li><code>/myCommand arg1 arg2</code> - Runs the command with multiple arguments. There is no restriction on the number of arguments.</li>
+        <li><code>/myCommand "some argument"</code> - Executes the command and sends a single argument containing spaces as a string. There is no argument limit</li>
+        <li><code>/myCommand arg1 "some argument2"</code> - Executes the command and sends multiple type of arguments. There is no argument limit</li>
+        <li><code>/myCommand "some argument1" "some argument2"</code> - Runs the command with multiple string arguments containing spaces. No limit on the number of arguments</li>
+        <li><code>/myCommand# "some argument1" "some argument2"</code> - Runs the command with multiple string arguments containing spaces. No limit on the number of arguments. Arguments are not logged to command history.</li>
+        <li><code>/myCommand ?</code> - Displays help information for the command, including argument details if specified.</li>
+        <li><code>/myCommand ??</code> - Shows help details for the plugin in which the command is defined</li>
+        <li><code>/myCommand@myBot</code> - If multiple bots are present in the chat and multiple Infrabot instances are listening, this ensures execution only on the specified bot instance (each Infrabot instance must be linked to one unique bot)</li>
+        <li><code>/myCommand@myBot arg1</code> - Same as the previous command, but with arguments</li>
+        <li><code>/myCommand@myBot "some argument1" "some argument2"</code> - Same as before, but with multiple string arguments containing spaces</li>
+        <li><code>/myCommand!pluginId</code> - Runs the command only for the specified plugin where it is defined</li>
+        <li><code>/myCommand!pluginId arg1 "some argument1"</code> - Executes the command only within the specified plugin where it is defined, while also passing the provided arguments</li>
+        <li><code>/myCommand@myBot!pluginId</code> - Executes the command only for the specified plugin within a specific bot instance</li>
+        <li><code>/myCommand@myBot!pluginId arg1 "some argument2" "some argument3"</code> - Executes the command on a specific Infrabot instance, utilizing the specified plugin, and passing multiple arguments, which may contain or not contain spaces</li>
+        <li><code>/myCommand@myBot!pluginId# arg1 "some argument2" "some argument3"</code> - Executes the command on a specific Infrabot instance, utilizing the specified plugin, and passing multiple arguments, which may contain or not contain spaces. Arguments are not logged to command history.</li>
+    </ul>
+    <p>Not all possible variations are listed here, but that does not mean they are unsupported — they may still function as expected.</p>
+
+    <h3>Plugin Editor</h3>
+    <p>The Plugin Editor is a tool designed to assist you in creating and modifying plugins.</p>
+    <img class="img-fluid" src="../img/documentation/contents/1.png">
+
+    <p>The Plugin Editor consists of two main tabs:</p>
+    <ol>
+        <li><b>Plugin Configuration</b> – This tab contains fields for configuring the plugin settings.</li>
+        <li><b>Files</b> – This tab provides access to a temporary folder where plugin files are stored. These files will be imported into the plugin upon saving.</li>
+    </ol>
+
+    <h3>Plugin configuration</h3>
+    <p>The Plugin Configuration tab contains the primary settings for the plugin. A description of each setting is provided in the table below.</p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Parameter</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">Name</td>
+                <td>String</td>
+                <td>This parameter defines the name of the plugin.</td>
+            </tr>
+            <tr>
+                <td scope="row">Guid</td>
+                <td>String</td>
+                <td>This parameter defines the plugin's unique GUID, which serves as its identifier. It is a read-only value that is generated once during the plugin's creation and cannot be changed.</td>
+            </tr>
+            <tr>
+                <td scope="row">Id</td>
+                <td>String</td>
+                <td>This parameter specifies the plugin's ID, a read-only value that is generated once during plugin creation and cannot be changed. It is used to execute commands associated with a specific plugin when the same command exists in multiple plugins.</td>
+            </tr>
+            <tr>
+                <td scope="row">Description</td>
+                <td>String</td>
+                <td>This parameter defines the plugin's description, providing details about its functionality and purpose.</td>
+            </tr>
+            <tr>
+                <td scope="row">Type</td>
+                <td>Type</td>
+                <td>
+                    This parameter defines the plugin type, indicating its category or functionality within the system. Possible values:
+                    <ul>
+                        <li>Monitoring</li>
+                        <li>Alerting</li>
+                        <li>Logging</li>
+                        <li>Automation</li>
+                        <li>Infrastructure</li>
+                        <li>Configuration</li>
+                        <li>Administration</li>
+                        <li>Compliance and Audit</li>
+                        <li>Other</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Author</td>
+                <td>String</td>
+                <td>This parameter defines the author's name for the plugin, indicating who created or contributed to it.</td>
+            </tr>
+            <tr>
+                <td scope="row">Version</td>
+                <td>Integer</td>
+                <td>This parameter defines the plugin's version, indicating its release number for tracking updates and compatibility.</td>
+            </tr>
+            <tr>
+                <td scope="row">WebSite</td>
+                <td>String</td>
+                <td>This parameter defines the author's website URL, providing a link to their official webpage or project site.</td>
+            </tr>
+            <tr>
+                <td scope="row">Commands</td>
+                <td>Command</td>
+                <td>This parameter defines the plugin commands that the plugin will respond to, executing the specified script or file along with other configured settings.</td>
+            </tr>
+            <tr>
+                <td scope="row">Settings</td>
+                <td>Command</td>
+                <td>This parameter specifies various plugin settings that can be configured and utilized based on the setting's type.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Commands</h3>
+    <p>This is the main window where plugin commands are defined. Each plugin must have at least one command to function properly.</p>
+    <img class="img-fluid" src="../img/documentation/contents/2.png">
+
+    <p>The Commands Window contains the settings for plugin commands. A description of each setting is provided in the table below:</p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Parameter</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">Command</td>
+                <td>String</td>
+                <td>This parameter specifies the command and must begin with the <code>/</code> character.</td>
+            </tr>
+            <tr>
+                <td scope="row">Help</td>
+                <td>String</td>
+                <td>This parameter specifies the help information for the command. It will be displayed when the <code>?</code> symbol is sent as an argument to the command.</td>
+            </tr>
+            <tr>
+                <td scope="row">Execution file path</td>
+                <td>String</td>
+                <td>
+                    This parameter defines the file to be executed when the command is triggered. Since all plugin files are extracted to <code>%infrabot_installation_directory%/plugins/%plugin_guid_number%</code> this directory serves as the root folder for the plugin. The path to the executable file must be specified relative to this directory.
+                    <br><br>
+                    Example:
+                    <br>
+                    <code>RestartServer.ps1</code>
+                    <br><br>
+                    Example 2:
+                    <br>
+                    <code>scripts\RestartServer.ps1</code>
+                    <br><br>
+                    Example 3:
+                    <br>
+                    <code>bin\nodejs.exe</code>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Execution timeout</td>
+                <td>Integer</td>
+                <td>This parameter defines the execution timeout, specifying the maximum duration a command can run before it is forcibly terminated.</td>
+            </tr>
+            <tr>
+                <td scope="row">Default error message</td>
+                <td>Integer</td>
+                <td>This parameter specifies the default error message that will be displayed if the script execution fails or if the timeout is exceeded.</td>
+            </tr>
+            <tr>
+                <td scope="row">Type</td>
+                <td>Type</td>
+                <td>
+                    This parameter defines execution type. Possible values:
+                    <ul>
+                        <li><b>AppExecutable</b> - Run executable file.</li>
+                        <li><b>PSScript</b> - Run PowerShell script.</li>
+                        <li><b>CSharpScript</b> - Run CSharp <code>cs</code> or <code>csx</code> script file. Read more <a href="https://github.com/dotnet/roslyn/blob/main/docs/wiki/Scripting-API-Samples.md" target="_blank">here</a>.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Defined arguments</td>
+                <td>Argument</td>
+                <td>Specifying this parameter is not mandatory, but it is highly recommended if the script requires a fixed number of arguments. When arguments are defined here, before execution, Infrabot will validate the number of provided arguments against the expected ones. If the number of arguments does not match, Infrabot prevents command execution and displays information about the correct command format the user should follow.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Defined arguments</h3>
+    <p>This is the window where a preset list of command arguments can be defined.</p>
+    <p>As mentioned earlier, specifying arguments is not mandatory, but it is highly recommended as it helps to:</p>
+    <ul>
+        <li>Prevent human errors by ensuring the correct arguments are used.</li>
+        <li>Guide users by displaying the expected arguments for proper command execution.</li>
+    </ul>
+    <img class="img-fluid" src="../img/documentation/contents/3.png">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Parameter</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">Name</td>
+                <td>String</td>
+                <td>This parameter defines the argument name. It is not used in the execution logic, so you can specify any name here. Its primary purpose is to be displayed in help information, providing guidance to the user about the expected argument.</td>
+            </tr>
+            <tr>
+                <td scope="row">Value</td>
+                <td>String</td>
+                <td>This parameter defines an example value for the argument. It is not used in the execution logic, so you can specify any value. Its purpose is solely to provide users with a reference example when viewing help information.</td>
+            </tr>
+            <tr>
+                <td scope="row">Description</td>
+                <td>String</td>
+                <td>This parameter defines the description of the argument, which will be displayed to the user as part of the help information, providing guidance on its purpose and usage.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Settings</h3>
+    <p>This is the window where preset settings for the plugin can be defined.</p>
+    <img class="img-fluid" src="../img/documentation/contents/4.png">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Parameter</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">Key</td>
+                <td>String</td>
+                <td>This parameter defines the setting key name, which serves as the identifier for the specific configuration setting within the plugin.</td>
+            </tr>
+            <tr>
+                <td scope="row">Value</td>
+                <td>String</td>
+                <td>This parameter defines the setting key value, which represents the assigned value for the corresponding setting key name within the plugin's configuration.</td>
+            </tr>
+            <tr>
+                <td scope="row">Setting type</td>
+                <td>Type</td>
+                <td>
+                    This parameter defines setting type. Possible values:
+                    <ul>
+                        <li><b>EnvironmentVariable</b> - Defines a custom environment variable that will be accessible from the script or executable during execution. <br>For PowerShell write: <code>$Env:YOUR_VARIABLE_NAME</code>, where <i>YOUR_VARIABLE_NAME</i> is the name of the variable</li>
+                        <li><b>Argument</b> - Defines an argument with a value that will be passed to the script or executable during execution. You need to implement logic within the script to read and process the specified argument.</li>
+                        <li><b>ConfigFile</b> - Defines a setting that will be exported to the <code>tempConfigFile.json</code> file and placed in the <code>%infrabot_installation_directory%/plugins/%plugin_guid_number%</code> directory. You need to implement logic within the script to read and process this file.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Description</td>
+                <td>String</td>
+                <td>This parameter specifies the description of the setting, providing details about its purpose and usage.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Files</h3>
+    <p>When a new plugin is created, a temporary folder is generated at <code>%temp%\%plugin_guid%</code>, where <code>%plugin_guid%</code> represents the plugin’s unique identifier. To add files to the plugin, simply copy all necessary files into this directory. To quickly access this folder, press the "Open Folder" button. When the plugin is saved, all data from the temporary folder will be included in the plugin.</p>
+    <p>When an existing plugin is opened for modification, a temporary folder is created with a full extraction of all plugin data. To add or remove files, press the "Open Folder" button in the Files tab. Upon saving the plugin, all data from the temporary folder will be included. Note: The original directory structure will be preserved.</p>
+    <img class="img-fluid" src="../img/documentation/contents/5.png">
+</article>

@@ -1,0 +1,77 @@
+﻿@model Infrabot.WebUI.Models.PermissionAssignmentViewModel
+@{
+    ViewData["Title"] = "Edit Permission Assignment";
+}
+
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2.css" />
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2-bootstrap-5-theme.min.css" />
+<script src="~/lib/select2/dist/js/select2.min.js"></script>
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Edit</p>
+        <p class="blog-post-meta mt-1 text-muted">Edit a permission assignment</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <input type="hidden" asp-for="Id">
+
+                <div class="col-sm-8">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
+                    <div class="invalid-feedback">
+                        Please provide the name of the permission assignment.
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <label for="users" class="form-label">Plugins</label>
+                    <select asp-for="SelectedPluginIds" class="form-select select2" id="plugins" multiple="multiple" asp-items="Model.AvailablePlugins"></select>
+                    <div class="invalid-feedback">
+                        Please provide plugins.
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <label for="users" class="form-label">Telegram Users</label>
+                    <select asp-for="SelectedTelegramUserIds" class="form-select select2" id="users" multiple="multiple" asp-items="Model.AvailableTelegramUsers"></select>
+                    <div class="invalid-feedback">
+                        Please provide users.
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <label for="users" class="form-label">Groups</label>
+                    <select asp-for="SelectedGroupIds" class="form-select select2" id="groups" multiple="multiple" asp-items="Model.AvailableGroups"></select>
+                    <div class="invalid-feedback">
+                        Please provide groups.
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" asp-for="Id" />
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Save</button>
+            <a class="btn btn-outline-orange" href="~/permissionassignment">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.select2').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+        });
+    });
+</script>

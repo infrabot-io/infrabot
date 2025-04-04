@@ -1,0 +1,21 @@
+﻿@model Infrabot.Common.Models.Group
+@{
+    ViewData["Title"] = "Delete a group";
+}
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Delete</p>
+        <p class="blog-post-meta mt-1 text-muted">Delete group. Performed actions are not reversable</p>
+    </div>
+</div>
+
+<p>Are you sure that you want to delete user <code class="fs-5">@Model.Name</code> ?</p>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" class="btn btn-orange" value="Delete" />
+    <a class="btn btn-outline-orange" href="~/groups">Cancel</a>
+</form>

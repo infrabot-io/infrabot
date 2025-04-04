@@ -1,0 +1,68 @@
+﻿@model List<Infrabot.Common.Models.Group>
+@{
+    ViewData["Title"] = "Groups";
+}
+
+<div class="row mb-2 mt-4">
+    <div class="col">
+        <p class="fs-3 mb-0 pt-0">Groups</p>
+    </div>
+    <div class="col d-flex flex-row-reverse">
+        <a asp-action="Create">
+            <button type="button" class="btn btn-orange pe-4 ps-4">
+                <img src="~/img/add.svg">
+                Add
+            </button>
+        </a>
+    </div>
+</div>
+
+<table class="table mt-4 mb-4">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td class="main-content-inner-table-content-col-id" scope="row">@group.Name</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">
+                    <a class="me-2 text-decoration-none" asp-action="Edit" asp-route-id="@group.Id">
+                        <img class="modification-buttons" src="~/img/edit.svg" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit group">
+                    </a>
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@group.Id">
+                        <img class="modification-buttons" src="~/img/delete.svg" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Delete group">
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.Pages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center pagination-items">
+
+
+            @for (int i = 0; i < ViewBag.Pages; i++)
+            {
+                @if (i == ViewBag.Page)
+                {
+                    <li class="page-item active">
+                        <a class="page-link border-secondary bg-secondary text-white" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link border-light bg-light text-dark" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+}
