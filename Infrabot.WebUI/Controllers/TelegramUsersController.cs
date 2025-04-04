@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -39,7 +40,7 @@ namespace Infrabot.WebUI.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            ViewBag.UserAlreadyExists = TempData["TelegramUserAlreadyExists"];
+            ViewBag.UserAlreadyExists = TempData[TempDataKeys.TelegramUserAlreadyExists];
             return View();
         }
 
@@ -52,7 +53,7 @@ namespace Infrabot.WebUI.Controllers
 
             if (_telegramUser != null)
             {
-                TempData["TelegramUserAlreadyExists"] = true;
+                TempData[TempDataKeys.TelegramUserAlreadyExists] = true;
                 return RedirectToAction("Create", telegramUser);
             }
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -40,9 +41,9 @@ namespace Infrabot.WebUI.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            ViewBag.ConfigurationError = TempData["ConfigurationError"];
-            ViewBag.UserAlreadyExists = TempData["UserAlreadyExists"];
-            ViewBag.PasswordDoesNotMeetComplexity = TempData["PasswordDoesNotMeetComplexity"];
+            ViewBag.ConfigurationError = TempData[TempDataKeys.ConfigurationError];
+            ViewBag.UserAlreadyExists = TempData[TempDataKeys.UserAlreadyExists];
+            ViewBag.PasswordDoesNotMeetComplexity = TempData[TempDataKeys.PasswordDoesNotMeetComplexity];
             return View();
         }
 
@@ -56,13 +57,13 @@ namespace Infrabot.WebUI.Controllers
 
             if (configuration is null)
             {
-                TempData["SystemConfigurationError"] = true;
+                TempData[TempDataKeys.ConfigurationError] = true;
                 return RedirectToAction("Create", user);
             }
 
             if (_user is not null)
             {
-                TempData["UserAlreadyExists"] = true;
+                TempData[TempDataKeys.UserAlreadyExists] = true;
                 return RedirectToAction("Create", user);
             }
 
@@ -73,7 +74,7 @@ namespace Infrabot.WebUI.Controllers
 
             if (!PasswordPolicyChecker.CheckPasswordForPolicy(user.Password, configuration.PasswordPolicyMinLength, configuration.PasswordPolicyContainSpecialCharacter, configuration.PasswordPolicyContainNumber, configuration.PasswordPolicyContainLowerCase, configuration.PasswordPolicyContainUpperCase))
             {
-                TempData["PasswordDoesNotMeetComplexity"] = true;
+                TempData[TempDataKeys.PasswordDoesNotMeetComplexity] = true;
                 return RedirectToAction("Create", user);
             }
 

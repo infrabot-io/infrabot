@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Infrabot.Common.Contexts;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -45,7 +46,7 @@ namespace Infrabot.WebUI.Controllers
                 AvailableTelegramUsers = await _context.TelegramUsers.Select(p => new SelectListItem{ Value = p.Id.ToString(), Text = p.Name + " " + p.Surname}).ToListAsync()
             };
 
-            ViewBag.GroupAlreadyExists = TempData["GroupAlreadyExists"];
+            ViewBag.GroupAlreadyExists = TempData[TempDataKeys.GroupAlreadyExists];
             return View(groupViewModel);
         }
 
@@ -58,7 +59,7 @@ namespace Infrabot.WebUI.Controllers
 
             if (existingGroup != null)
             {
-                TempData["GroupAlreadyExists"] = true;
+                TempData[TempDataKeys.GroupAlreadyExists] = true;
                 return RedirectToAction("Create", existingGroup);
             }
 

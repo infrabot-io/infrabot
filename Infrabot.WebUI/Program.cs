@@ -1,4 +1,6 @@
 using Infrabot.Common.Contexts;
+using Infrabot.WebUI.Constants;
+using Infrabot.WebUI.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -8,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 /*****************************************/
 /* Add services to the container         */
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<InfrabotContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), b=> b.MigrationsAssembly("Infrabot.WebUI")));
+builder.Services.AddDbContext<InfrabotContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString(ConfigKeys.DefaultConnection), b=> b.MigrationsAssembly("Infrabot.WebUI")));
 
 /*****************************************/
 /* Add authentication mechanism          */
@@ -26,7 +28,7 @@ builder.Services.ConfigureApplicationCookie(options => { options.ExpireTimeSpan 
 var configuration = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json")
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable(ConfigKeys.EnvironmentVariable) ?? "Production"}.json", true)
         .Build();
 
 Log.Logger = new LoggerConfiguration()
@@ -39,6 +41,10 @@ builder.Services.AddSerilog();
 //builder.Logging.AddEventLog();
 
 /*****************************************/
+/* Register Services                     */
+builder.Services.AddInfrabotControllerServices();
+
+/*****************************************/
 /* Build application                     */
 var app = builder.Build();
 
@@ -46,7 +52,7 @@ var app = builder.Build();
 /* Configure the HTTP request pipeline   */
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler(RoutePaths.Error);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -66,7 +72,7 @@ app.Use(async (context, next) =>
     await next();
     if (context.Response.StatusCode == 404)
     {
-        context.Request.Path = "/Home/Error404";
+        context.Request.Path = RoutePaths.Error404;
         await next();
     }
 });
@@ -80,7 +86,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: RoutePaths.DefaultRoute);
 
 /*****************************************/
 /* Run web application                   */

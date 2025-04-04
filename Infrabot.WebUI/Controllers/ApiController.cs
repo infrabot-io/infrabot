@@ -1,9 +1,7 @@
-﻿using infrabot.Controllers;
-using Infrabot.Common.Contexts;
-using Infrabot.Common.Domain;
+﻿using Infrabot.Common.Domain;
+using Infrabot.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Infrabot.WebUI.Controllers
@@ -14,31 +12,32 @@ namespace Infrabot.WebUI.Controllers
     public class ApiController : ControllerBase
     {
         private readonly ILogger<ApiController> _logger;
-        private readonly InfrabotContext _context;
+        private readonly IApiService _apiService;
 
-        public ApiController(ILogger<ApiController> logger, InfrabotContext context)
+        public ApiController(ILogger<ApiController> logger, IApiService apiService)
         {
             _logger = logger;
-            _context = context;
+            _apiService = apiService;
         }
 
         [HttpGet("getresourcemetrics")]
-        public async Task<string> GetResourceMetrics()
+        public async Task<ActionResult> GetResourceMetrics()
         {
-            var metrics = await _context.HealthChecks.OrderByDescending(x => x.CreatedDate).Take(7).ToListAsync();
-            return JsonConvert.SerializeObject(metrics);
+            var metrics = await _apiService.GetResourceMetrics();
+            var data = JsonConvert.SerializeObject(metrics);
+            return Ok(data);
         }
 
         [HttpGet("getstats")]
-        public async Task<string> GetStats()
+        public async Task<ActionResult> GetStats()
         {
             StatsItem statsItem = new StatsItem();
 
-            statsItem.Plugins = await _context.Plugins.CountAsync();
-            statsItem.TelegramUsers = await _context.TelegramUsers.CountAsync();
-            statsItem.Users = await _context.Users.CountAsync();
+            statsItem.Plugins = await _apiService.GetPluginsCount();
+            statsItem.TelegramUsers = await _apiService.GetTelegramUsersCount();
+            statsItem.Users = await _apiService.GetUsersCount();
 
-            var events = await _context.EventLogs.OrderByDescending(x => x.CreatedDate).Take(15).ToListAsync();
+            var events = await _apiService.GetStats();
             foreach (var _event in events)
             {
                 statsItem.StatsEvents.Add(
@@ -51,24 +50,16 @@ namespace Infrabot.WebUI.Controllers
                 );
             }
 
-            return JsonConvert.SerializeObject(statsItem);
+            var data = JsonConvert.SerializeObject(statsItem);
+
+            return Ok(data);
         }
 
         [HttpGet("getmessagestats")]
-        public async Task<string> GetMessageStats()
+        public async Task<ActionResult> GetMessageStats()
         {
-            var now = DateTime.Now;
-            var startOfDay = DateTime.UtcNow.Date;
-
-            var messageCounts = await _context.TelegramMessages
-                .Where(m => m.CreatedDate >= startOfDay) // Ensure this is in the correct time zone
-                .GroupBy(m => (m.CreatedDate.Hour / 4) * 4) // Groups messages into 4-hour intervals
-                .Select(g => new
-                {
-                    Hour = g.Key,
-                    Count = g.Count()
-                })
-                .ToListAsync();
+            // Get message counts
+            var messageCounts = await _apiService.GetMessageStats();
 
             // Ensure all time slots exist (fill missing hours with 0 messages)
             var allHours = new List<int> { 0, 4, 8, 12, 16, 20 };
@@ -78,22 +69,18 @@ namespace Infrabot.WebUI.Controllers
                 Count = messageCounts.FirstOrDefault(m => m.Hour == hour)?.Count ?? 0
             });
 
-            return JsonConvert.SerializeObject(messageData);
+            var data = JsonConvert.SerializeObject(messageData);
+
+            return Ok(data);
         }
 
         [HttpGet("getpluginstats")]
-        public async Task<string> GetPluginStats()
+        public async Task<ActionResult> GetPluginStats()
         {
-            var pluginCounts = await _context.Plugins
-                .GroupBy(p => p.Name)
-                .Select(g => new
-                {
-                    PluginType = g.Key.ToString(), // Convert enum to string
-                    Count = g.Count()
-                })
-                .ToListAsync();
+            var pluginCounts = await _apiService.GetPluginStats();
+            var data = JsonConvert.SerializeObject(pluginCounts);
 
-            return JsonConvert.SerializeObject(pluginCounts);
+            return Ok(data);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Infrabot.Common.Contexts;
 using Newtonsoft.Json;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -32,7 +33,7 @@ namespace Infrabot.WebUI.Controllers
                 return NotFound();
             }
 
-            ViewBag.ConfigurationSaved = TempData["ConfigurationSaved"];
+            ViewBag.ConfigurationSaved = TempData[TempDataKeys.ConfigurationSaved];
 
             return View(configuration);
         }
@@ -52,7 +53,7 @@ namespace Infrabot.WebUI.Controllers
 
                 _logger.LogInformation("Configuration saved: " + JsonConvert.SerializeObject(configuration));
 
-                TempData["ConfigurationSaved"] = true;
+                TempData[TempDataKeys.ConfigurationSaved] = true;
 
                 return RedirectToAction("Index");
             }

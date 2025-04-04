@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Infrabot.Common.Enums;
 using Infrabot.WebUI.Utils;
 using Infrabot.Common.Contexts;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -24,11 +25,11 @@ namespace Infrabot.WebUI.Controllers
 
         public IActionResult LogIn()
         {
-            ViewBag.LoginOrPasswordIncorrect = TempData["LoginOrPasswordIncorrect"];
-            ViewBag.LoginDenied = TempData["LoginDenied"];
-            ViewBag.LoginDataIsNotValid = TempData["LoginDataIsNotValid"];
-            ViewBag.ADAuthFailed = TempData["ADAuthFailed"];
-            ViewBag.LoginDeniedForApiUser = TempData["LoginDeniedForApiUser"];
+            ViewBag.LoginOrPasswordIncorrect = TempData[TempDataKeys.LoginOrPasswordIncorrect];
+            ViewBag.LoginDenied = TempData[TempDataKeys.LoginDenied];
+            ViewBag.LoginDataIsNotValid = TempData[TempDataKeys.LoginDataIsNotValid];
+            ViewBag.ADAuthFailed = TempData[TempDataKeys.ADAuthFailed];
+            ViewBag.LoginDeniedForApiUser = TempData[TempDataKeys.LoginDeniedForApiUser];
             return View();
         }
 
@@ -46,14 +47,14 @@ namespace Infrabot.WebUI.Controllers
                 if (_user == null)
                 {
                     _logger.LogInformation("User was not found. Only login check.");
-                    TempData["LoginDataIsNotValid"] = true;
+                    TempData[TempDataKeys.LoginDataIsNotValid] = true;
                     return RedirectToAction("LogIn");
                 }
 
                 if (_user.Enabled == false)
                 {
                     _logger.LogInformation("User is disabled");
-                    TempData["LoginDenied"] = true;
+                    TempData[TempDataKeys.LoginDenied] = true;
                     return RedirectToAction("LogIn");
                 }
 
@@ -65,7 +66,7 @@ namespace Infrabot.WebUI.Controllers
                     if (isAuthenticated == false)
                     {
                         _logger.LogInformation("AD authentication failed");
-                        TempData["ADAuthFailed"] = true;
+                        TempData[TempDataKeys.ADAuthFailed] = true;
                         return RedirectToAction("LogIn");
                     }
                 }
@@ -77,15 +78,15 @@ namespace Infrabot.WebUI.Controllers
                 if (_user == null)
                 {
                     _logger.LogInformation("User was not found. Password check");
-                    TempData["LoginOrPasswordIncorrect"] = true;
+                    TempData[TempDataKeys.LoginOrPasswordIncorrect] = true;
                     return RedirectToAction("LogIn");
                 }
 
                 var claims = new List<Claim>
                 {
-                    new Claim ("UserId", _user.Id.ToString()),
+                    new Claim (CustomClaimTypes.UserId, _user.Id.ToString()),
                     new Claim (ClaimTypes.Name, _user.Login),
-                    new Claim ("Login", _user.Login)
+                    new Claim (CustomClaimTypes.Login, _user.Login)
                 };
 
                 _context.Entry(_user).State = EntityState.Modified;
@@ -110,7 +111,7 @@ namespace Infrabot.WebUI.Controllers
             }
             else
             {
-                TempData["LoginDataIsNotValid"] = true;
+                TempData[TempDataKeys.LoginDataIsNotValid] = true;
                 return RedirectToAction("LogIn");
             }
         }
@@ -138,10 +139,10 @@ namespace Infrabot.WebUI.Controllers
             if (_user == null) return RedirectToAction("LogOut");
             if (_user.IsADIntegrated) return RedirectToAction("Index", "Home");
 
-            ViewBag.OldPasswordIsIncorrect = TempData["OldPasswordIsIncorrect"];
-            ViewBag.NewPasswordNotEqualToRepeat = TempData["NewPasswordNotEqualToRepeat"];
-            ViewBag.DoesNotMeetComplexityRequirements = TempData["DoesNotMeetComplexityRequirements"];
-            ViewBag.SucessfullyChanged = TempData["SucessfullyChanged"];
+            ViewBag.OldPasswordIsIncorrect = TempData[TempDataKeys.OldPasswordIsIncorrect];
+            ViewBag.NewPasswordNotEqualToRepeat = TempData[TempDataKeys.NewPasswordNotEqualToRepeat];
+            ViewBag.DoesNotMeetComplexityRequirements = TempData[TempDataKeys.DoesNotMeetComplexityRequirements];
+            ViewBag.SucessfullyChanged = TempData[TempDataKeys.SucessfullyChanged];
 
             return View("ChangePassword", _user);
         }
@@ -189,19 +190,19 @@ namespace Infrabot.WebUI.Controllers
 
                 if (_user.Password != OldPassword)
                 {
-                    TempData["OldPasswordIsIncorrect"] = true;
+                    TempData[TempDataKeys.OldPasswordIsIncorrect] = true;
                     return RedirectToAction("ChangePassword");
                 }
 
                 if (NewPassword != RepeatPassword)
                 {
-                    TempData["NewPasswordNotEqualToRepeat"] = true;
+                    TempData[TempDataKeys.NewPasswordNotEqualToRepeat] = true;
                     return RedirectToAction("ChangePassword");
                 }
 
                 if (!PasswordPolicyChecker.CheckPasswordForPolicy(NewPassword, configuration.PasswordPolicyMinLength, configuration.PasswordPolicyContainSpecialCharacter, configuration.PasswordPolicyContainNumber, configuration.PasswordPolicyContainLowerCase, configuration.PasswordPolicyContainUpperCase))
                 {
-                    TempData["DoesNotMeetComplexityRequirements"] = true;
+                    TempData[TempDataKeys.DoesNotMeetComplexityRequirements] = true;
                     return RedirectToAction("ChangePassword");
                 }
 
@@ -226,7 +227,7 @@ namespace Infrabot.WebUI.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            TempData["SucessfullyChanged"] = true;
+            TempData[TempDataKeys.SucessfullyChanged] = true;
 
             return RedirectToAction("ChangePassword");
         }
