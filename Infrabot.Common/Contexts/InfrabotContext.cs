@@ -114,7 +114,7 @@ namespace Infrabot.Common.Contexts
                     ADPassword = "A123456a",
                     ADServer = "example.lan",
                     ADDomainName = "example.lan",
-                    TelegramBotToken = "1988239795:AAEgiZPohgsv6Tvmi1qhjIKbcKYnehbRjMw",
+                    TelegramBotToken = "asd:asd",
                     TelegramEnableEmergency = true,
                     TelegramEnableShowMyId = true,
                     TelegramPowerShellPath = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
