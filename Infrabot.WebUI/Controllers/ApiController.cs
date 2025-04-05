@@ -2,7 +2,6 @@
 using Infrabot.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -24,8 +23,7 @@ namespace Infrabot.WebUI.Controllers
         public async Task<ActionResult> GetResourceMetrics()
         {
             var metrics = await _apiService.GetResourceMetrics();
-            var data = JsonConvert.SerializeObject(metrics);
-            return Ok(data);
+            return Ok(metrics);
         }
 
         [HttpGet("getstats")]
@@ -50,9 +48,7 @@ namespace Infrabot.WebUI.Controllers
                 );
             }
 
-            var data = JsonConvert.SerializeObject(statsItem);
-
-            return Ok(data);
+            return Ok(statsItem);
         }
 
         [HttpGet("getmessagestats")]
@@ -69,18 +65,14 @@ namespace Infrabot.WebUI.Controllers
                 Count = messageCounts.FirstOrDefault(m => m.Hour == hour)?.Count ?? 0
             });
 
-            var data = JsonConvert.SerializeObject(messageData);
-
-            return Ok(data);
+            return Ok(messageData);
         }
 
         [HttpGet("getpluginstats")]
         public async Task<ActionResult> GetPluginStats()
         {
             var pluginCounts = await _apiService.GetPluginStats();
-            var data = JsonConvert.SerializeObject(pluginCounts);
-
-            return Ok(data);
+            return Ok(pluginCounts);
         }
     }
 }

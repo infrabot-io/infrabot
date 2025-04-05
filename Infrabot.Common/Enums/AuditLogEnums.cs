@@ -7,7 +7,10 @@
         Delete = 2,
         Update = 3,
         Migrate = 4,
-        Clean = 5
+        Clean = 5,
+        LogOut = 6,
+        LogIn = 7,
+        ChangePassword = 8
     }
 
     public enum AuditLogItem

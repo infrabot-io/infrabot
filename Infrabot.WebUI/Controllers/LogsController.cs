@@ -6,8 +6,8 @@ namespace Infrabot.WebUI.Controllers
 {
     public class LogsController : Controller
     {
-        //private static readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application{DateTime.Now.ToString("yyyyMMdd")}.log");
-        private readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application.log");
+        private static readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application{DateTime.Now.ToString("yyyyMMdd")}.log");
+        //private readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application.log");
         private readonly InfrabotContext _context;
         private readonly ILogger<LogsController> _logger;
 

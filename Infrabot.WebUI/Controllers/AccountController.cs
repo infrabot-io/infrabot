@@ -107,6 +107,8 @@ namespace Infrabot.WebUI.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {_user.Login} logged in" });
+
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -118,6 +120,7 @@ namespace Infrabot.WebUI.Controllers
 
         public async Task<IActionResult> LogOut()
         {
+            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogOut, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} logged out" });
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("LogIn", "Account");
         }
@@ -143,7 +146,7 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.NewPasswordNotEqualToRepeat = TempData[TempDataKeys.NewPasswordNotEqualToRepeat];
             ViewBag.DoesNotMeetComplexityRequirements = TempData[TempDataKeys.DoesNotMeetComplexityRequirements];
             ViewBag.SucessfullyChanged = TempData[TempDataKeys.SucessfullyChanged];
-
+            
             return View("ChangePassword", _user);
         }
 
@@ -222,7 +225,7 @@ namespace Infrabot.WebUI.Controllers
                 user.Password = NewPassword;
                 await _context.SaveChangesAsync();
 
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {_user.Login} changed password" });
+                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {_user.Login} changed password" });
 
                 await _context.SaveChangesAsync();
             }

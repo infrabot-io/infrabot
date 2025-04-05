@@ -39,7 +39,7 @@ namespace Infrabot.WebUI.Services
         public async Task<IEnumerable<MessageStat>> GetMessageStats()
         {
             var now = DateTime.Now;
-            var startOfDay = DateTime.UtcNow.Date;
+            var startOfDay = DateTime.Now.Date;
 
             var messageCounts = await _context.TelegramMessages
                 .Where(m => m.CreatedDate >= startOfDay) // Ensure this is in the correct time zone
@@ -60,7 +60,7 @@ namespace Infrabot.WebUI.Services
                 .GroupBy(p => p.Name)
                 .Select(g => new PluginStat
                 {
-                    PluginType = g.Key.ToString(), // Convert enum to string
+                    PluginType = g.Key.ToString(),
                     Count = g.Count()
                 })
                 .ToListAsync();

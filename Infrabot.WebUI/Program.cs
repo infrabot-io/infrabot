@@ -1,47 +1,16 @@
 using Infrabot.Common.Contexts;
 using Infrabot.WebUI.Constants;
 using Infrabot.WebUI.Extensions;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 /*****************************************/
-/* Add services to the container         */
+/* Add services                          */
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<InfrabotContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString(ConfigKeys.DefaultConnection), b=> b.MigrationsAssembly("Infrabot.WebUI")));
-
-/*****************************************/
-/* Add authentication mechanism          */
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-{
-    options.ExpireTimeSpan = TimeSpan.FromHours(10);
-    options.SlidingExpiration = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.HttpOnly = true;
-});
-builder.Services.ConfigureApplicationCookie(options => { options.ExpireTimeSpan = TimeSpan.FromMinutes(30); });
-
-/*****************************************/
-/* Enable logs to appear in events       */
-var configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json")
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable(ConfigKeys.EnvironmentVariable) ?? "Production"}.json", true)
-        .Build();
-
-Log.Logger = new LoggerConfiguration()
-        .ReadFrom.Configuration(configuration)
-        .CreateLogger();
-
-builder.Services.AddSerilog();
-//builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-//builder.Logging.AddConsole();
-//builder.Logging.AddEventLog();
-
-/*****************************************/
-/* Register Services                     */
+builder.Services.AddInfrabotAuthentication();
+builder.Services.AddInfrabotLogging();
 builder.Services.AddInfrabotControllerServices();
 
 /*****************************************/
