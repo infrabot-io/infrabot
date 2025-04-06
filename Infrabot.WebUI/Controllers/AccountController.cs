@@ -9,20 +9,133 @@ using Infrabot.Common.Enums;
 using Infrabot.WebUI.Utils;
 using Infrabot.Common.Contexts;
 using Infrabot.WebUI.Constants;
+using Microsoft.AspNetCore.Identity;
+using Infrabot.WebUI.Models;
 
 namespace Infrabot.WebUI.Controllers
 {
     public class AccountController : Controller
     {
         private readonly InfrabotContext _context;
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<AccountController> _logger; 
+        private SignInManager<User> _signManager;
+        private UserManager<User> _userManager;
 
-        public AccountController(ILogger<AccountController> logger, InfrabotContext context)
+        public AccountController(ILogger<AccountController> logger, InfrabotContext context, UserManager<User> userManager, SignInManager<User> signManager)
         {
             _logger = logger;
             _context = context;
+            _signManager = signManager;
+            _userManager = userManager;
         }
 
+        [HttpGet]
+        public IActionResult LogIn()
+        {
+            //var user = new User() { Email = "admin@admin.com", UserName = "admin" };
+            //_userManager.CreateAsync(user, "password");
+
+            var model = new LoginViewModel { };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LogIn(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _signManager.UserManager.FindByNameAsync(model.UserName);
+
+                if (user == null)
+                {
+                    model.LoginOrPasswordIncorrect = true;
+                    return View(model);
+                }
+
+                if (user.Enabled == false)
+                {
+                    model.LoginDenied = true;
+                    return View(model);
+                }
+
+                var result = await _signManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
+
+                if (result.Succeeded)
+                {
+                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} logged in" });
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} log in failed" });
+                    model.LoginOrPasswordIncorrect = true;
+                }
+            }
+
+            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Invalid login attempt" });
+
+            ModelState.AddModelError("", "Invalid login attempt");
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOut()
+        {
+            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogOut, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} logged out" });
+            await _signManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            var model = new ChangePasswordViewModel { };
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if(model.NewPassword != model.NewPasswordRepeat)
+                {
+                    model.NewPasswordNotEqualToRepeat = true;
+                    return View(model);
+                }
+
+                var user = await _userManager.GetUserAsync(this.User);
+
+                if (user == null)
+                {
+                    return View(model);
+                }
+
+                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} changed password" });
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} change password failed" });
+                    //return RedirectToAction("LogOut", "Account");
+                }
+            }
+
+            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Invalid change password attempt" });
+
+            ModelState.AddModelError("", "Invalid change password attempt");
+            return View(model);
+        }
+
+        /*
         public IActionResult LogIn()
         {
             ViewBag.LoginOrPasswordIncorrect = TempData[TempDataKeys.LoginOrPasswordIncorrect];
@@ -116,6 +229,8 @@ namespace Infrabot.WebUI.Controllers
                 TempData[TempDataKeys.LoginDataIsNotValid] = true;
                 return RedirectToAction("LogIn");
             }
+            
+            return RedirectToAction("LogIn");
         }
 
         public async Task<IActionResult> LogOut()
@@ -147,7 +262,7 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.DoesNotMeetComplexityRequirements = TempData[TempDataKeys.DoesNotMeetComplexityRequirements];
             ViewBag.SucessfullyChanged = TempData[TempDataKeys.SucessfullyChanged];
             
-            return View("ChangePassword", _user);
+            return View("ChangePassword", _user); 
         }
 
         [Authorize]
@@ -231,8 +346,9 @@ namespace Infrabot.WebUI.Controllers
             }
 
             TempData[TempDataKeys.SucessfullyChanged] = true;
-
+            
             return RedirectToAction("ChangePassword");
         }
+    */
     }
 }

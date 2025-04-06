@@ -12,7 +12,6 @@ namespace Infrabot.WebUI.Services
         Task<IEnumerable<PluginStat>> GetPluginStats();
         Task<int> GetPluginsCount();
         Task<int> GetTelegramUsersCount();
-        Task<int> GetUsersCount();
     }
 
     public class ApiService : IApiService
@@ -76,14 +75,8 @@ namespace Infrabot.WebUI.Services
 
         public async Task<int> GetTelegramUsersCount()
         {
-            int pluginCounts = await _context.TelegramUsers.CountAsync();
-            return pluginCounts;
-        }
-
-        public async Task<int> GetUsersCount()
-        {
-            int pluginCounts = await _context.Users.CountAsync();
-            return pluginCounts;
+            int telegramUsersCount = await _context.TelegramUsers.CountAsync();
+            return telegramUsersCount;
         }
     }
 }

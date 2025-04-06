@@ -12,11 +12,13 @@ namespace Infrabot.WebUI.Controllers
     {
         private readonly ILogger<ApiController> _logger;
         private readonly IApiService _apiService;
+        private readonly IUserService _userService;
 
-        public ApiController(ILogger<ApiController> logger, IApiService apiService)
+        public ApiController(ILogger<ApiController> logger, IApiService apiService, IUserService userService)
         {
             _logger = logger;
             _apiService = apiService;
+            _userService = userService;
         }
 
         [HttpGet("getresourcemetrics")]
@@ -33,7 +35,7 @@ namespace Infrabot.WebUI.Controllers
 
             statsItem.Plugins = await _apiService.GetPluginsCount();
             statsItem.TelegramUsers = await _apiService.GetTelegramUsersCount();
-            statsItem.Users = await _apiService.GetUsersCount();
+            statsItem.Users = await _userService.GetUsersCount();
 
             var events = await _apiService.GetStats();
             foreach (var _event in events)

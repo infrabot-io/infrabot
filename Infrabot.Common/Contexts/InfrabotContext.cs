@@ -1,4 +1,6 @@
 ﻿using Infrabot.Common.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -8,7 +10,7 @@ using System.Text;
 
 namespace Infrabot.Common.Contexts
 {
-    public class InfrabotContext : DbContext
+    public class InfrabotContext : IdentityDbContext<User>
     {
 
         private readonly IEncryptionProvider encryptionProvider;
@@ -76,11 +78,11 @@ namespace Infrabot.Common.Contexts
                 .WithMany() // or use .WithMany(g => g.PermissionAssignments) if added on Group.
                 .UsingEntity(j => j.ToTable("PermissionAssignmentGroups"));
 
-
+            /*
             modelBuilder.Entity<User>().HasData(
                  new User
                  {
-                     Id = 1,
+                     Id = Guid.NewGuid().ToString(),
                      Name = "admin",
                      Surname = "aa",
                      Login = "admin",
@@ -94,6 +96,7 @@ namespace Infrabot.Common.Contexts
                      Enabled = true
                  }
             );
+            */
 
             modelBuilder.Entity<TelegramUser>().HasData(
                  new TelegramUser
@@ -143,7 +146,7 @@ namespace Infrabot.Common.Contexts
         }
 
         public DbSet<TelegramUser> TelegramUsers { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<EventLog> EventLogs { get; set; }
         public DbSet<Configuration> Configurations { get; set; }

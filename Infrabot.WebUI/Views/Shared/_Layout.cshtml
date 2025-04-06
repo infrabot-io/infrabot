@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,14 +23,19 @@
         <div class="navbar navbar-expand">
             <div class="btn-group text-light">
                 <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                    @Context.User.Identity.Name
+                    @User.Identity.Name
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start dropdown-menu-dark">
                     <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">Change password</a></li>
                 </ul>
             </div>
 
+            <form asp-controller="Account" asp-action="LogOut" method="post" class="nav-link navbar-item px-3 text-light" style="width: 80px;">
+                <button type="submit" class="btn btn-link nav-link">Logout</button>
+            </form>
+            <!--
             <a class="nav-link navbar-item px-3 text-light" asp-controller="Account" asp-action="LogOut" style="width: 80px;">Log out</a>
+            -->
         </div>
     </header>
 

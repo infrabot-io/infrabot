@@ -1,4 +1,5 @@
-﻿@model Infrabot.Common.Models.User
+﻿@using Infrabot.WebUI.Models
+@model LoginViewModel
 @{
     Layout = null;
 }
@@ -23,35 +24,33 @@
     <div class="login-card">
         <div class="logo"></div>
         <div class="login-title">InfraBot</div>
-        <form asp-action ="LogIn" method="post">
+        <form asp-action="LogIn" method="post" asp-controller="Account">
             <div class="mb-3">
                 <label for="login" class="form-label">Login</label>
-                <input type="text" class="form-control" id="login" placeholder="Enter your login" asp-for="Login" required>
+                <input type="text" asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Enter your login" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter your password" asp-for="Password" required>
+                <input asp-for="Password" class="form-control" autocomplete="password" aria-required="true" placeholder="Enter your password" required>
+            </div>
+            <div class="mb-3">
+                <input asp-for="RememberMe" class="form-check-input">
+                <label asp-for="RememberMe" class="form-label">Remember me</label>
             </div>
 
-            @if (ViewBag.LoginOrPasswordIncorrect != null)
+            @if (Model.LoginOrPasswordIncorrect == true)
             {
                 <div class="alert alert-danger" role="alert">
                     Login or password is incorrect.
                 </div>
             }
-            @if (ViewBag.LoginDenied != null)
+            @if (Model.LoginDenied == true)
             {
                 <div class="alert alert-danger" role="alert">
                     Login is denied.
                 </div>
             }
-            @if (ViewBag.LoginDataIsNotValid != null)
-            {
-                <div class="alert alert-danger" role="alert">
-                    Login data is not valid.
-                </div>
-            }
-            @if (ViewBag.ADAuthFailed != null)
+            @if (Model.ADAuthFailed == true)
             {
                 <div class="alert alert-danger" role="alert">
                     Could not authenticate to Active Directory. Password and login is wrong.

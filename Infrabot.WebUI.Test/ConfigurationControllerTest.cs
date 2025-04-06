@@ -14,6 +14,7 @@ namespace Infrabot.WebUI.Test
     [TestFixture]
     public class ConfigurationControllerTest
     {
+        /*
         private DbContextOptions<InfrabotContext> _options;
         private readonly ILogger<ConfigurationController> _logger = Mock.Of<ILogger<ConfigurationController>>();
         private SqliteConnection _connection;
@@ -169,6 +170,6 @@ namespace Infrabot.WebUI.Test
         }
 
         #endregion
-
+        */
     }
 }

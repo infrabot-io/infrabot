@@ -8,28 +8,28 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Infrabot.WebUI.Constants;
+using Infrabot.WebUI.Services;
 
 namespace Infrabot.WebUI.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly InfrabotContext _context;
         private readonly ILogger<HomeController> _logger;
+        private readonly IUserService _userService;
 
-        public UsersController(ILogger<HomeController> logger, InfrabotContext infrabotContext)
+        public UsersController(ILogger<HomeController> logger, IUserService userService)
         {
             _logger = logger;
-            _context = infrabotContext;
+            _userService = userService;
         }
-
+        
         [Authorize]
         public async Task<IActionResult> Index(int page = 0)
         {
-            const int PageSize = 50;
-
-            var count = _context.Users.Count() - 1;
-            var users = await _context.Users.OrderBy(s => s.Login).Skip(page * PageSize).Take(PageSize).ToListAsync();
-            var maxpage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+            int pageSize = 50;
+            var count = await _userService.GetUsersCount();
+            var users = await _userService.GetUsers(page, pageSize);
+            var maxpage = (count / pageSize) - (count % pageSize == 0 ? 1 : 0);
 
             ViewBag.MaxPage = maxpage;
             ViewBag.Page = page;
@@ -38,6 +38,7 @@ namespace Infrabot.WebUI.Controllers
             return View(users);
         }
 
+        /*
         [Authorize]
         public IActionResult Create()
         {
@@ -172,5 +173,6 @@ namespace Infrabot.WebUI.Controllers
             else
                 return RedirectToAction("Index");
         }
+        */
     }
 }
