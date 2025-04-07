@@ -73,8 +73,13 @@ Your roadmap to becoming an Infrabot pro:
 
 ## 🔌 Plugin System
 
-To add functionality to Infrabot and extend its capabilities, a flexible plugin system is implemented.  
-Each plugin defines the commandlets Infrabot can execute — and you can include multiple commands in one plugin. 🧩
+Infrabot is built to be extended.
+
+🧠 Want to automate server reboots? Query databases? Deploy services? Just write a plugin.
+
+> 📂 `.plug` files are compiled, serialized via Protocol Buffers, and live independently of the core app.
+ 
+Each plugin defines the commandlets Infrabot can execute — and you can include multiple commands in one plugin.
 
 📎 Check out the [Example Plugins](https://infrabot-io.github.io/documentation/examplescripts.html) to get started.
 
