@@ -47,7 +47,7 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 ## 🛠️ Installation Guide
 
-1. Install the [.NET 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+1. Install the [.NET 8 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 2. Download the latest release from the [Releases Page](https://github.com/infrabot-io/infrabot/releases)
 3. Unpack, configure, and launch the service
 
@@ -73,13 +73,62 @@ Your roadmap to becoming an Infrabot pro:
 
 ## 🔌 Plugin System
 
-Infrabot is built to be extended. Each plugin represents a **single commandlet**, and you can write your own in C# using the plugin template system.
+To add functionality to Infrabot and extend its capabilities, a flexible plugin system is implemented.  
+Each plugin defines the commandlets Infrabot can execute — and you can include multiple commands in one plugin. 🧩
 
-🧠 Want to automate server reboots? Query databases? Deploy services? Just write a plugin.
+📎 Check out the [Example Plugins](https://infrabot-io.github.io/documentation/examplescripts.html) to get started.
 
-> 📂 `.plug` files are compiled, serialized via Protocol Buffers, and live independently of the core app.
+<details>
+<summary><strong>📦 Plugin Basics</strong></summary>
 
-📎 See [Example Plugins](https://infrabot-io.github.io/documentation/examplescripts.html) to get started!
+- 🔸 Format: Only `.plug` files are recognized
+- 🆔 Unique GUID & Plugin ID assigned at creation
+- 🧾 Commands with the same name across plugins are supported — just use the plugin ID to specify which one to run
+- ⚙️ Created/modified using the **Plugin Editor**
+- 🗂️ Contains metadata + scripts/apps needed for execution
+- 🧩 Each plugin can define **multiple commandlets**
+
+</details>
+
+<details>
+<summary><strong>🚀 Installing Plugins</strong></summary>
+
+1. Copy `.plug` file to `/plugins` in the Infrabot Telegram Service path
+2. Infrabot auto-loads and extracts the contents into `/plugins/{plugin-GUID}`
+3. If a newer version is detected, it replaces the old one
+4. Plugin appears in the **Plugins** web page
+5. Use `/reloadplugins` to trigger a manual refresh (optional)
+
+</details>
+
+<details>
+<summary><strong>🗑️ Plugin Removal</strong></summary>
+
+- Deleting the `.plug` file removes the plugin from memory and UI
+- The extracted GUID folder is preserved (unless manually deleted)
+- If redeploying the same plugin, the old folder is wiped and re-extracted
+
+</details>
+
+<details>
+<summary><strong>🔐 Integrity & Execution</strong></summary>
+
+- Execution files can be in any subdirectory inside the plugin folder
+- Relative paths must be specified correctly in the config
+- Execution file hashes are verified before each run
+- Mismatched hashes block execution for security
+
+</details>
+
+<details>
+<summary><strong>🔄 Command Updates & Conflicts</strong></summary>
+
+- Telegram command list auto-updates within 3–5 minutes
+- Overlapping command names are supported using plugin ID routing
+- Duplicate entries?  
+  → Delete the `.plug` file → wait for removal → redeploy the plugin
+
+</details>
 
 ---
 
