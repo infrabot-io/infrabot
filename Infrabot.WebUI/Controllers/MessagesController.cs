@@ -1,27 +1,24 @@
-﻿using Infrabot.Common.Contexts;
+﻿using Infrabot.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Controllers
 {
+    [Authorize]
     public class MessagesController : Controller
     {
-
-        private readonly InfrabotContext _context;
         private readonly ILogger<MessagesController> _logger;
+        private readonly ITelegramMessagesService _telegramMessagesService;
 
-        public MessagesController(ILogger<MessagesController> logger, InfrabotContext infrabotContext)
+        public MessagesController(ILogger<MessagesController> logger, ITelegramMessagesService telegramMessagesService)
         {
             _logger = logger;
-            _context = infrabotContext;
+            _telegramMessagesService = telegramMessagesService;
         }
 
-
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var telegramMessages = await _context.TelegramMessages.OrderByDescending(x => x.CreatedDate).Take(50).ToListAsync();
+            var telegramMessages = await _telegramMessagesService.GetTelegramMessages();
             return View(telegramMessages);
         }
     }

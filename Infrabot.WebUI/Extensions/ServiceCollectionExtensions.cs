@@ -11,7 +11,12 @@ namespace Infrabot.WebUI.Extensions
         {
             // Register services related to the Item API
             services.AddScoped<IApiService, ApiService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IAuditLogService, AuditLogService>();
+            services.AddScoped<IGroupsService, GroupsService>();
+            services.AddScoped<ITelegramUsersService, TelegramUsersService>();
+            services.AddScoped<IUserGroupsService, UserGroupsService>();
+            services.AddScoped<ITelegramMessagesService, TelegramMessagesService>();
 
             // Return the IServiceCollection for method chaining
             return services; 

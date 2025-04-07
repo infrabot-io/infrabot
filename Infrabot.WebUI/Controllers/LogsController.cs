@@ -1,23 +1,22 @@
-﻿using Infrabot.Common.Contexts;
+﻿using Infrabot.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Infrabot.WebUI.Controllers
 {
+    [Authorize]
     public class LogsController : Controller
     {
-        private static readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application{DateTime.Now.ToString("yyyyMMdd")}.log");
-        //private readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application.log");
-        private readonly InfrabotContext _context;
         private readonly ILogger<LogsController> _logger;
+        private readonly IAuditLogService _auditLogService;
+        private static readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application{DateTime.Now.ToString("yyyyMMdd")}.log");
 
-        public LogsController(ILogger<LogsController> logger, InfrabotContext infrabotContext)
+        public LogsController(ILogger<LogsController> logger, IAuditLogService auditLogService)
         {
             _logger = logger;
-            _context = infrabotContext;
+            _auditLogService = auditLogService;
         }
 
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             ViewBag.Logs = await ReadLastLines(logsFilePath, 500);

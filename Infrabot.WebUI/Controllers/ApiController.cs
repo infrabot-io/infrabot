@@ -12,9 +12,9 @@ namespace Infrabot.WebUI.Controllers
     {
         private readonly ILogger<ApiController> _logger;
         private readonly IApiService _apiService;
-        private readonly IUserService _userService;
+        private readonly IUsersService _userService;
 
-        public ApiController(ILogger<ApiController> logger, IApiService apiService, IUserService userService)
+        public ApiController(ILogger<ApiController> logger, IApiService apiService, IUsersService userService)
         {
             _logger = logger;
             _apiService = apiService;

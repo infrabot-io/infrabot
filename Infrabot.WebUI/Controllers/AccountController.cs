@@ -1,30 +1,25 @@
 ﻿using Infrabot.Common.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Infrabot.Common.Enums;
-using Infrabot.WebUI.Utils;
-using Infrabot.Common.Contexts;
-using Infrabot.WebUI.Constants;
 using Microsoft.AspNetCore.Identity;
 using Infrabot.WebUI.Models;
+using Infrabot.WebUI.Services;
 
 namespace Infrabot.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly InfrabotContext _context;
         private readonly ILogger<AccountController> _logger; 
-        private SignInManager<User> _signManager;
-        private UserManager<User> _userManager;
+        private readonly IAuditLogService _auditLogService;
+        private readonly SignInManager<User> _signManager;
+        private readonly UserManager<User> _userManager;
 
-        public AccountController(ILogger<AccountController> logger, InfrabotContext context, UserManager<User> userManager, SignInManager<User> signManager)
+        public AccountController(ILogger<AccountController> logger, IAuditLogService auditLogService, UserManager<User> userManager, SignInManager<User> signManager)
         {
             _logger = logger;
-            _context = context;
+            _auditLogService = auditLogService;
             _signManager = signManager;
             _userManager = userManager;
         }
@@ -32,9 +27,6 @@ namespace Infrabot.WebUI.Controllers
         [HttpGet]
         public IActionResult LogIn()
         {
-            //var user = new User() { Email = "admin@admin.com", UserName = "admin" };
-            //_userManager.CreateAsync(user, "password");
-
             var model = new LoginViewModel { };
             return View(model);
         }
@@ -62,27 +54,28 @@ namespace Infrabot.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} logged in" });
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} logged in" });
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} log in failed" });
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} log in failed" });
                     model.LoginOrPasswordIncorrect = true;
                 }
             }
 
-            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Invalid login attempt" });
+            await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Invalid login attempt" });
 
             ModelState.AddModelError("", "Invalid login attempt");
             return View(model);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
         {
-            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogOut, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} logged out" });
+            await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.LogOut, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} logged out" });
             await _signManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
@@ -119,17 +112,17 @@ namespace Infrabot.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} changed password" });
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} changed password" });
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} change password failed" });
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {user.UserName} change password failed" });
                     //return RedirectToAction("LogOut", "Account");
                 }
             }
 
-            _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Invalid change password attempt" });
+            await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Invalid change password attempt" });
 
             ModelState.AddModelError("", "Invalid change password attempt");
             return View(model);

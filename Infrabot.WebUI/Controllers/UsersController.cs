@@ -9,21 +9,27 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Infrabot.WebUI.Constants;
 using Infrabot.WebUI.Services;
+using Infrabot.WebUI.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrabot.WebUI.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IUserService _userService;
+        private readonly IUsersService _userService;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<User> _userManager;
 
-        public UsersController(ILogger<HomeController> logger, IUserService userService)
+        public UsersController(ILogger<HomeController> logger, IUsersService userService, IAuditLogService auditLogService, UserManager<User> userManager)
         {
             _logger = logger;
             _userService = userService;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
         
-        [Authorize]
         public async Task<IActionResult> Index(int page = 0)
         {
             int pageSize = 50;
@@ -38,60 +44,67 @@ namespace Infrabot.WebUI.Controllers
             return View(users);
         }
 
-        /*
-        [Authorize]
+        [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.ConfigurationError = TempData[TempDataKeys.ConfigurationError];
-            ViewBag.UserAlreadyExists = TempData[TempDataKeys.UserAlreadyExists];
-            ViewBag.PasswordDoesNotMeetComplexity = TempData[TempDataKeys.PasswordDoesNotMeetComplexity];
-            return View();
+            var model = new CreateUserViewModel { };
+            return View(model);
         }
 
-        [Authorize]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(User user)
+        public async Task<IActionResult> Create(CreateUserViewModel model)
         {
-            var configuration = await _context.Configurations.FirstOrDefaultAsync(s => s.Id == 1);
-            User? _user = _context.Users.Where(x => (x.Login == user.Login) || (x.Email == user.Email)).FirstOrDefault();
-
-            if (configuration is null)
-            {
-                TempData[TempDataKeys.ConfigurationError] = true;
-                return RedirectToAction("Create", user);
-            }
-
-            if (_user is not null)
-            {
-                TempData[TempDataKeys.UserAlreadyExists] = true;
-                return RedirectToAction("Create", user);
-            }
-
-            if (user.Password == null)
-                user.Password = string.Empty;
-            if (user.Phone == null)
-                user.Phone = string.Empty;
-
-            if (!PasswordPolicyChecker.CheckPasswordForPolicy(user.Password, configuration.PasswordPolicyMinLength, configuration.PasswordPolicyContainSpecialCharacter, configuration.PasswordPolicyContainNumber, configuration.PasswordPolicyContainLowerCase, configuration.PasswordPolicyContainUpperCase))
-            {
-                TempData[TempDataKeys.PasswordDoesNotMeetComplexity] = true;
-                return RedirectToAction("Create", user);
-            }
-
             if (ModelState.IsValid)
             {
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                var userCheckName = await _userManager.FindByNameAsync(model.UserName);
+                if (userCheckName != null) {  model.UserAlreadyExists = true;  return View(model); }
+                var userCheckEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (userCheckEmail != null) { model.UserAlreadyExists = true; return View(model); }
 
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} created user '{user.Login}'" });
-                await _context.SaveChangesAsync();
+                var user = new User() 
+                { 
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    UserName = model.UserName,
+                    NormalizedUserName = model.UserName,
+                    Email = model.Email, 
+                    NormalizedEmail = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    IsADIntegrated = model.IsADIntegrated,
+                    Enabled = model.Enabled,
+                };
+                
+                var result = await _userManager.CreateAsync(user, model.Password);
 
-                return RedirectToAction("Index");
+                if (result.Succeeded)
+                {
+                    model.UserCreationSucceeded = true;
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Created user {user.UserName} by {this.User}" });
+                }
+                else
+                {
+                    model.UserCreationSucceeded = false;
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Created user {user.UserName} by {this.User} failed" });
+                }
             }
 
-            return View(user);
+            return View(model);
         }
+
+        public async Task<IActionResult> View(string Id)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(Id);
+
+                if (user is not null)
+                    return View(user);
+            }
+            
+            return RedirectToAction("Index");
+        }
+
+        /*
 
         [Authorize]
         public async Task<IActionResult> Edit(int Id)
@@ -164,15 +177,6 @@ namespace Infrabot.WebUI.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize]
-        public async Task<IActionResult> View(int Id)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(s => s.Id == Id);
-            if (user is not null)
-                return View(user);
-            else
-                return RedirectToAction("Index");
-        }
         */
     }
 }

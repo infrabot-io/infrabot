@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Services
 {
-    public interface IUserService
+    public interface IUsersService
     {
         Task<IEnumerable<User>> GetUsers(int page = 0, int pageSize = 50);
+        Task<IEnumerable<User>> GetAllUsers();
         Task<int> GetUsersCount();
     }
 
-    public class UserService : IUserService
+    public class UsersService : IUsersService
     {
-
         private readonly InfrabotContext _context;
 
-        public UserService(InfrabotContext context)
+        public UsersService(InfrabotContext context)
         {
             _context = context;
         }
@@ -23,6 +23,12 @@ namespace Infrabot.WebUI.Services
         public async Task<IEnumerable<User>> GetUsers(int page = 0, int pageSize = 50)
         {
             var users = await _context.Users.OrderBy(s => s.UserName).Skip(page * pageSize).Take(pageSize).ToListAsync();
+            return users;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsers()
+        {
+            var users = await _context.Users.ToListAsync();
             return users;
         }
 
