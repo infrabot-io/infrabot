@@ -93,14 +93,11 @@ namespace Infrabot.WebUI.Controllers
 
         public async Task<IActionResult> View(string Id)
         {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByIdAsync(Id);
+            var user = await _userManager.FindByIdAsync(Id);
 
-                if (user is not null)
-                    return View(user);
-            }
-            
+            if (user is not null)
+                return View(user);
+
             return RedirectToAction("Index");
         }
 

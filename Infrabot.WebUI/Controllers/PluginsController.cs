@@ -1,34 +1,34 @@
 ﻿using Infrabot.Common.Enums;
 using Infrabot.Common.Models;
-using Infrabot.Common.Contexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Infrabot.PluginSystem.Utils;
+using Infrabot.WebUI.Services;
 
 namespace Infrabot.WebUI.Controllers
 {
+    [Authorize]
     public class PluginsController : Controller
     {
-        private static readonly string pluginsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
-        private readonly InfrabotContext _context;
         private readonly ILogger<PluginsController> _logger;
+        private readonly IPluginsService _pluginsService;
+        private readonly IAuditLogService _auditLogService;
+        private static readonly string pluginsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
 
-        public PluginsController(ILogger<PluginsController> logger, InfrabotContext infrabotContext)
+        public PluginsController(ILogger<PluginsController> logger, IPluginsService pluginsService, IAuditLogService auditLogService)
         {
             _logger = logger;
-            _context = infrabotContext;
+            _pluginsService = pluginsService;
+            _auditLogService = auditLogService;
         }
 
-        [Authorize]
         public async Task<IActionResult> Index(int page = 0)
         {
-            const int PageSize = 50;
+            int pageSize = 50;
 
-            var count = _context.Plugins.Count() - 1;
-            var plugins = await _context.Plugins.OrderBy(s => s.Name).Skip(page * PageSize).Take(PageSize).ToListAsync();
-            var maxpage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+            var count = await _pluginsService.GetPluginsCount();
+            var plugins = await _pluginsService.GetPlugins(page, pageSize);
+            var maxpage = (count / pageSize) - (count % pageSize == 0 ? 1 : 0);
 
             ViewBag.MaxPage = maxpage;
             ViewBag.Page = page;
@@ -37,10 +37,9 @@ namespace Infrabot.WebUI.Controllers
             return View(plugins);
         }
 
-        [Authorize]
-        public async Task<IActionResult> View(int Id)
+        public async Task<IActionResult> View(int id)
         {
-            var plugin = await _context.Plugins.FirstOrDefaultAsync(s => s.Id == Id);
+            var plugin = await _pluginsService.GetPluginById(id);
 
             if (plugin is not null)
             {
@@ -61,61 +60,61 @@ namespace Infrabot.WebUI.Controllers
                         ViewBag.Version = pluginFile.Version;
                         ViewBag.WebSite = pluginFile.WebSite;
                         ViewBag.PluginExecutions = pluginFile.PluginExecutions;
+
+                        return View(plugin);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    _logger.LogError("Failed to read Plugin file: " + ex.ToString());
                 }
             }
-            else
-                return RedirectToAction("Index");
 
-            return View(plugin);
+            return RedirectToAction("Index");
         }
 
-        [Authorize]
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var plugin = await _context.Plugins.FirstOrDefaultAsync(s => s.Id == Id);
+            var plugin = await _pluginsService.GetPluginById(id);
+
             if (plugin is not null)
                 return View(plugin);
-            else
-                return RedirectToAction("Index");
+            
+            return RedirectToAction("Index");
         }
 
-        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletePressed(int Id)
+        public async Task<IActionResult> DeletePressed(int id)
         {
-            var plugin = await _context.Plugins.FindAsync(Id);
-
-            if (plugin is not null)
+            if (ModelState.IsValid)
             {
-                try
-                {
-                    string[] files = Directory.GetFiles(pluginsPath, "*.plug");
+                var plugin = await _pluginsService.GetPluginById(id);
 
-                    foreach (string file in files)
+                if (plugin is not null)
+                {
+                    try
                     {
-                        var pluginFile = await PluginUtility.GetPlugin(file);
+                        string[] files = Directory.GetFiles(pluginsPath, "*.plug");
 
-                        if (pluginFile.Guid != plugin.Guid)
-                            continue;
+                        foreach (string file in files)
+                        {
+                            var pluginFile = await PluginUtility.GetPlugin(file);
 
-                        System.IO.File.Delete(file);
+                            if (pluginFile.Guid != plugin.Guid)
+                                continue;
+
+                            System.IO.File.Delete(file);
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError("Failed to delete Plugin file: " + ex.ToString());
+                    }
 
-                _context.Plugins.Remove(plugin);
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} deleted plugin '{plugin.Name}'" });
-
-                await _context.SaveChangesAsync();
+                    await _pluginsService.DeletePlugin(plugin);
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted plugin '{plugin.Name}'" });
+                }
             }
 
             return RedirectToAction("Index");

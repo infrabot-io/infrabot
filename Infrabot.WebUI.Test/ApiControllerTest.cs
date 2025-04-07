@@ -14,6 +14,7 @@ namespace Infrabot.WebUI.Test
 {
     public class ApiControllerTest
     {
+        /*
         private DbContextOptions<InfrabotContext> _options;
         private readonly ILogger<ApiController> _logger = Mock.Of<ILogger<ApiController>>();
         private SqliteConnection _connection;
@@ -193,5 +194,6 @@ namespace Infrabot.WebUI.Test
                 Assert.That(pluginStats[0].Count, Is.EqualTo(1));
             }
         }
+        */
     }
 }

@@ -153,14 +153,11 @@ namespace Infrabot.WebUI.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            if (ModelState.IsValid)
-            {
-                var group = await _groupsService.GetGroupById(id);
+           var group = await _groupsService.GetGroupById(id);
 
-                if (group is not null)
-                    return View(group);
-            }
-            
+           if (group is not null)
+               return View(group);
+
             return RedirectToAction("Index");
         }
 
