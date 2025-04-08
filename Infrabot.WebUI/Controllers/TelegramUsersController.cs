@@ -15,7 +15,10 @@ namespace Infrabot.WebUI.Controllers
         private readonly ITelegramUsersService _telegramUsersService;
         private readonly IAuditLogService _auditLogService;
 
-        public TelegramUsersController(ILogger<HomeController> logger, ITelegramUsersService telegramUsersService, IAuditLogService auditLogService)
+        public TelegramUsersController(
+            ILogger<HomeController> logger, 
+            ITelegramUsersService telegramUsersService, 
+            IAuditLogService auditLogService)
         {
             _logger = logger;
             _telegramUsersService = telegramUsersService;

@@ -15,7 +15,10 @@ namespace Infrabot.WebUI.Controllers
         private readonly IAuditLogService _auditLogService;
         private static readonly string pluginsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
 
-        public PluginsController(ILogger<PluginsController> logger, IPluginsService pluginsService, IAuditLogService auditLogService)
+        public PluginsController(
+            ILogger<PluginsController> logger,
+            IPluginsService pluginsService, 
+            IAuditLogService auditLogService)
         {
             _logger = logger;
             _pluginsService = pluginsService;

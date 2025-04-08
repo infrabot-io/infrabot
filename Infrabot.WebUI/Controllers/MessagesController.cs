@@ -10,7 +10,9 @@ namespace Infrabot.WebUI.Controllers
         private readonly ILogger<MessagesController> _logger;
         private readonly ITelegramMessagesService _telegramMessagesService;
 
-        public MessagesController(ILogger<MessagesController> logger, ITelegramMessagesService telegramMessagesService)
+        public MessagesController(
+            ILogger<MessagesController> logger,
+            ITelegramMessagesService telegramMessagesService)
         {
             _logger = logger;
             _telegramMessagesService = telegramMessagesService;

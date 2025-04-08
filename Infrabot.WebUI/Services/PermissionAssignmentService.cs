@@ -10,6 +10,8 @@ namespace Infrabot.WebUI.Services
         Task<PermissionAssignment> GetPermissionAssignmentById(int id);
         Task<IEnumerable<PermissionAssignment>> GetAllPermissionAssignments();
         Task<int> GetPermissionAssignmentsCount();
+        Task UpdatePermissionAssignment(PermissionAssignment permissionAssignment);
+        Task CreatePermissionAssignment(PermissionAssignment permissionAssignment);
         Task DeletePermissionAssignment(PermissionAssignment permissionAssignment);
     }
 
@@ -44,6 +46,18 @@ namespace Infrabot.WebUI.Services
         {
             int permissionAssignmentsCount = await _context.PermissionAssignments.CountAsync();
             return permissionAssignmentsCount;
+        }
+
+        public async Task UpdatePermissionAssignment(PermissionAssignment permissionAssignment)
+        {
+            _context.PermissionAssignments.Update(permissionAssignment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CreatePermissionAssignment(PermissionAssignment permissionAssignment)
+        {
+            await _context.PermissionAssignments.AddAsync(permissionAssignment);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeletePermissionAssignment(PermissionAssignment permissionAssignment)

@@ -1,5 +1,6 @@
 ﻿using Infrabot.Common.Contexts;
 using Infrabot.Common.Models;
+using Infrabot.WebUI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Services
@@ -14,6 +15,8 @@ namespace Infrabot.WebUI.Services
         Task CreateTelegramUser(TelegramUser telegramUser);
         Task DeleteTelegramUser(TelegramUser telegramUser);
         Task UpdateTelegramUser(TelegramUser telegramUser);
+        Task<IEnumerable<TelegramUser>> AssociateSelectedTelegramUsersForPermission(PermissionAssignmentViewModel model);
+        Task<IEnumerable<TelegramUser>> RepopulateTelegramUsersForPermissionUpdate(PermissionAssignmentViewModel model, IEnumerable<int> existingUserIds);
     }
 
     public class TelegramUsersService : ITelegramUsersService
@@ -72,6 +75,18 @@ namespace Infrabot.WebUI.Services
         {
             _context.TelegramUsers.Update(telegramUser);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<TelegramUser>> AssociateSelectedTelegramUsersForPermission(PermissionAssignmentViewModel model)
+        {
+            var telegramUsers = await _context.TelegramUsers.Where(u => model.SelectedTelegramUserIds.Contains(u.Id)).ToListAsync();
+            return telegramUsers;
+        }
+
+        public async Task<IEnumerable<TelegramUser>> RepopulateTelegramUsersForPermissionUpdate(PermissionAssignmentViewModel model, IEnumerable<int> existingUserIds)
+        {
+            var telegramUsers = await _context.TelegramUsers.Where(u => model.SelectedTelegramUserIds.Contains(u.Id) && !existingUserIds.Contains(u.Id)).ToListAsync();
+            return telegramUsers;
         }
     }
 }

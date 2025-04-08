@@ -17,7 +17,11 @@ namespace Infrabot.WebUI.Controllers
         private readonly IAuditLogService _auditLogService;
         private readonly UserManager<User> _userManager;
 
-        public UsersController(ILogger<HomeController> logger, IUsersService userService, IAuditLogService auditLogService, UserManager<User> userManager)
+        public UsersController(
+            ILogger<HomeController> logger,
+            IUsersService userService,
+            IAuditLogService auditLogService,
+            UserManager<User> userManager)
         {
             _logger = logger;
             _userService = userService;

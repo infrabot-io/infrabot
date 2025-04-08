@@ -1,5 +1,6 @@
 ﻿using Infrabot.Common.Contexts;
 using Infrabot.Common.Models;
+using Infrabot.WebUI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Services
@@ -15,6 +16,8 @@ namespace Infrabot.WebUI.Services
         Task<int> GetGroupsCount();
         Task DeleteGroup(Group group);
         Task UpdateGroup(Group group);
+        Task<IEnumerable<Group>> AssociateSelectedGroupsForPermission(PermissionAssignmentViewModel model);
+        Task<IEnumerable<Group>> RepopulateGroupsForPermissionUpdate(PermissionAssignmentViewModel model, IEnumerable<int> existingGroupIds);
     }
 
     public class GroupsService: IGroupsService
@@ -72,6 +75,18 @@ namespace Infrabot.WebUI.Services
         {
             _context.Groups.Update(group);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Group>> AssociateSelectedGroupsForPermission(PermissionAssignmentViewModel model)
+        {
+            var groups = await _context.Groups.Where(g => model.SelectedGroupIds.Contains(g.Id)).ToListAsync();
+            return groups;
+        }
+
+        public async Task<IEnumerable<Group>> RepopulateGroupsForPermissionUpdate(PermissionAssignmentViewModel model, IEnumerable<int> existingGroupIds)
+        {
+            var groups = await _context.Groups.Where(g => model.SelectedGroupIds.Contains(g.Id) && !existingGroupIds.Contains(g.Id)).ToListAsync();
+            return groups;
         }
     }
 }

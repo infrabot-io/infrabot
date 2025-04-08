@@ -1,31 +1,33 @@
 ﻿using Infrabot.Common.Enums;
 using Infrabot.Common.Models;
-using infrabot.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
-using Infrabot.Common.Contexts;
 using Newtonsoft.Json;
 using Infrabot.WebUI.Constants;
+using Infrabot.WebUI.Services;
 
 namespace Infrabot.WebUI.Controllers
 {
+    [Authorize]
     public class ConfigurationController : Controller
     {
-        private readonly InfrabotContext _context;
         private readonly ILogger<ConfigurationController> _logger;
+        private readonly IConfigurationService _configurationService;
+        private readonly IAuditLogService _auditLogService;
 
-        public ConfigurationController(ILogger<ConfigurationController> logger, InfrabotContext infrabotContext)
+        public ConfigurationController(
+            ILogger<ConfigurationController> logger,
+            IConfigurationService configurationService,
+            IAuditLogService auditLogService)
         {
             _logger = logger;
-            _context = infrabotContext;
+            _configurationService = configurationService;
+            _auditLogService = auditLogService;
         }
 
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var configuration = await _context.Configurations.FirstOrDefaultAsync(s => s.Id == 1);
+            var configuration = await _configurationService.GetConfiguration();
 
             if (configuration is null)
             {
@@ -38,18 +40,14 @@ namespace Infrabot.WebUI.Controllers
             return View(configuration);
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(Configuration configuration)
         {
             if (ModelState.IsValid)
             {
-                _context.Configurations.Update(configuration);
-                await _context.SaveChangesAsync();
-
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Configuration, CreatedDate = DateTime.Now, Description = $"Configuration has been changed by {HttpContext.User.FindFirstValue("Login")}" });
-                await _context.SaveChangesAsync();
+                await _configurationService.UpdateConfiguration(configuration);
+                await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Configuration, CreatedDate = DateTime.Now, Description = $"Configuration has been changed by {this.User}" });
 
                 _logger.LogInformation("Configuration saved: " + JsonConvert.SerializeObject(configuration));
 

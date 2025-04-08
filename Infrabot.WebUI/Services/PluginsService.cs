@@ -1,5 +1,6 @@
 ﻿using Infrabot.Common.Contexts;
 using Infrabot.Common.Models;
+using Infrabot.WebUI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Services
@@ -11,6 +12,8 @@ namespace Infrabot.WebUI.Services
         Task<IEnumerable<Plugin>> GetAllPlugins();
         Task<int> GetPluginsCount();
         Task DeletePlugin(Plugin plugin);
+        Task<IEnumerable<Plugin>> AssociateSelectedPluginsForPermission(PermissionAssignmentViewModel model);
+        Task<IEnumerable<Plugin>> RepopulatePluginsForPermissionUpdate(PermissionAssignmentViewModel model, IEnumerable<int> existingPluginIds);
     }
 
     public class PluginsService : IPluginsService
@@ -44,10 +47,23 @@ namespace Infrabot.WebUI.Services
             int pluginsCount = await _context.Plugins.CountAsync();
             return pluginsCount;
         }
+
         public async Task DeletePlugin(Plugin plugin)
         {
             _context.Plugins.Remove(plugin);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Plugin>> AssociateSelectedPluginsForPermission(PermissionAssignmentViewModel model)
+        {
+            var plugins = await _context.Plugins.Where(p => model.SelectedPluginIds.Contains(p.Id)).ToListAsync();
+            return plugins;
+        }
+
+        public async Task<IEnumerable<Plugin>> RepopulatePluginsForPermissionUpdate(PermissionAssignmentViewModel model, IEnumerable<int> existingPluginIds)
+        {
+            var plugins = await _context.Plugins.Where(p => model.SelectedPluginIds.Contains(p.Id) && !existingPluginIds.Contains(p.Id)).ToListAsync();
+            return plugins;
         }
     }
 }

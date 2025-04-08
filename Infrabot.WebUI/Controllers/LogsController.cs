@@ -11,7 +11,9 @@ namespace Infrabot.WebUI.Controllers
         private readonly IAuditLogService _auditLogService;
         private static readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application{DateTime.Now.ToString("yyyyMMdd")}.log");
 
-        public LogsController(ILogger<LogsController> logger, IAuditLogService auditLogService)
+        public LogsController(
+            ILogger<LogsController> logger,
+            IAuditLogService auditLogService)
         {
             _logger = logger;
             _auditLogService = auditLogService;

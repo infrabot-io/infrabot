@@ -19,7 +19,12 @@ namespace Infrabot.WebUI.Controllers
         private readonly ITelegramUsersService _telegramUsersService;
         private readonly IUserGroupsService _userGroupsService;
 
-        public GroupsController(ILogger<GroupsController> logger, IAuditLogService auditLogService, IGroupsService groupsService, ITelegramUsersService telegramUsersService, IUserGroupsService userGroupsService)
+        public GroupsController(
+            ILogger<GroupsController> logger, 
+            IAuditLogService auditLogService, 
+            IGroupsService groupsService, 
+            ITelegramUsersService telegramUsersService,
+            IUserGroupsService userGroupsService)
         {
             _logger = logger;
             _auditLogService = auditLogService;

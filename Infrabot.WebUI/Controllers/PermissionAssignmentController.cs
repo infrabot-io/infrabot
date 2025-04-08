@@ -1,12 +1,9 @@
 ﻿using Infrabot.Common.Enums;
 using Infrabot.Common.Models;
-using Infrabot.Common.Contexts;
 using Infrabot.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Infrabot.WebUI.Services;
 
 namespace Infrabot.WebUI.Controllers
@@ -16,15 +13,25 @@ namespace Infrabot.WebUI.Controllers
     {
         private readonly ILogger<PermissionAssignmentController> _logger;
         private readonly IPermissionAssignmentService _permissionAssignmentService;
+        private readonly IPluginsService _pluginsService;
+        private readonly ITelegramUsersService _telegramUsersService;
+        private readonly IGroupsService _groupsService;
         private readonly IAuditLogService _auditLogService;
-        private readonly InfrabotContext _context;
 
-        public PermissionAssignmentController(ILogger<PermissionAssignmentController> logger, IPermissionAssignmentService permissionAssignmentService, IAuditLogService auditLogService, InfrabotContext infrabotContext)
+        public PermissionAssignmentController(
+            ILogger<PermissionAssignmentController> logger,
+            IPermissionAssignmentService permissionAssignmentService,
+            IPluginsService pluginsService,
+            ITelegramUsersService telegramUsersService,
+            IGroupsService groupsService,
+            IAuditLogService auditLogService)
         {
             _logger = logger;
             _permissionAssignmentService = permissionAssignmentService;
+            _pluginsService = pluginsService;
+            _telegramUsersService = telegramUsersService;
+            _groupsService = groupsService;
             _auditLogService = auditLogService;
-            _context = infrabotContext;
         }
 
         public async Task<IActionResult> Index(int page = 0)
@@ -43,23 +50,27 @@ namespace Infrabot.WebUI.Controllers
 
         public async Task<IActionResult> Create()
         {
+            var plugins = await _pluginsService.GetAllPlugins();
+            var telegramUsers = await _telegramUsersService.GetAllTelegramUsers();
+            var groups = await _groupsService.GetAllGroups();
+
             var model = new PermissionAssignmentViewModel
             {
-                AvailablePlugins = await _context.Plugins.Select(p => new SelectListItem
+                AvailablePlugins = plugins.Select(p => new SelectListItem
                 {
                     Value = p.Id.ToString(),
                     Text = p.Name
-                }).ToListAsync(),
-                AvailableTelegramUsers = await _context.TelegramUsers.Select(u => new SelectListItem
+                }).ToList(),
+                AvailableTelegramUsers = telegramUsers.Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
                     Text = $"{u.Name} {u.Surname}"
-                }).ToListAsync(),
-                AvailableGroups = await _context.Groups.Select(g => new SelectListItem
+                }).ToList(),
+                AvailableGroups = groups.Select(g => new SelectListItem
                 {
                     Value = g.Id.ToString(),
                     Text = g.Name
-                }).ToListAsync()
+                }).ToList()
             };
 
             return View(model);
@@ -76,46 +87,49 @@ namespace Infrabot.WebUI.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "At least one plugin must be selected.");
                 }
+
                 // Validate that at least one subject (user or group) is selected.
                 if (!model.SelectedTelegramUserIds.Any() && !model.SelectedGroupIds.Any())
                 {
                     ModelState.AddModelError(string.Empty, "At least one Telegram user or group must be selected.");
                 }
 
+                // Model must be valid
                 if (!ModelState.IsValid)
                 {
                     await PopulatePermissionAssignmentViewModel(model);
                     return View(model);
                 }
 
+                // Create PermissionAssignment object
                 var permissionAssignment = new PermissionAssignment
                 {
-                    Name = model.Name // Save the assignment name.
+                    Name = model.Name
                 };
 
                 // Associate selected plugins.
-                var selectedPlugins = await _context.Plugins.Where(p => model.SelectedPluginIds.Contains(p.Id)).ToListAsync();
+                var selectedPlugins = await _pluginsService.AssociateSelectedPluginsForPermission(model);
                 foreach (var plugin in selectedPlugins)
                 {
                     permissionAssignment.Plugins.Add(plugin);
                 }
 
                 // Associate selected Telegram users.
-                var selectedUsers = await _context.TelegramUsers.Where(u => model.SelectedTelegramUserIds.Contains(u.Id)).ToListAsync();
+                var selectedUsers = await _telegramUsersService.AssociateSelectedTelegramUsersForPermission(model);
                 foreach (var user in selectedUsers)
                 {
                     permissionAssignment.TelegramUsers.Add(user);
                 }
 
                 // Associate selected Groups.
-                var selectedGroups = await _context.Groups.Where(g => model.SelectedGroupIds.Contains(g.Id)).ToListAsync();
+                var selectedGroups = await _groupsService.AssociateSelectedGroupsForPermission(model);
                 foreach (var group in selectedGroups)
                 {
                     permissionAssignment.Groups.Add(group);
                 }
 
-                await _context.PermissionAssignments.AddAsync(permissionAssignment);
-                await _context.SaveChangesAsync();
+                // Create new permission assignment
+                await _permissionAssignmentService.CreatePermissionAssignment(permissionAssignment);
 
                 return RedirectToAction("Index");
             }
@@ -132,6 +146,10 @@ namespace Infrabot.WebUI.Controllers
             if (permissionAssignment is null)
                 return RedirectToAction("Index");
 
+            var plugins = await _pluginsService.GetAllPlugins();
+            var telegramUsers = await _telegramUsersService.GetAllTelegramUsers();
+            var groups = await _groupsService.GetAllGroups();
+
             var model = new PermissionAssignmentViewModel
             {
                 Id = permissionAssignment.Id,
@@ -139,21 +157,22 @@ namespace Infrabot.WebUI.Controllers
                 SelectedPluginIds = permissionAssignment.Plugins.Select(p => p.Id).ToList(),
                 SelectedTelegramUserIds = permissionAssignment.TelegramUsers.Select(u => u.Id).ToList(),
                 SelectedGroupIds = permissionAssignment.Groups.Select(g => g.Id).ToList(),
-                AvailablePlugins = await _context.Plugins.Select(p => new SelectListItem
+
+                AvailablePlugins = plugins.Select(p => new SelectListItem
                 {
                     Value = p.Id.ToString(),
                     Text = p.Name
-                }).ToListAsync(),
-                AvailableTelegramUsers = await _context.TelegramUsers.Select(u => new SelectListItem
+                }).ToList(),
+                AvailableTelegramUsers = telegramUsers.Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
                     Text = $"{u.Name} {u.Surname}"
-                }).ToListAsync(),
-                AvailableGroups = await _context.Groups.Select(g => new SelectListItem
+                }).ToList(),
+                AvailableGroups = groups.Select(g => new SelectListItem
                 {
                     Value = g.Id.ToString(),
                     Text = g.Name
-                }).ToListAsync()
+                }).ToList()
             };
 
             return View(model);
@@ -181,7 +200,7 @@ namespace Infrabot.WebUI.Controllers
 
                 var existingPluginIds = permissionAssignment.Plugins.Select(p => p.Id).ToList();
                 
-                var pluginsToAdd = await _context.Plugins.Where(p => model.SelectedPluginIds.Contains(p.Id) && !existingPluginIds.Contains(p.Id)).ToListAsync();
+                var pluginsToAdd = await _pluginsService.RepopulatePluginsForPermissionUpdate(model, existingPluginIds);
                 foreach (var p in pluginsToAdd)
                 {
                     permissionAssignment.Plugins.Add(p);
@@ -195,29 +214,31 @@ namespace Infrabot.WebUI.Controllers
                 }
 
                 var existingUserIds = permissionAssignment.TelegramUsers.Select(u => u.Id).ToList();
-                var usersToAdd = await _context.TelegramUsers.Where(u => model.SelectedTelegramUserIds.Contains(u.Id) && !existingUserIds.Contains(u.Id)).ToListAsync();
+                
+                var usersToAdd = await _telegramUsersService.RepopulateTelegramUsersForPermissionUpdate(model, existingUserIds);
                 foreach (var u in usersToAdd)
                 {
                     permissionAssignment.TelegramUsers.Add(u);
                 }
 
                 // Update Groups.
-                var groupsToRemove = permissionAssignment.Groups
-                    .Where(g => !model.SelectedGroupIds.Contains(g.Id))
-                    .ToList();
+                var groupsToRemove = permissionAssignment.Groups.Where(g => !model.SelectedGroupIds.Contains(g.Id)).ToList();
 
                 foreach (var g in groupsToRemove)
                 {
                     permissionAssignment.Groups.Remove(g);
                 }
+                
                 var existingGroupIds = permissionAssignment.Groups.Select(g => g.Id).ToList();
-                var groupsToAdd = await _context.Groups.Where(g => model.SelectedGroupIds.Contains(g.Id) && !existingGroupIds.Contains(g.Id)).ToListAsync();
+                
+                var groupsToAdd = await _groupsService.RepopulateGroupsForPermissionUpdate(model, existingGroupIds);
                 foreach (var g in groupsToAdd)
                 {
                     permissionAssignment.Groups.Add(g);
                 }
 
-                await _context.SaveChangesAsync();
+                await _permissionAssignmentService.UpdatePermissionAssignment(permissionAssignment);
+
                 return RedirectToAction("Index");
             }
 
@@ -256,17 +277,21 @@ namespace Infrabot.WebUI.Controllers
         // Helper: Re-populate available lists if model state is invalid.
         private async Task PopulatePermissionAssignmentViewModel(PermissionAssignmentViewModel model)
         {
-            model.AvailablePlugins = _context.Plugins.Select(p => new SelectListItem
+            var plugins = await _pluginsService.GetAllPlugins();
+            var telegramUsers = await _telegramUsersService.GetAllTelegramUsers();
+            var groups = await _groupsService.GetAllGroups();
+
+            model.AvailablePlugins = plugins.Select(p => new SelectListItem
             {
                 Value = p.Id.ToString(),
                 Text = p.Name
             }).ToList();
-            model.AvailableTelegramUsers = _context.TelegramUsers.Select(u => new SelectListItem
+            model.AvailableTelegramUsers = telegramUsers.Select(u => new SelectListItem
             {
                 Value = u.Id.ToString(),
                 Text = $"{u.Name} {u.Surname}"
             }).ToList();
-            model.AvailableGroups = _context.Groups.Select(g => new SelectListItem
+            model.AvailableGroups = groups.Select(g => new SelectListItem
             {
                 Value = g.Id.ToString(),
                 Text = g.Name
