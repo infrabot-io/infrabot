@@ -18,6 +18,7 @@ namespace Infrabot.WebUI.Extensions
             services.AddScoped<IUserGroupsService, UserGroupsService>();
             services.AddScoped<ITelegramMessagesService, TelegramMessagesService>();
             services.AddScoped<IPluginsService, PluginsService>();
+            services.AddScoped<IPermissionAssignmentService, PermissionAssignmentService>();
 
             // Return the IServiceCollection for method chaining
             return services; 

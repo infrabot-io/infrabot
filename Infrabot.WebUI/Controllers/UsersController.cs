@@ -28,7 +28,7 @@ namespace Infrabot.WebUI.Controllers
         public async Task<IActionResult> Index(int page = 0)
         {
             int pageSize = 50;
-            var count = await _userService.GetUsersCount();
+            var count = await _userService.GetUsersCount() - 1;
             var users = await _userService.GetUsers(page, pageSize);
             var maxpage = (count / pageSize) - (count % pageSize == 0 ? 1 : 0);
 

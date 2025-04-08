@@ -32,7 +32,7 @@ namespace Infrabot.WebUI.Controllers
         {
             int pageSize = 50;
 
-            var count = await _groupsService.GetGroupsCount();
+            var count = await _groupsService.GetGroupsCount() - 1;
             var groups = await _groupsService.GetGroups(page, pageSize);
             var maxpage = (count / pageSize) - (count % pageSize == 0 ? 1 : 0);
 

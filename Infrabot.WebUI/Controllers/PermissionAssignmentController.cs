@@ -7,28 +7,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Infrabot.WebUI.Services;
 
 namespace Infrabot.WebUI.Controllers
 {
+    [Authorize]
     public class PermissionAssignmentController : Controller
     {
-        private readonly InfrabotContext _context;
         private readonly ILogger<PermissionAssignmentController> _logger;
+        private readonly IPermissionAssignmentService _permissionAssignmentService;
+        private readonly IAuditLogService _auditLogService;
+        private readonly InfrabotContext _context;
 
-        public PermissionAssignmentController(ILogger<PermissionAssignmentController> logger, InfrabotContext infrabotContext)
+        public PermissionAssignmentController(ILogger<PermissionAssignmentController> logger, IPermissionAssignmentService permissionAssignmentService, IAuditLogService auditLogService, InfrabotContext infrabotContext)
         {
             _logger = logger;
+            _permissionAssignmentService = permissionAssignmentService;
+            _auditLogService = auditLogService;
             _context = infrabotContext;
         }
 
-        [Authorize]
         public async Task<IActionResult> Index(int page = 0)
         {
-            const int PageSize = 50;
-
-            var count = _context.PermissionAssignments.Count() - 1;
-            var assignments = await _context.PermissionAssignments.OrderBy(s => s.Name).Include(pa => pa.Plugins).Include(pa => pa.TelegramUsers).Include(pa => pa.Groups).Skip(page * PageSize).Take(PageSize).AsSplitQuery().ToListAsync();
-            var maxpage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+            int pageSize = 50;
+            var count = await _permissionAssignmentService.GetPermissionAssignmentsCount() - 1;
+            var assignments = await _permissionAssignmentService.GetPermissionAssignments();
+            var maxpage = (count / pageSize) - (count % pageSize == 0 ? 1 : 0);
 
             ViewBag.MaxPage = maxpage;
             ViewBag.Page = page;
@@ -37,7 +41,6 @@ namespace Infrabot.WebUI.Controllers
             return View(assignments);
         }
 
-        [Authorize]
         public async Task<IActionResult> Create()
         {
             var model = new PermissionAssignmentViewModel
@@ -62,7 +65,6 @@ namespace Infrabot.WebUI.Controllers
             return View(model);
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PermissionAssignmentViewModel model)
@@ -82,7 +84,7 @@ namespace Infrabot.WebUI.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    PopulatePermissionAssignmentViewModel(model);
+                    await PopulatePermissionAssignmentViewModel(model);
                     return View(model);
                 }
 
@@ -118,19 +120,17 @@ namespace Infrabot.WebUI.Controllers
                 return RedirectToAction("Index");
             }
 
-            PopulatePermissionAssignmentViewModel(model);
+            await PopulatePermissionAssignmentViewModel(model);
 
             return View(model);
         }
 
-        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            var permissionAssignment = await _context.PermissionAssignments.Include(pa => pa.Plugins).Include(pa => pa.TelegramUsers).Include(pa => pa.Groups).FirstOrDefaultAsync(pa => pa.Id == id);
-            if (permissionAssignment == null)
-            {
-                return NotFound();
-            }
+            var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(id);
+
+            if (permissionAssignment is null)
+                return RedirectToAction("Index");
 
             var model = new PermissionAssignmentViewModel
             {
@@ -159,30 +159,28 @@ namespace Infrabot.WebUI.Controllers
             return View(model);
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PermissionAssignmentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var permissionAssignment = await _context.PermissionAssignments.Include(pa => pa.Plugins).Include(pa => pa.TelegramUsers).Include(pa => pa.Groups).FirstOrDefaultAsync(pa => pa.Id == model.Id);
-                if (permissionAssignment == null)
-                {
-                    return NotFound();
-                }
+                var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(model.Id);
+
+                if (permissionAssignment is null)
+                    return RedirectToAction("Index");
 
                 permissionAssignment.Name = model.Name;
 
                 // Update Plugins.
-                var pluginsToRemove = permissionAssignment.Plugins
-                    .Where(p => !model.SelectedPluginIds.Contains(p.Id))
-                    .ToList();
+                var pluginsToRemove = permissionAssignment.Plugins.Where(p => !model.SelectedPluginIds.Contains(p.Id)).ToList();
                 foreach (var p in pluginsToRemove)
                 {
                     permissionAssignment.Plugins.Remove(p);
                 }
+
                 var existingPluginIds = permissionAssignment.Plugins.Select(p => p.Id).ToList();
+                
                 var pluginsToAdd = await _context.Plugins.Where(p => model.SelectedPluginIds.Contains(p.Id) && !existingPluginIds.Contains(p.Id)).ToListAsync();
                 foreach (var p in pluginsToAdd)
                 {
@@ -190,13 +188,12 @@ namespace Infrabot.WebUI.Controllers
                 }
 
                 // Update TelegramUsers.
-                var usersToRemove = permissionAssignment.TelegramUsers
-                    .Where(u => !model.SelectedTelegramUserIds.Contains(u.Id))
-                    .ToList();
+                var usersToRemove = permissionAssignment.TelegramUsers.Where(u => !model.SelectedTelegramUserIds.Contains(u.Id)).ToList();
                 foreach (var u in usersToRemove)
                 {
                     permissionAssignment.TelegramUsers.Remove(u);
                 }
+
                 var existingUserIds = permissionAssignment.TelegramUsers.Select(u => u.Id).ToList();
                 var usersToAdd = await _context.TelegramUsers.Where(u => model.SelectedTelegramUserIds.Contains(u.Id) && !existingUserIds.Contains(u.Id)).ToListAsync();
                 foreach (var u in usersToAdd)
@@ -208,6 +205,7 @@ namespace Infrabot.WebUI.Controllers
                 var groupsToRemove = permissionAssignment.Groups
                     .Where(g => !model.SelectedGroupIds.Contains(g.Id))
                     .ToList();
+
                 foreach (var g in groupsToRemove)
                 {
                     permissionAssignment.Groups.Remove(g);
@@ -223,40 +221,40 @@ namespace Infrabot.WebUI.Controllers
                 return RedirectToAction("Index");
             }
 
-            PopulatePermissionAssignmentViewModel(model);
+            await PopulatePermissionAssignmentViewModel(model);
             return View(model);
         }
 
-        [Authorize]
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var permissionAssignment = await _context.PermissionAssignments.FirstOrDefaultAsync(s => s.Id == Id);
+            var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(id);
+
             if (permissionAssignment is not null)
                 return View(permissionAssignment);
             else
                 return RedirectToAction("Index");
         }
 
-        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletePressed(int Id)
+        public async Task<IActionResult> DeletePressed(int id)
         {
-            var permissionAssignment = await _context.PermissionAssignments.FindAsync(Id);
-
-            if (permissionAssignment != null)
+            if (ModelState.IsValid)
             {
-                _context.PermissionAssignments.Remove(permissionAssignment);
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.PermissionAssignment, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} deleted permission '{permissionAssignment.Name}'" });
+                var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(id);
 
-                await _context.SaveChangesAsync();
+                if (permissionAssignment != null)
+                {
+                    await _permissionAssignmentService.DeletePermissionAssignment(permissionAssignment);
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.PermissionAssignment, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted deleted permission '{permissionAssignment.Name}'" });
+                }
             }
 
             return RedirectToAction("Index");
         }
 
         // Helper: Re-populate available lists if model state is invalid.
-        private void PopulatePermissionAssignmentViewModel(PermissionAssignmentViewModel model)
+        private async Task PopulatePermissionAssignmentViewModel(PermissionAssignmentViewModel model)
         {
             model.AvailablePlugins = _context.Plugins.Select(p => new SelectListItem
             {

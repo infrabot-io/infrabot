@@ -26,7 +26,7 @@ namespace Infrabot.WebUI.Controllers
         {
             int pageSize = 50;
 
-            var count = await _pluginsService.GetPluginsCount();
+            var count = await _pluginsService.GetPluginsCount() - 1;
             var plugins = await _pluginsService.GetPlugins(page, pageSize);
             var maxpage = (count / pageSize) - (count % pageSize == 0 ? 1 : 0);
 
