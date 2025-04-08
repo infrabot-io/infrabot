@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# <img src="assets/infrabot.png" height="32" width="32"/> **Infrabot** – Automate Your Infrastructure From Telegram
+# <img src="assets/infrabot.png" height="48" width="48"/> **Infrabot** – Automate Your Infrastructure From Telegram
 
 [![Infrabot Badge](https://img.shields.io/badge/infrabot-orange)](https://github.com/infrabot-io/infrabot)
 ![License](https://img.shields.io/github/license/infrabot-io/infrabot)
