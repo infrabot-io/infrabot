@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# ⚙️ **Infrabot** – Automate Your Infrastructure From Telegram
+# <img src="assets/infrabot.png" height="32" width="32"/> **Infrabot** – Automate Your Infrastructure From Telegram
 
 [![Infrabot Badge](https://img.shields.io/badge/infrabot-orange)](https://github.com/infrabot-io/infrabot)
 ![License](https://img.shields.io/github/license/infrabot-io/infrabot)
@@ -86,51 +86,51 @@ Each plugin defines the commandlets Infrabot can execute — and you can include
 <details>
 <summary><strong>📦 Plugin Basics</strong></summary>
 
-- 🔸 Format: Only `.plug` files are recognized
-- 🆔 Unique GUID & Plugin ID assigned at creation
-- 🧾 Commands with the same name across plugins are supported — just use the plugin ID to specify which one to run
-- ⚙️ Created/modified using the **Plugin Editor**
-- 🗂️ Contains metadata + scripts/apps needed for execution
-- 🧩 Each plugin can define **multiple commandlets**
+- Format: Only `.plug` files are recognized
+- Unique GUID & Plugin ID assigned at creation
+- Commands with the same name across plugins are supported — just use the plugin ID to specify which one to run
+- Created/modified using the **Plugin Editor**
+- Contains metadata + scripts/apps needed for execution
+- Each plugin can define **multiple commandlets**
 
 </details>
 
 <details>
 <summary><strong>🚀 Installing Plugins</strong></summary>
 
-- 📥 Copy the `.plug` file to `/plugins` in the Infrabot Telegram Service directory  
-- 🔍 Infrabot auto-detects and extracts contents into `/plugins/{plugin-GUID}`  
-- 🔁 If a newer version exists, it will **replace the old one**  
-- 🌐 Plugin appears automatically on the **Plugins** web page  
-- 🔄 Optionally use `/reloadplugins` to force immediate plugin reload  
+- Copy the `.plug` file to `/plugins` in the Infrabot Telegram Service directory  
+- Infrabot auto-detects and extracts contents into `/plugins/{plugin-GUID}`  
+- If a newer version exists, it will **replace the old one**  
+- Plugin appears automatically on the **Plugins** web page  
+- Optionally use `/reloadplugins` to force immediate plugin reload  
 
 </details>
 
 <details>
 <summary><strong>🗑️ Plugin Removal</strong></summary>
 
-- 🧹 Deleting the `.plug` file removes plugin metadata and disables it  
-- 📦 Extracted plugin folder remains unless deleted manually  
-- 🔁 If redeployed, the folder is **replaced and re-extracted** automatically  
+- Deleting the `.plug` file removes plugin metadata and disables it  
+- Extracted plugin folder remains unless deleted manually  
+- If redeployed, the folder is **replaced and re-extracted** automatically  
 
 </details>
 
 <details>
 <summary><strong>🔐 Integrity & Execution</strong></summary>
 
-- 🗂️ Executables can reside in subdirectories within the plugin folder  
-- 🛣️ Use correct relative paths in the plugin configuration  
-- 🧪 File hashes are checked before each execution  
-- 🚫 If a mismatch is found, execution is **blocked** to prevent tampering  
+- Executables can reside in subdirectories within the plugin folder  
+- Use correct relative paths in the plugin configuration  
+- File hashes are checked before each execution  
+- If a mismatch is found, execution is **blocked** to prevent tampering  
 
 </details>
 
 <details>
 <summary><strong>🔄 Command Updates & Conflicts</strong></summary>
 
-- ⏱️ Telegram command menu updates within **3–5 minutes**  
-- 🧭 Use plugin IDs to disambiguate overlapping command names  
-- 🗑️ Duplicate entries?  
+- Telegram command menu updates within **3–5 minutes**  
+- Use plugin IDs to disambiguate overlapping command names  
+- Duplicate entries?  
   → Delete the `.plug` file → wait for cleanup → redeploy cleanly  
 
 </details>
