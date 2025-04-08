@@ -57,7 +57,7 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 ## 📚 Documentation
 
-Your roadmap to becoming an Infrabot pro:
+Everything you need to get up and running with Infrabot:
 
 📘 **Essentials**
 - [Getting Started](https://infrabot-io.github.io/documentation/gettingstarted.html)
@@ -98,40 +98,40 @@ Each plugin defines the commandlets Infrabot can execute — and you can include
 <details>
 <summary><strong>🚀 Installing Plugins</strong></summary>
 
-1. Copy `.plug` file to `/plugins` in the Infrabot Telegram Service path
-2. Infrabot auto-loads and extracts the contents into `/plugins/{plugin-GUID}`
-3. If a newer version is detected, it replaces the old one
-4. Plugin appears in the **Plugins** web page
-5. Use `/reloadplugins` to trigger a manual refresh (optional)
+- 📥 Copy the `.plug` file to `/plugins` in the Infrabot Telegram Service directory  
+- 🔍 Infrabot auto-detects and extracts contents into `/plugins/{plugin-GUID}`  
+- 🔁 If a newer version exists, it will **replace the old one**  
+- 🌐 Plugin appears automatically on the **Plugins** web page  
+- 🔄 Optionally use `/reloadplugins` to force immediate plugin reload  
 
 </details>
 
 <details>
 <summary><strong>🗑️ Plugin Removal</strong></summary>
 
-- Deleting the `.plug` file removes the plugin from memory and UI
-- The extracted GUID folder is preserved (unless manually deleted)
-- If redeploying the same plugin, the old folder is wiped and re-extracted
+- 🧹 Deleting the `.plug` file removes plugin metadata and disables it  
+- 📦 Extracted plugin folder remains unless deleted manually  
+- 🔁 If redeployed, the folder is **replaced and re-extracted** automatically  
 
 </details>
 
 <details>
 <summary><strong>🔐 Integrity & Execution</strong></summary>
 
-- Execution files can be in any subdirectory inside the plugin folder
-- Relative paths must be specified correctly in the config
-- Execution file hashes are verified before each run
-- Mismatched hashes block execution for security
+- 🗂️ Executables can reside in subdirectories within the plugin folder  
+- 🛣️ Use correct relative paths in the plugin configuration  
+- 🧪 File hashes are checked before each execution  
+- 🚫 If a mismatch is found, execution is **blocked** to prevent tampering  
 
 </details>
 
 <details>
 <summary><strong>🔄 Command Updates & Conflicts</strong></summary>
 
-- Telegram command list auto-updates within 3–5 minutes
-- Overlapping command names are supported using plugin ID routing
-- Duplicate entries?  
-  → Delete the `.plug` file → wait for removal → redeploy the plugin
+- ⏱️ Telegram command menu updates within **3–5 minutes**  
+- 🧭 Use plugin IDs to disambiguate overlapping command names  
+- 🗑️ Duplicate entries?  
+  → Delete the `.plug` file → wait for cleanup → redeploy cleanly  
 
 </details>
 

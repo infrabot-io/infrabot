@@ -1,6 +1,5 @@
 ﻿using Infrabot.Common.Contexts;
 using Infrabot.Common.Models;
-using Infrabot.WebUI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Services
