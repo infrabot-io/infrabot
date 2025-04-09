@@ -25,17 +25,13 @@
                 <div class="col-sm-8">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
-                    <div class="invalid-feedback">
-                        Please provide the name of the group.
-                    </div>
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="col-sm-8">
                     <label for="users" class="form-label">Users</label>
                     <select asp-for="SelectedTelegramUserIds" class="form-select select2" id="users" multiple="multiple" asp-items="Model.AvailableTelegramUsers"></select>
-                    <div class="invalid-feedback">
-                        Please provide users.
-                    </div>
+                    <span asp-validation-for="SelectedTelegramUserIds" class="text-danger"></span>
                 </div>
             </div>
 

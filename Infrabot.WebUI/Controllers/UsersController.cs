@@ -46,12 +46,12 @@ namespace Infrabot.WebUI.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new CreateUserViewModel { };
+            var model = new UserViewModel { };
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserViewModel model)
+        public async Task<IActionResult> Create(UserViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -90,27 +90,38 @@ namespace Infrabot.WebUI.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> View(string Id)
+        public async Task<IActionResult> View(string id)
         {
-            var user = await _userManager.FindByIdAsync(Id);
+            var user = await _userManager.FindByIdAsync(id);
 
-            if (user is not null)
-                return View(user);
+            if (user is null)
+                return RedirectToAction("Index");
+            
+            return View(user);
+        }
 
-            return RedirectToAction("Index");
+        public async Task<IActionResult> Edit(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return RedirectToAction("Index");
+
+            var model = new UserViewModel
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                IsADIntegrated = user.IsADIntegrated,
+                Enabled = user.Enabled
+            };
+
+            return View(model);
         }
 
         /*
-
-        [Authorize]
-        public async Task<IActionResult> Edit(int Id)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(s => s.Id == Id);
-            if (user is not null)
-                return View(user);
-            else
-                return RedirectToAction("Index");
-        }
 
         [Authorize]
         [HttpPost]

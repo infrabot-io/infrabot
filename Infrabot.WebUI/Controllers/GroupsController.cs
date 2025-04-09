@@ -64,16 +64,16 @@ namespace Infrabot.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GroupViewModel groupViewModel)
         {
-            var existingGroup = await _groupsService.GetGroupByName(groupViewModel.Name);
-
-            if (existingGroup != null)
-            {
-                TempData[TempDataKeys.GroupAlreadyExists] = true;
-                return RedirectToAction("Create", existingGroup);
-            }
-
             if (ModelState.IsValid)
             {
+                var existingGroup = await _groupsService.GetGroupByName(groupViewModel.Name);
+
+                if (existingGroup != null)
+                {
+                    TempData[TempDataKeys.GroupAlreadyExists] = true;
+                    return RedirectToAction("Create", existingGroup);
+                }
+
                 var group = new Group
                 {
                     Name = groupViewModel.Name,

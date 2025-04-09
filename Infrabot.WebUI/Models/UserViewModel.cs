@@ -2,7 +2,7 @@
 
 namespace Infrabot.WebUI.Models
 {
-    public class CreateUserViewModel
+    public class UserViewModel
     {
         public string Name { get; set; }
         public string Surname { get; set; }

@@ -1,4 +1,5 @@
-﻿@model Infrabot.Common.Models.User
+﻿@using Infrabot.WebUI.Models
+@model UserViewModel
 @{
     ViewData["Title"] = "Edit a user";
 }
@@ -10,72 +11,57 @@
     </div>
 </div>
 
-<!--
 <div class="row g-3">
     <div class="col-md-7 col-lg-8">
         <form class="needs-validation" novalidate="" asp-action="Edit" method="post">
             @Html.AntiForgeryToken()
 
             <div class="row g-3">
-                <input type="hidden" asp-for="Id">
-
                 <div class="col-sm-6">
                     <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
-                    <div class="invalid-feedback">
-                        Please provide the name of the user.
-                    </div>
+                    <input type="text" class="form-control" id="name" placeholder="" asp-for="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="col-sm-6">
                     <label for="surname" class="form-label">Surname</label>
-                    <input type="text" class="form-control" id="surname" placeholder="" required="" asp-for="Surname">
-                    <div class="invalid-feedback">
-                        Please provide the surname of the user.
-                    </div>
+                    <input type="text" class="form-control" id="surname" placeholder="" asp-for="Surname">
+                    <span asp-validation-for="Surname" class="text-danger"></span>
                 </div>
 
                 <div class="col-12">
                     <label for="login" class="form-label">Login</label>
-                    <input type="text" class="form-control" id="login" placeholder="" required="" asp-for="UserName">
-                    <div class="invalid-feedback">
-                        Please provide the login of the user.
-                    </div>
+                    <input type="text" class="form-control" id="login" placeholder="" asp-for="UserName">
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
 
                 <div class="col-12">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="" required="" asp-for="Email">
-                    <div class="invalid-feedback">
-                        Please provide the email of the user.
-                    </div>
+                    <input type="email" class="form-control" id="email" placeholder="" asp-for="Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="col-12">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="" required="" asp-for="Password">
-                    <div class="invalid-feedback">
-                        Please provide the password of the user.
-                    </div>
+                    <input type="password" class="form-control" id="password" placeholder="" asp-for="Password">
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <div class="col-12">
                     <label for="phone" class="form-label">Phone</label>
                     <input type="tel" class="form-control" id="phone" placeholder="" required="" asp-for="PhoneNumber">
-                    <div class="invalid-feedback">
-                        Please provide the phone of the user.
-                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
                 <hr class="my-4">
 
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="isadintegrated" asp-for="IsADIntegrated">
+                    <input class="form-check-input" id="isadintegrated" asp-for="IsADIntegrated">
                     <label class="form-check-label" for="isadintegrated">User is AD integrated</label>
                 </div>
 
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="enbaled" asp-for="Enabled">
+                    <input class="form-check-input" id="enbaled" asp-for="Enabled">
                     <label class="form-check-label" for="enbaled">Enabled</label>
                 </div>
 
@@ -92,5 +78,3 @@
 
 <br>
 <br>
-
--->
