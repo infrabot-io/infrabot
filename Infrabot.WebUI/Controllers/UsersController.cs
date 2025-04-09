@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Infrabot.WebUI.Services;
 using Infrabot.WebUI.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -119,6 +120,39 @@ namespace Infrabot.WebUI.Controllers
             };
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is not null)
+                return View(user);
+            else
+                return RedirectToAction("Index");
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePressed(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                int usersCount = await _userManager.Users.CountAsync();
+
+                if (usersCount == 1)
+                    return RedirectToAction("Index");
+
+                var user = await _userManager.FindByIdAsync(id);
+
+                if (user is not null)
+                {
+                    await _userManager.DeleteAsync(user);
+                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Deleted user {user.UserName} by {this.User} failed" });
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
         /*
