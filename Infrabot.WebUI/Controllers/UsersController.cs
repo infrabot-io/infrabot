@@ -57,9 +57,20 @@ namespace Infrabot.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 var userCheckName = await _userManager.FindByNameAsync(model.UserName);
-                if (userCheckName != null) {  model.UserAlreadyExists = true;  return View(model); }
+                if (userCheckName != null) 
+                {  
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with username {model.UserName} because it already exists" });
+                    model.UserAlreadyExists = true;  
+                    return View(model); 
+                }
+
                 var userCheckEmail = await _userManager.FindByEmailAsync(model.Email);
-                if (userCheckEmail != null) { model.UserAlreadyExists = true; return View(model); }
+                if (userCheckEmail != null) 
+                { 
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with email {model.Email} because it already exists" });
+                    model.UserAlreadyExists = true;
+                    return View(model); 
+                }
 
                 var user = new User() 
                 { 
@@ -79,12 +90,12 @@ namespace Infrabot.WebUI.Controllers
                 if (result.Succeeded)
                 {
                     model.UserCreationSucceeded = true;
-                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Created user {user.UserName} by {this.User}" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} created user with username {user.UserName} and email {user.Email}" });
                 }
                 else
                 {
                     model.UserCreationSucceeded = false;
-                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Created user {user.UserName} by {this.User} failed" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with username {user.UserName} and email {user.Email}" });
                 }
             }
 
@@ -147,8 +158,8 @@ namespace Infrabot.WebUI.Controllers
 
                 if (user is not null)
                 {
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted user with username {user.UserName} and email {user.Email}" });
                     await _userManager.DeleteAsync(user);
-                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"Deleted user {user.UserName} by {this.User} failed" });
                 }
             }
 

@@ -115,8 +115,8 @@ namespace Infrabot.WebUI.Controllers
                         _logger.LogError("Failed to delete Plugin file: " + ex.ToString());
                     }
 
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted plugin {plugin.Name} with guid {plugin.Guid}" });
                     await _pluginsService.DeletePlugin(plugin);
-                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted plugin '{plugin.Name}'" });
                 }
             }
 

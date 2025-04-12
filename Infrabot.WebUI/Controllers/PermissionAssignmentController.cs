@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Infrabot.WebUI.Services;
-using System.Reflection.Metadata.Ecma335;
-using Infrabot.PluginSystem;
 
 namespace Infrabot.WebUI.Controllers
 {

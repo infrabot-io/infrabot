@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Infrabot.WebUI.Constants;
 using Infrabot.WebUI.Services;
+using Infrabot.PluginSystem;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -59,8 +60,8 @@ namespace Infrabot.WebUI.Controllers
                     return RedirectToAction("Create", telegramUser);
                 }
 
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.TelegramUser, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} created telegram user {telegramUser.Name} {telegramUser.Surname} with id {telegramUser.TelegramId}" });
                 await _telegramUsersService.CreateTelegramUser(telegramUser);
-                await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.TelegramUser, CreatedDate = DateTime.Now, Description = $"Created telegram user {telegramUser.Name} {telegramUser.Surname} {telegramUser.TelegramId} by {this.User}" });
 
                 return RedirectToAction("Index");
             }
@@ -93,8 +94,8 @@ namespace Infrabot.WebUI.Controllers
                 _telegramUser.Surname = telegramUser.Surname;
                 _telegramUser.TelegramId = telegramUser.TelegramId;
 
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.TelegramUser, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} updated telegram user and set {telegramUser.Name} {telegramUser.Surname} with id {telegramUser.TelegramId}" });
                 await _telegramUsersService.UpdateTelegramUser(_telegramUser);
-                await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Update, LogItem = AuditLogItem.TelegramUser, CreatedDate = DateTime.Now, Description = $"User {this.User} modified telegram user '{telegramUser.Name} {telegramUser.Surname} {telegramUser.TelegramId}'" });
 
                 return RedirectToAction("Index");
             }
@@ -122,8 +123,8 @@ namespace Infrabot.WebUI.Controllers
 
                 if (telegramUser is not null)
                 {
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.TelegramUser, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted telegram user {telegramUser.Name} {telegramUser.Surname} with id {telegramUser.TelegramId}" });
                     await _telegramUsersService.DeleteTelegramUser(telegramUser);
-                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.TelegramUser, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted telegram user '{telegramUser.Name} {telegramUser.Surname} {telegramUser.TelegramId}'" });
                 }
             }
 
