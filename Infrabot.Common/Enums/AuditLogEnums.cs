@@ -2,24 +2,44 @@
 {
     public enum AuditLogAction
     {
-        None = 0,
-        Create = 1,
-        Delete = 2,
-        Update = 3,
-        Migrate = 4,
-        Clean = 5,
-        LogOut = 6,
-        LogIn = 7,
-        ChangePassword = 8
+        None,
+        Create,
+        Delete,
+        Update,
+        Migrate,
+        Clean,
+        LogOut,
+        LogIn,
+        ChangePassword,
+        Access
     }
 
     public enum AuditLogItem
     {
-        Plugin = 0,
-        User = 1,
-        TelegramUser = 2,
-        PermissionAssignment = 3,
-        Configuration = 4,
-        Group = 5
+        Plugin,
+        User,
+        TelegramUser,
+        PermissionAssignment,
+        Configuration,
+        Group
+    }
+
+    public enum AuditLogResult
+    {
+        Success,
+        Failure,
+        Error,
+        Denied,
+        NotFound,
+        None
+    }
+
+    public enum AuditLogSeverity
+    {
+        Lowest,
+        Low,
+        Medium,
+        Higer,
+        Highest
     }
 }

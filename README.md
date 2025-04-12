@@ -17,7 +17,7 @@
 
 ## 🧠 What is Infrabot?
 
-🚀 **Infrabot** is a powerful **on-premise automation platform** designed for DevOps, SREs, sysadmins, and infrastructure engineers who want instant, secure command execution **directly from Telegram**.
+**Infrabot** is a powerful **on-premise automation platform** designed for DevOps, SREs, sysadmins, and infrastructure engineers who want instant, secure command execution **directly from Telegram**.
 
 Build your own modular **commandlets**, extend functionality with **plugins**, and manage your infrastructure with just a message. All without exposing your systems to the cloud.
 
@@ -153,10 +153,10 @@ That's it — you're ready to roll.
 
 We love community contributions! Here's how you can help:
 
-- 🐛 **Report bugs** and open issues
-- ✨ **Add new functionality**
-- 🔌 **Develop new plugins**
-- 🧾 **Improve the documentation**
+- **Report bugs** and open issues
+- **Add new functionality**
+- **Develop new plugins**
+- **Improve the documentation**
 
 Every PR is appreciated. Let's build something epic together.
 

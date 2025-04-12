@@ -94,7 +94,7 @@ namespace Infrabot.WebUI.Controllers
                     await _userGroupsService.AddRangeUserGroups(userGroups);
                 }
 
-                await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Create, LogItem = AuditLogItem.Group, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} created group '{group.Name}'" });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User} created group {groupViewModel.Name}" });
 
                 return RedirectToAction("Index");
             }
@@ -147,7 +147,7 @@ namespace Infrabot.WebUI.Controllers
                     : null;
 
                 await _groupsService.UpdateGroup(group);
-                await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} modified group '{group.Name}'" });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User} updated group {groupViewModel.Name}" });
 
                 return RedirectToAction("Index");
             }
@@ -176,8 +176,8 @@ namespace Infrabot.WebUI.Controllers
 
                 if (group is not null)
                 {
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted group {group.Name}" });
                     await _groupsService.DeleteGroup(group);
-                    await _auditLogService.AddAuditLog(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} deleted group '{group.Name}'" });
                 }
             }
 
