@@ -31,7 +31,7 @@ namespace Infrabot.WebUI.Controllers
 
             if (configuration is null)
             {
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Access, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} accessed Configuration page but got error about system configuration absense" });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Access, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} accessed Configuration page but got error about system configuration absense" });
                 _logger.LogError("System is corrupted. No configuration in the database has been found.");
                 return NotFound();
             }
@@ -47,7 +47,7 @@ namespace Infrabot.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} changed system configuration" });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} changed system configuration" });
                 await _configurationService.UpdateConfiguration(configuration);
 
                 _logger.LogInformation("Configuration saved: " + JsonConvert.SerializeObject(configuration));

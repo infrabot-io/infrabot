@@ -11,7 +11,6 @@ namespace Infrabot.WebUI.Extensions
     {
         public static IServiceCollection AddInfrabotControllerServices(this IServiceCollection services)
         {
-            // Register services related to the Item API
             services.AddScoped<IApiService, ApiService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAuditLogService, AuditLogService>();
@@ -23,13 +22,11 @@ namespace Infrabot.WebUI.Extensions
             services.AddScoped<IPermissionAssignmentService, PermissionAssignmentService>();
             services.AddScoped<IConfigurationService, ConfigurationService>();
 
-            // Return the IServiceCollection for method chaining
             return services; 
         }
 
         public static IServiceCollection AddInfrabotAuthentication(this IServiceCollection services)
         {
-            // Register services related to the Item API
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -42,24 +39,25 @@ namespace Infrabot.WebUI.Extensions
 
             services.ConfigureApplicationCookie(options =>
             {
+                options.AccessDeniedPath = "/account/accessdenied";
                 options.ExpireTimeSpan = TimeSpan.FromHours(10);
+                options.Cookie.Name = "InfrabotCookie";
                 options.LoginPath = "/account/login";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.HttpOnly = true;
+                options.SlidingExpiration = true;
             });
 
             services.Configure<IdentityOptions>(options =>
             {
                 configuration.GetSection(nameof(IdentityOptions)).Bind(options);
             });
-
-            // Return the IServiceCollection for method chaining
+            
             return services;
         }
 
         public static IServiceCollection AddInfrabotLogging(this IServiceCollection services)
         {
-            // Register services related to the Item API
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -72,7 +70,6 @@ namespace Infrabot.WebUI.Extensions
 
             services.AddSerilog();
 
-            // Return the IServiceCollection for method chaining
             return services;
         }
     }

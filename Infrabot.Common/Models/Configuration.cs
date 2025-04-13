@@ -25,11 +25,6 @@ namespace Infrabot.Common.Models
         public string? TelegramPythonPath { get; set; } = "/usr/bin/python";
         public string? TelegramPythonArguments { get; set; } = "";
         public int TelegramResultMaxLength { get; set; } = 12000;
-        public int PasswordPolicyMinLength { get; set; } = 6;
-        public bool PasswordPolicyContainSpecialCharacter { get; set; } = false;
-        public bool PasswordPolicyContainNumber { get; set; } = false;
-        public bool PasswordPolicyContainLowerCase { get; set; } = false;
-        public bool PasswordPolicyContainUpperCase { get; set; } = false;
         public DateTime UpdatedDate { get; set; } = DateTime.Now;
     }
 }

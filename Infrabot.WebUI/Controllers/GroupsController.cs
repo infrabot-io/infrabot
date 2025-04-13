@@ -4,7 +4,6 @@ using Infrabot.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Claims;
 using Infrabot.WebUI.Constants;
 using Infrabot.WebUI.Services;
 
@@ -94,7 +93,7 @@ namespace Infrabot.WebUI.Controllers
                     await _userGroupsService.AddRangeUserGroups(userGroups);
                 }
 
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User} created group {groupViewModel.Name}" });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} created group {groupViewModel.Name}" });
 
                 return RedirectToAction("Index");
             }
@@ -147,7 +146,7 @@ namespace Infrabot.WebUI.Controllers
                     : null;
 
                 await _groupsService.UpdateGroup(group);
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User} updated group {groupViewModel.Name}" });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated group {groupViewModel.Name}" });
 
                 return RedirectToAction("Index");
             }
@@ -176,7 +175,7 @@ namespace Infrabot.WebUI.Controllers
 
                 if (group is not null)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted group {group.Name}" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted group {group.Name}" });
                     await _groupsService.DeleteGroup(group);
                 }
             }

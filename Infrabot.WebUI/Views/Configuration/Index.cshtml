@@ -159,54 +159,6 @@
                 </div>
             </div>
 
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h5 class="card-title">Password policy</h5>
-
-                    <h6 class="card-subtitle mb-4 text-muted">Set password policy for users.</h6>
-
-                    <div class="row g-3">
-                        <div class="col-8">
-                            <label for="passwordpolicyminlength" class="form-label">Password minimal length</label>
-                            <input type="number" class="form-control" id="passwordpolicyminlength" placeholder="6" required="" asp-for="PasswordPolicyMinLength">
-                            <div class="invalid-feedback">
-                                Please provide password minimal length.
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="passwordpolicycontainspecialcharacter" asp-for="PasswordPolicyContainSpecialCharacter">
-                                <label class="form-check-label" for="passwordpolicycontainspecialcharacter">Contain special character</label>
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="passwordpolicypontainpumber" asp-for="PasswordPolicyContainNumber">
-                                <label class="form-check-label" for="passwordpolicypontainpumber">Contain number</label>
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="passwordpolicycontainlowercase" asp-for="PasswordPolicyContainLowerCase">
-                                <label class="form-check-label" for="passwordpolicycontainlowercase">Contain lowercase</label>
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="passwordpolicycontainuppercase" asp-for="PasswordPolicyContainUpperCase">
-                                <label class="form-check-label" for="PasswordPolicyContainUpperCase">Contain uppercase</label>
-                            </div>
-                        </div>
-
-                        <input type="number" class="d-none" asp-for="Id">
-                    </div>
-                </div>
-            </div>
-
             <br>
 
             <button class="btn btn-orange" type="submit">Save</button>

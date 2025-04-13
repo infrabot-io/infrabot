@@ -60,7 +60,7 @@ namespace Infrabot.WebUI.Controllers
                 var userCheckName = await _userManager.FindByNameAsync(model.UserName);
                 if (userCheckName != null) 
                 {  
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with username {model.UserName} because it already exists" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} was not able to create user with username {model.UserName} because it already exists" });
                     ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
                     return View(model); 
                 }
@@ -68,7 +68,7 @@ namespace Infrabot.WebUI.Controllers
                 var userCheckEmail = await _userManager.FindByEmailAsync(model.Email);
                 if (userCheckEmail != null) 
                 { 
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with email {model.Email} because it already exists" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} was not able to create user with email {model.Email} because it already exists" });
                     ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
                     return View(model); 
                 }
@@ -91,12 +91,12 @@ namespace Infrabot.WebUI.Controllers
                 if (result.Succeeded)
                 {
                     ViewData[TempDataKeys.CreateUserSucceeded] = true;
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} created user with username {user.UserName} and email {user.Email}" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} created user with username {user.UserName} and email {user.Email}" });
                 }
                 else
                 {
                     ViewData[TempDataKeys.CreateUserFailed] = true;
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with username {user.UserName} and email {user.Email}" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} was not able to create user with username {user.UserName} and email {user.Email}" });
                 }
             }
 
@@ -145,20 +145,23 @@ namespace Infrabot.WebUI.Controllers
 
             if (ModelState.IsValid)
             {
-                var userCheckName = await _userManager.FindByNameAsync(model.UserName);
-                if (userCheckName != null)
-                {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to edit and set {model.UserName} value to user with username {user.UserName} because it already exists." });
-                    ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
-                    return View(model);
-                }
+                if(!user.UserName.Equals(model.UserName, StringComparison.OrdinalIgnoreCase))
+                { 
+                    var userCheckName = await _userManager.FindByNameAsync(model.UserName);
+                    if (userCheckName != null)
+                    {
+                        await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} was not able to edit and set {model.UserName} value to user with username {user.UserName} because it already exists." });
+                        ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
+                        return View(model);
+                    }
 
-                var userCheckEmail = await _userManager.FindByEmailAsync(model.Email);
-                if (userCheckEmail != null)
-                {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to edit and set {model.Email} value to user with email {user.Email} because it already exists." });
-                    ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
-                    return View(model);
+                    var userCheckEmail = await _userManager.FindByEmailAsync(model.Email);
+                    if (userCheckEmail != null)
+                    {
+                        await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} was not able to edit and set {model.Email} value to user with email {user.Email} because it already exists." });
+                        ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
+                        return View(model);
+                    }
                 }
 
                 user.Name = model.Name;
@@ -171,12 +174,12 @@ namespace Infrabot.WebUI.Controllers
 
                 if (!string.IsNullOrWhiteSpace(model.Password))
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} updated password of user {user.UserName}." });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated password of user {user.UserName}." });
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     await _userManager.ChangePasswordAsync(user, token, model.Password);
                 }
 
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} updated user {user.UserName}." });
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated user {user.UserName}." });
                 await _userManager.UpdateAsync(user);
             }
 
@@ -208,7 +211,7 @@ namespace Infrabot.WebUI.Controllers
 
                 if (user is not null)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} deleted user with username {user.UserName} and email {user.Email}" });
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted user with username {user.UserName} and email {user.Email}" });
                     await _userManager.DeleteAsync(user);
                 }
             }

@@ -129,11 +129,6 @@ namespace Infrabot.Common.Contexts
                     TelegramPythonPath = "/usr/bin/python",
                     TelegramPythonArguments = "",
                     TelegramResultMaxLength = 12000,
-                    PasswordPolicyMinLength = 6,
-                    PasswordPolicyContainLowerCase = false,
-                    PasswordPolicyContainUpperCase = false,
-                    PasswordPolicyContainNumber = false,
-                    PasswordPolicyContainSpecialCharacter = false,
                     UpdatedDate = DateTime.Now
                 }
             );
