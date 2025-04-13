@@ -54,7 +54,7 @@ Welcome, and thank you for considering contributing to Infrabot! This document o
 	- Be clearly scoped (avoid bloat).
 	- Include UI support if applicable.
 	
-## ✅ CCode Guidelines
+## ✅ Code Guidelines
 - Use async/await for all I/O and DB calls.
 - Stick to C# 10+ conventions (nullability, var, scoped namespaces).
 - Avoid magic strings — use centralized constants in /Constants/.

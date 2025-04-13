@@ -1,8 +1,6 @@
 using Infrabot.Common.Contexts;
-using Infrabot.Common.Models;
 using Infrabot.WebUI.Constants;
 using Infrabot.WebUI.Extensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,23 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 /* Add services                          */
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<InfrabotContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString(ConfigKeys.DefaultConnection), b=> b.MigrationsAssembly("Infrabot.WebUI")));
-//builder.Services.AddInfrabotAuthentication();
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-{
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 5;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.SignIn.RequireConfirmedEmail = false;
-}).AddEntityFrameworkStores<InfrabotContext>().AddDefaultTokenProviders();
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/account/login";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.HttpOnly = true;
-});
-
+builder.Services.AddInfrabotAuthentication();
 builder.Services.AddInfrabotLogging();
 builder.Services.AddInfrabotControllerServices();
 

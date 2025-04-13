@@ -7,6 +7,7 @@ using Infrabot.WebUI.Services;
 using Infrabot.WebUI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -60,7 +61,7 @@ namespace Infrabot.WebUI.Controllers
                 if (userCheckName != null) 
                 {  
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with username {model.UserName} because it already exists" });
-                    model.UserAlreadyExists = true;  
+                    ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
                     return View(model); 
                 }
 
@@ -68,7 +69,7 @@ namespace Infrabot.WebUI.Controllers
                 if (userCheckEmail != null) 
                 { 
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with email {model.Email} because it already exists" });
-                    model.UserAlreadyExists = true;
+                    ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
                     return View(model); 
                 }
 
@@ -89,12 +90,12 @@ namespace Infrabot.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-                    model.UserCreationSucceeded = true;
+                    ViewData[TempDataKeys.CreateUserSucceeded] = true;
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} created user with username {user.UserName} and email {user.Email}" });
                 }
                 else
                 {
-                    model.UserCreationSucceeded = false;
+                    ViewData[TempDataKeys.CreateUserFailed] = true;
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to create user with username {user.UserName} and email {user.Email}" });
                 }
             }
@@ -133,6 +134,55 @@ namespace Infrabot.WebUI.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, UserViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return RedirectToAction("Index");
+
+            if (ModelState.IsValid)
+            {
+                var userCheckName = await _userManager.FindByNameAsync(model.UserName);
+                if (userCheckName != null)
+                {
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to edit and set {model.UserName} value to user with username {user.UserName} because it already exists." });
+                    ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
+                    return View(model);
+                }
+
+                var userCheckEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (userCheckEmail != null)
+                {
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} was not able to edit and set {model.Email} value to user with email {user.Email} because it already exists." });
+                    ViewData[TempDataKeys.CreateUserAlreadyExists] = true;
+                    return View(model);
+                }
+
+                user.Name = model.Name;
+                user.Surname = model.Surname;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.IsADIntegrated = model.IsADIntegrated;
+                user.Enabled = model.Enabled;
+
+                if (!string.IsNullOrWhiteSpace(model.Password))
+                {
+                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} updated password of user {user.UserName}." });
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await _userManager.ChangePasswordAsync(user, token, model.Password);
+                }
+
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User} updated user {user.UserName}." });
+                await _userManager.UpdateAsync(user);
+            }
+
+            return View(user);
+        }
+
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -165,70 +215,5 @@ namespace Infrabot.WebUI.Controllers
 
             return RedirectToAction("Index");
         }
-
-        /*
-
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int Id, User user)
-        {
-            var _user = await _context.Users.FirstOrDefaultAsync(s => s.Id == Id);
-
-            if (_user is null)
-                return RedirectToAction("Index");
-
-            if (ModelState.IsValid)
-            {
-                _user.Email = user.Email;
-                _user.Name = user.Name;
-                _user.Surname = user.Surname;
-                _user.IsADIntegrated = user.IsADIntegrated;
-                _user.Enabled = user.Enabled;
-                _user.Login = user.Login;
-                _user.Phone = user.Phone;
-                _user.Password = user.Password;
-                _user.Email = user.Email;
-
-                _context.Update(_user);
-
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} updated user '{user.Login}'" });
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index");
-            }
-
-            return View(user);
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Delete(int Id)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(s => s.Id == Id);
-            if (user is not null)
-                return View(user);
-            else
-                return RedirectToAction("Index");
-        }
-
-        [Authorize]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletePressed(int Id)
-        {
-            var user = await _context.Users.FindAsync(Id);
-
-            if (user is not null)
-            {
-                _context.Users.Remove(user);
-                _context.AuditLogs.Add(new AuditLog { LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.User, CreatedDate = DateTime.Now, Description = $"User {HttpContext.User.FindFirstValue("Login")} deleted user '{user.Login}'" });
-
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        */
     }
 }

@@ -10,12 +10,9 @@ namespace Infrabot.WebUI.Models
         public string Email { get; set; }
 
         [DataType(DataType.Password)]
-        public string Password { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? Password { get; set; }
+        public string? PhoneNumber { get; set; }
         public bool IsADIntegrated { get; set; } = false;
         public bool Enabled { get; set; } = true;
-
-        public bool UserAlreadyExists = false;
-        public bool UserCreationSucceeded = false;
     }
 }

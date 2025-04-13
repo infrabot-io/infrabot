@@ -1,6 +1,8 @@
-﻿using Infrabot.WebUI.Constants;
+﻿using Infrabot.Common.Contexts;
+using Infrabot.Common.Models;
+using Infrabot.WebUI.Constants;
 using Infrabot.WebUI.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace Infrabot.WebUI.Extensions
@@ -28,14 +30,28 @@ namespace Infrabot.WebUI.Extensions
         public static IServiceCollection AddInfrabotAuthentication(this IServiceCollection services)
         {
             // Register services related to the Item API
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable(ConfigKeys.EnvironmentVariable) ?? "Production"}.json", true)
+                .Build();
+
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<InfrabotContext>()
+                .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
             {
                 options.ExpireTimeSpan = TimeSpan.FromHours(10);
-                options.SlidingExpiration = true;
+                options.LoginPath = "/account/login";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.HttpOnly = true;
             });
-            services.ConfigureApplicationCookie(options => { options.ExpireTimeSpan = TimeSpan.FromHours(10); });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                configuration.GetSection(nameof(IdentityOptions)).Bind(options);
+            });
 
             // Return the IServiceCollection for method chaining
             return services;
@@ -55,10 +71,6 @@ namespace Infrabot.WebUI.Extensions
                     .CreateLogger();
 
             services.AddSerilog();
-
-            //builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-            //builder.Logging.AddConsole();
-            //builder.Logging.AddEventLog();
 
             // Return the IServiceCollection for method chaining
             return services;

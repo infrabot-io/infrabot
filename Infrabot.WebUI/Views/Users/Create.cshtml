@@ -1,4 +1,5 @@
-﻿@using Infrabot.WebUI.Models
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.WebUI.Models
 @model UserViewModel
 @{
     ViewData["Title"] = "Create a user";
@@ -11,17 +12,24 @@
     </div>
 </div>
 
-@if (Model.UserAlreadyExists == true)
+@if (ViewData[TempDataKeys.CreateUserAlreadyExists] as bool? == true)
 {
     <div class="alert alert-danger mt-2" role="alert">
         User with the specified login or email already exists. Please provide unique login and email values.
     </div>
 }
 
-@if (Model.UserCreationSucceeded == true)
+@if (ViewData[TempDataKeys.CreateUserSucceeded] as bool? == true)
 {
     <div class="alert alert-success mt-2" role="alert">
         User with the specified login has been created successfully.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.CreateUserFailed] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        User with the specified login and email was not created.
     </div>
 }
 

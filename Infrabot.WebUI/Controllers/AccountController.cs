@@ -1,7 +1,6 @@
 ﻿using Infrabot.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Infrabot.Common.Enums;
 using Microsoft.AspNetCore.Identity;
 using Infrabot.WebUI.Models;
