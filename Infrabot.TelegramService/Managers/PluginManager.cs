@@ -11,15 +11,19 @@ namespace Infrabot.TelegramService.Managers
     {
         private readonly ILogger<PluginManager> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IConfiguration _configuration;
         private readonly List<Plugin> _plugins = new();
         private readonly object _lock = new();
-        private readonly string _pluginDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+        private string _pluginDirectory;
         private readonly ConcurrentDictionary<Guid, (DateTime LastModified, int Version)> _loadedPluginMeta = new();
 
-        public PluginManager(ILogger<PluginManager> logger, IServiceScopeFactory scopeFactory)
+        public PluginManager(ILogger<PluginManager> logger, IServiceScopeFactory scopeFactory, IConfiguration configuration)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
+            _configuration = configuration;
+
+            _pluginDirectory = NormalizePluginPath(configuration["Plugins:PluginsDirectory"] ?? "plugins");
         }
 
         public IReadOnlyList<Plugin> Plugins
@@ -216,6 +220,13 @@ namespace Infrabot.TelegramService.Managers
 
             // Save changes to the database
             await _context.SaveChangesAsync();
+        }
+
+        private string NormalizePluginPath(string path)
+        {
+            return Path.IsPathRooted(path)
+                ? path
+                : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, path));
         }
     }
 }

@@ -78,25 +78,27 @@ namespace Infrabot.Common.Contexts
                 .WithMany() // or use .WithMany(g => g.PermissionAssignments) if added on Group.
                 .UsingEntity(j => j.ToTable("PermissionAssignmentGroups"));
 
-            /*
             modelBuilder.Entity<User>().HasData(
                  new User
                  {
                      Id = Guid.NewGuid().ToString(),
                      Name = "admin",
                      Surname = "aa",
-                     Login = "admin",
+                     UserName = "admin",
+                     NormalizedUserName = "ADMIN",
                      Email = "admin@aa.com",
-                     Password = "pass",
+                     NormalizedEmail = "ADMIN@AA.COM",
+                     PasswordHash = "AQAAAAIAAYagAAAAEB7N7LlWRtWERCJRKboz8R+Tbe5iupZg6cB0PIIZfP665CpUTH2HaLgwOdLrbnfzyA==",
+                     SecurityStamp = "ERGPNXFOAL2U6YZ32OIZL5URPF7O3Q77",
+                     ConcurrencyStamp = "3c52c8fb-9450-4b04-9610-7bd7053801d3",
                      CreatedDate = DateTime.Now,
                      UpdatedDate = DateTime.Now,
                      LastLoginDate = DateTime.Now,
-                     Phone = "12313123",
+                     PhoneNumber = "12313123",
                      IsADIntegrated = false,
                      Enabled = true
                  }
             );
-            */
 
             modelBuilder.Entity<TelegramUser>().HasData(
                  new TelegramUser

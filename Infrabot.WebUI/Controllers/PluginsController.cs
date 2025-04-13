@@ -13,16 +13,21 @@ namespace Infrabot.WebUI.Controllers
         private readonly ILogger<PluginsController> _logger;
         private readonly IPluginsService _pluginsService;
         private readonly IAuditLogService _auditLogService;
-        private static readonly string pluginsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
+        private readonly IConfiguration _configuration;
+        private string _pluginDirectory;
 
         public PluginsController(
             ILogger<PluginsController> logger,
             IPluginsService pluginsService, 
-            IAuditLogService auditLogService)
+            IAuditLogService auditLogService,
+            IConfiguration configuration)
         {
             _logger = logger;
             _pluginsService = pluginsService;
             _auditLogService = auditLogService;
+            _configuration = configuration;
+
+            _pluginDirectory = NormalizePluginPath(configuration["Plugins:PluginsDirectory"] ?? "plugins");
         }
 
         public async Task<IActionResult> Index(int page = 0)
@@ -48,7 +53,7 @@ namespace Infrabot.WebUI.Controllers
             {
                 try
                 {
-                    string[] files = Directory.GetFiles(pluginsPath, "*.plug");
+                    string[] files = Directory.GetFiles(_pluginDirectory, "*.plug");
 
                     foreach (string file in files)
                     {
@@ -98,7 +103,7 @@ namespace Infrabot.WebUI.Controllers
                 {
                     try
                     {
-                        string[] files = Directory.GetFiles(pluginsPath, "*.plug");
+                        string[] files = Directory.GetFiles(_pluginDirectory, "*.plug");
 
                         foreach (string file in files)
                         {
@@ -121,6 +126,13 @@ namespace Infrabot.WebUI.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        private string NormalizePluginPath(string path)
+        {
+            return Path.IsPathRooted(path)
+                ? path
+                : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, path));
         }
     }
 }

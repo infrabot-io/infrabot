@@ -23,8 +23,6 @@ namespace Infrabot.TelegramService.Commands
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("📦 _Available Plugin Commands:_");
 
-            Console.WriteLine($"Plugin count in registry: {_pluginRegistry.Plugins.Count}");
-
             if (_pluginRegistry.Plugins.Count > 0)
             {
                 foreach (Plugin plugin in _pluginRegistry.Plugins)
