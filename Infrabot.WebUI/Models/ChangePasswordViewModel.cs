@@ -13,6 +13,5 @@ namespace Infrabot.WebUI.Models
 
         [DataType(DataType.Password)]
         public string NewPasswordRepeat { get; set; }
-        public bool NewPasswordNotEqualToRepeat { get; set; } = false;
     }
 }

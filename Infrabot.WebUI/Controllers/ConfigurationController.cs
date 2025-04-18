@@ -32,11 +32,9 @@ namespace Infrabot.WebUI.Controllers
             if (configuration is null)
             {
                 await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Access, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} accessed Configuration page but got error about system configuration absense" });
-                _logger.LogError("System is corrupted. No configuration in the database has been found.");
+                _logger.LogError("System is corrupted. No configuration in the database has been found. Please delete database and restart application.");
                 return NotFound();
             }
-
-            ViewBag.ConfigurationSaved = TempData[TempDataKeys.ConfigurationSaved];
 
             return View(configuration);
         }
@@ -52,7 +50,7 @@ namespace Infrabot.WebUI.Controllers
 
                 _logger.LogInformation("Configuration saved: " + JsonConvert.SerializeObject(configuration));
 
-                TempData[TempDataKeys.ConfigurationSaved] = true;
+                ViewData[TempDataKeys.ConfigurationSaved] = true;
 
                 return RedirectToAction("Index");
             }

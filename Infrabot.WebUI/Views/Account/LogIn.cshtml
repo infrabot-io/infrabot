@@ -1,4 +1,5 @@
-﻿@using Infrabot.WebUI.Models
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.WebUI.Models
 @model LoginViewModel
 @{
     Layout = null;
@@ -38,19 +39,21 @@
                 <label asp-for="RememberMe" class="form-label">Remember me</label>
             </div>
 
-            @if (Model.LoginOrPasswordIncorrect == true)
+            @if (ViewData[TempDataKeys.AccountLoginOrPasswordIncorrect] as bool? == true)
             {
                 <div class="alert alert-danger" role="alert">
                     Login or password is incorrect.
                 </div>
             }
-            @if (Model.LoginDenied == true)
+
+            @if (ViewData[TempDataKeys.AccountLoginDenied] as bool? == true)
             {
                 <div class="alert alert-danger" role="alert">
                     Login is denied.
                 </div>
             }
-            @if (Model.ADAuthFailed == true)
+
+            @if (ViewData[TempDataKeys.AccountADAuthFailed] as bool? == true)
             {
                 <div class="alert alert-danger" role="alert">
                     Could not authenticate to Active Directory. Password and login is wrong.

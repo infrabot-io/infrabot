@@ -44,6 +44,8 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.Page = page;
             ViewBag.Pages = maxpage + 1;
 
+            ViewBag.GroupNotFound = TempData[TempDataKeys.GroupNotFound] as bool?;
+
             return View(groups);
         }
 
@@ -55,7 +57,6 @@ namespace Infrabot.WebUI.Controllers
                 AvailableTelegramUsers = telegramUsers.Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name + " " + p.Surname }).ToList()
             };
 
-            ViewBag.GroupAlreadyExists = TempData[TempDataKeys.GroupAlreadyExists];
             return View(groupViewModel);
         }
 
@@ -69,8 +70,8 @@ namespace Infrabot.WebUI.Controllers
 
                 if (existingGroup != null)
                 {
-                    TempData[TempDataKeys.GroupAlreadyExists] = true;
-                    return RedirectToAction("Create", existingGroup);
+                    ViewData[TempDataKeys.GroupAlreadyExists] = true;
+                    return View(groupViewModel);
                 }
 
                 var group = new Group
@@ -107,7 +108,10 @@ namespace Infrabot.WebUI.Controllers
             var group = await _groupsService.GetGroupById(id);
 
             if (group is null)
+            {
+                TempData[TempDataKeys.GroupNotFound] = true;
                 return RedirectToAction("Index");
+            }
 
             var telegramUsers = await _telegramUsersService.GetAllTelegramUsers();
 
@@ -131,7 +135,10 @@ namespace Infrabot.WebUI.Controllers
                 var group = await _groupsService.GetGroupById(id);
 
                 if (group is null)
+                {
+                    TempData[TempDataKeys.GroupNotFound] = true;
                     return RedirectToAction("Index");
+                }
 
                 group.Name = groupViewModel.Name;
                 group.UpdatedDate = DateTime.Now;

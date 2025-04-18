@@ -1,4 +1,6 @@
-﻿@model Infrabot.WebUI.Models.GroupViewModel
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.WebUI.Models
+@model GroupViewModel
 @{
     ViewData["Title"] = "Create a group";
 }
@@ -33,7 +35,7 @@
                 </div>
             </div>
 
-            @if (ViewBag.GroupAlreadyExists != null)
+            @if (ViewData[TempDataKeys.GroupAlreadyExists] as bool? == true)
             {
                 <div class="alert alert-danger mt-2" role="alert">
                     Group with the specified name already exists. Please provide unique group name.

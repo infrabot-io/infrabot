@@ -138,13 +138,13 @@ namespace Infrabot.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, UserViewModel model)
         {
-            var user = await _userManager.FindByIdAsync(id);
-
-            if (user is null)
-                return RedirectToAction("Index");
-
             if (ModelState.IsValid)
             {
+                var user = await _userManager.FindByIdAsync(id);
+
+                if (user is null)
+                    return RedirectToAction("Index");
+
                 if(!user.UserName.Equals(model.UserName, StringComparison.OrdinalIgnoreCase))
                 { 
                     var userCheckName = await _userManager.FindByNameAsync(model.UserName);
@@ -172,18 +172,30 @@ namespace Infrabot.WebUI.Controllers
                 user.IsADIntegrated = model.IsADIntegrated;
                 user.Enabled = model.Enabled;
 
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated user {user.UserName}." });
+                await _userManager.UpdateAsync(user);
+
                 if (!string.IsNullOrWhiteSpace(model.Password))
                 {
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated password of user {user.UserName}." });
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    await _userManager.ChangePasswordAsync(user, token, model.Password);
-                }
+                    
+                    await _userManager.RemovePasswordAsync(user);
+                    var result = await _userManager.AddPasswordAsync(user, model.Password);
 
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated user {user.UserName}." });
-                await _userManager.UpdateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        ViewData[TempDataKeys.EditUserSuccessWithPassword] = true;
+                    }
+                    else
+                    {
+                        ViewData[TempDataKeys.EditUserFailedWithPassword] = true;
+                    }
+                }
             }
 
-            return View(user);
+            ViewData[TempDataKeys.EditUserSuccess] = true;
+
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(string id)

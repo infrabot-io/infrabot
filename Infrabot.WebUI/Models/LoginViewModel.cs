@@ -11,9 +11,5 @@ namespace Infrabot.WebUI.Models
 
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
-
-        public bool LoginOrPasswordIncorrect { get; set; } = false;
-        public bool LoginDenied { get; set; } = false;
-        public bool ADAuthFailed { get; set; } = false;
     }
 }

@@ -1,4 +1,6 @@
-﻿@model List<Infrabot.Common.Models.Group>
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.Common.Models
+@model List<Group>
 @{
     ViewData["Title"] = "Groups";
 }
@@ -16,6 +18,13 @@
         </a>
     </div>
 </div>
+
+@if (ViewData[TempDataKeys.GroupNotFound] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Group with the specified name does not exist.
+    </div>
+}
 
 <table class="table mt-4 mb-4">
     <thead>
