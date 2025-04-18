@@ -1,4 +1,6 @@
-﻿@model Infrabot.WebUI.Models.PermissionAssignmentViewModel
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.WebUI.Models
+@model PermissionAssignmentViewModel
 @{
     ViewData["Title"] = "Create Permission Assignment";
 }
@@ -13,6 +15,20 @@
         <p class="blog-post-meta mt-1 text-muted">Create a permission assignment</p>
     </div>
 </div>
+
+@if (ViewData[TempDataKeys.PermissionAssignmentOnePluginMustBeSelected] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        At least one plugin must be selected.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.PermissionAssignmentOneTelegramUserMustBeSelected] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        At least one telegram user must be selected.
+    </div>
+}
 
 <div class="row g-3">
     <div class="col-md-7 col-lg-8">

@@ -26,6 +26,13 @@
     </div>
 }
 
+@if (ViewData[TempDataKeys.GroupDeleted] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Group has been deleted.
+    </div>
+}
+
 <table class="table mt-4 mb-4">
     <thead>
         <tr>

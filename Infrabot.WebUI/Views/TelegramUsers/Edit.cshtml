@@ -1,4 +1,6 @@
-﻿@model Infrabot.Common.Models.TelegramUser
+﻿@using Infrabot.Common.Models
+@using Infrabot.WebUI.Constants
+@model TelegramUser
 @{
     ViewData["Title"] = "Edit a telegram user";
 }
@@ -9,6 +11,13 @@
         <p class="blog-post-meta mt-1 text-muted">Edit telegram user parameneters</p>
     </div>
 </div>
+
+@if (ViewData[TempDataKeys.TelegramUserSaved] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Telegram user saved.
+    </div>
+}
 
 <div class="row g-3">
     <div class="col-md-7 col-lg-8">

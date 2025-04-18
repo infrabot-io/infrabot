@@ -17,9 +17,21 @@
         // GroupsController
         public const string GroupAlreadyExists = "GroupAlreadyExists";
         public const string GroupNotFound = "GroupNotFound";
+        public const string GroupSaved = "GroupSaved";
+        public const string GroupDeleted = "GroupDeleted";
+
+        // PermissionAssignmentController
+        public const string PermissionAssignmentNotFound = "PermissionAssignmentNotFound"; 
+        public const string PermissionAssignmentSaved = "PermissionAssignmentSaved";
+        public const string PermissionAssignmentDeleted = "PermissionAssignmentDeleted";
+        public const string PermissionAssignmentOnePluginMustBeSelected = "PermissionAssignmentOnePluginMustBeSelected";
+        public const string PermissionAssignmentOneTelegramUserMustBeSelected = "PermissionAssignmentOneTelegramUserMustBeSelected";
 
         // TelegramUsersController
         public const string TelegramUserAlreadyExists = "TelegramUserAlreadyExists";
+        public const string TelegramUserNotFound = "TelegramUserNotFound";
+        public const string TelegramUserSaved = "TelegramUserSaved";
+        public const string TelegramUserDeleted = "TelegramUserDeleted";
 
         // UsersController
         public const string CreateUserAlreadyExists = "CreateUserAlreadyExists";

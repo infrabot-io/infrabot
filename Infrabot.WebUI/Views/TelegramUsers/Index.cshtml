@@ -1,4 +1,6 @@
-﻿@model List<Infrabot.Common.Models.TelegramUser>
+﻿@using Infrabot.Common.Models
+@using Infrabot.WebUI.Constants
+@model List<TelegramUser>
 @{
     ViewData["Title"] = "Telegram Users";
 }
@@ -16,6 +18,20 @@
         </a>
     </div>
 </div>
+
+@if (ViewData[TempDataKeys.TelegramUserNotFound] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Telegram user with the specified name does not exist.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.TelegramUserDeleted] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Telegram user has been deleted.
+    </div>
+}
 
 <table class="table mt-4 mb-4">
     <thead>

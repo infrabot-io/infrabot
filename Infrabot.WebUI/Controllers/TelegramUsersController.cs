@@ -36,6 +36,9 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.Page = page;
             ViewBag.Pages = maxpage + 1;
 
+            ViewBag.TelegramUserNotFound = TempData[TempDataKeys.TelegramUserNotFound] as bool?;
+            ViewBag.TelegramUserDeleted = TempData[TempDataKeys.TelegramUserDeleted] as bool?;
+
             return View(telegramUsers);
         }
 
@@ -72,10 +75,13 @@ namespace Infrabot.WebUI.Controllers
         {
             var telegramUser = await _telegramUsersService.GetTelegramUserById(id);
 
-            if (telegramUser is not null)
-                return View(telegramUser);
-            else
+            if (telegramUser is null)
+            {
+                TempData[TempDataKeys.TelegramUserNotFound] = true;
                 return RedirectToAction("Index");
+            }
+
+            return View(telegramUser);
         }
 
         [HttpPost]
@@ -87,7 +93,10 @@ namespace Infrabot.WebUI.Controllers
                 var _telegramUser = await _telegramUsersService.GetTelegramUserById(id);
 
                 if (_telegramUser is null)
+                {
+                    TempData[TempDataKeys.TelegramUserNotFound] = true;
                     return View(telegramUser);
+                }
 
                 _telegramUser.Name = telegramUser.Name;
                 _telegramUser.Surname = telegramUser.Surname;
@@ -96,7 +105,7 @@ namespace Infrabot.WebUI.Controllers
                 await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.TelegramUser, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated telegram user and set {telegramUser.Name} {telegramUser.Surname} with id {telegramUser.TelegramId}" });
                 await _telegramUsersService.UpdateTelegramUser(_telegramUser);
 
-                return RedirectToAction("Index");
+                ViewData[TempDataKeys.TelegramUserSaved] = true;
             }
 
             return View(telegramUser);
@@ -106,10 +115,13 @@ namespace Infrabot.WebUI.Controllers
         {
             var telegramUser = await _telegramUsersService.GetTelegramUserById(id);
 
-            if (telegramUser is not null)
-                return View(telegramUser);
-            else
+            if (telegramUser is null)
+            {
+                TempData[TempDataKeys.TelegramUserNotFound] = true;
                 return RedirectToAction("Index");
+            }
+
+            return View(telegramUser);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -120,11 +132,15 @@ namespace Infrabot.WebUI.Controllers
             {
                 var telegramUser = await _telegramUsersService.GetTelegramUserById(id);
 
-                if (telegramUser is not null)
+                if (telegramUser is null)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.TelegramUser, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted telegram user {telegramUser.Name} {telegramUser.Surname} with id {telegramUser.TelegramId}" });
-                    await _telegramUsersService.DeleteTelegramUser(telegramUser);
+                    TempData[TempDataKeys.TelegramUserNotFound] = true;
+                    return RedirectToAction("Index");
                 }
+
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.TelegramUser, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted telegram user {telegramUser.Name} {telegramUser.Surname} with id {telegramUser.TelegramId}" });
+                await _telegramUsersService.DeleteTelegramUser(telegramUser);
+                TempData[TempDataKeys.TelegramUserDeleted] = true;
             }
 
             return RedirectToAction("Index");

@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Infrabot.Common.Models.PermissionAssignment>
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.Common.Models
+@model IEnumerable<PermissionAssignment>
 @{
     ViewData["Title"] = "Permission assignments";
 }
@@ -17,6 +19,19 @@
     </div>
 </div>
 
+@if (ViewData[TempDataKeys.PermissionAssignmentNotFound] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Specified permission assignment does not exist.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.PermissionAssignmentDeleted] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Permission assignment has been deleted.
+    </div>
+}
 
 <table class="table mt-4 mb-4">
     <thead>

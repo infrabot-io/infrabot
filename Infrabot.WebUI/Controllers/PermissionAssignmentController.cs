@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Infrabot.WebUI.Services;
+using Infrabot.WebUI.Constants;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -44,6 +45,9 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.MaxPage = maxpage;
             ViewBag.Page = page;
             ViewBag.Pages = maxpage + 1;
+
+            ViewBag.PermissionAssignmentNotFound = TempData[TempDataKeys.PermissionAssignmentNotFound] as bool?;
+            ViewBag.PermissionAssignmentDeleted = TempData[TempDataKeys.PermissionAssignmentDeleted] as bool?;
 
             return View(assignments);
         }
@@ -90,20 +94,17 @@ namespace Infrabot.WebUI.Controllers
                 if (!model.SelectedPluginIds.Any())
                 {
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.PermissionAssignment, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Low, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} tried to create permission assignment but forgot to select any plugin" });
-                    ModelState.AddModelError(string.Empty, "At least one plugin must be selected.");
+                    ViewData[TempDataKeys.PermissionAssignmentOnePluginMustBeSelected] = true;
+                    await PopulatePermissionAssignmentViewModel(model); 
+                    return View(model);
                 }
 
                 // Validate that at least one subject (user or group) is selected.
                 if (!model.SelectedTelegramUserIds.Any() && !model.SelectedGroupIds.Any())
                 {
                     await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.PermissionAssignment, LogResult = AuditLogResult.Denied, LogSeverity = AuditLogSeverity.Low, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} tried to create permission assignment but forgot to select any user or group" });
-                    ModelState.AddModelError(string.Empty, "At least one Telegram user or group must be selected.");
-                }
-
-                // Model must be valid
-                if (!ModelState.IsValid)
-                {
-                    await PopulatePermissionAssignmentViewModel(model);
+                    ViewData[TempDataKeys.PermissionAssignmentOneTelegramUserMustBeSelected] = true;
+                    await PopulatePermissionAssignmentViewModel(model); 
                     return View(model);
                 }
 
@@ -145,7 +146,6 @@ namespace Infrabot.WebUI.Controllers
             }
 
             await PopulatePermissionAssignmentViewModel(model);
-
             return View(model);
         }
 
@@ -154,7 +154,10 @@ namespace Infrabot.WebUI.Controllers
             var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(id);
 
             if (permissionAssignment is null)
+            {
+                TempData[TempDataKeys.PermissionAssignmentNotFound] = true;
                 return RedirectToAction("Index");
+            }
 
             var plugins = await _pluginsService.GetAllPlugins();
             var telegramUsers = await _telegramUsersService.GetAllTelegramUsers();
@@ -201,7 +204,9 @@ namespace Infrabot.WebUI.Controllers
                 var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(model.Id);
 
                 if (permissionAssignment is null)
+                {
                     return RedirectToAction("Index");
+                }
 
                 permissionAssignment.Name = model.Name;
 
@@ -209,6 +214,7 @@ namespace Infrabot.WebUI.Controllers
                 var pluginsToRemove = permissionAssignment.Plugins.Where(p => !model.SelectedPluginIds.Contains(p.Id)).ToList();
                 foreach (var p in pluginsToRemove)
                 {
+                    TempData[TempDataKeys.PermissionAssignmentNotFound] = true;
                     permissionAssignment.Plugins.Remove(p);
                 }
 
@@ -257,10 +263,9 @@ namespace Infrabot.WebUI.Controllers
                 await _permissionAssignmentService.UpdatePermissionAssignment(permissionAssignment);
                 await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.PermissionAssignment, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated permission assignment {permissionAssignment.Name} with plugins '{pluginsList}' for users '{usersList}' and groups '{groupsList}'" });
 
-                return RedirectToAction("Index");
+                ViewData[TempDataKeys.PermissionAssignmentSaved] = true;
             }
 
-            await PopulatePermissionAssignmentViewModel(model);
             return View(model);
         }
 
@@ -268,10 +273,13 @@ namespace Infrabot.WebUI.Controllers
         {
             var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(id);
 
-            if (permissionAssignment is not null)
-                return View(permissionAssignment);
-            else
+            if (permissionAssignment is null)
+            {
+                TempData[TempDataKeys.PermissionAssignmentNotFound] = true;
                 return RedirectToAction("Index");
+            }
+
+            return View(permissionAssignment);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -282,11 +290,15 @@ namespace Infrabot.WebUI.Controllers
             {
                 var permissionAssignment = await _permissionAssignmentService.GetPermissionAssignmentById(id);
 
-                if (permissionAssignment != null)
+                if (permissionAssignment is null)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.PermissionAssignment, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted permission assignment {permissionAssignment.Name}" });
-                    await _permissionAssignmentService.DeletePermissionAssignment(permissionAssignment);
+                    TempData[TempDataKeys.PermissionAssignmentNotFound] = true;
+                    return RedirectToAction("Index");
                 }
+
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.PermissionAssignment, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted permission assignment {permissionAssignment.Name}" });
+                await _permissionAssignmentService.DeletePermissionAssignment(permissionAssignment);
+                TempData[TempDataKeys.PermissionAssignmentDeleted] = true;
             }
 
             return RedirectToAction("Index");

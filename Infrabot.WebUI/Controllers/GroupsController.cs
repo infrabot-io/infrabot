@@ -45,6 +45,7 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.Pages = maxpage + 1;
 
             ViewBag.GroupNotFound = TempData[TempDataKeys.GroupNotFound] as bool?;
+            ViewBag.GroupDeleted = TempData[TempDataKeys.GroupDeleted] as bool?;
 
             return View(groups);
         }
@@ -155,7 +156,7 @@ namespace Infrabot.WebUI.Controllers
                 await _groupsService.UpdateGroup(group);
                 await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated group {groupViewModel.Name}" });
 
-                return RedirectToAction("Index");
+                ViewData[TempDataKeys.GroupSaved] = true;
             }
 
             await PopulateGroupViewModel(groupViewModel);
@@ -164,12 +165,15 @@ namespace Infrabot.WebUI.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-           var group = await _groupsService.GetGroupById(id);
+            var group = await _groupsService.GetGroupById(id);
 
-           if (group is not null)
-               return View(group);
+            if (group is null) 
+            {
+                TempData[TempDataKeys.GroupNotFound] = true;
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction("Index");
+            return View(group);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -180,11 +184,15 @@ namespace Infrabot.WebUI.Controllers
             {
                 var group = await _groupsService.GetGroupById(id);
 
-                if (group is not null)
+                if (group is null)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted group {group.Name}" });
-                    await _groupsService.DeleteGroup(group);
+                    TempData[TempDataKeys.GroupNotFound] = true;
+                    return RedirectToAction("Index");
                 }
+
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted group {group.Name}" });
+                await _groupsService.DeleteGroup(group);
+                TempData[TempDataKeys.GroupDeleted] = true;
             }
 
             return RedirectToAction("Index");
