@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Infrabot.PluginSystem.Utils;
 using Infrabot.WebUI.Services;
+using Infrabot.WebUI.Utils;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -27,7 +28,7 @@ namespace Infrabot.WebUI.Controllers
             _auditLogService = auditLogService;
             _configuration = configuration;
 
-            _pluginDirectory = NormalizePluginPath(configuration["Plugins:PluginsDirectory"] ?? "plugins");
+            _pluginDirectory = PathNormalizer.NormalizePath(_configuration["Plugins:PluginsDirectory"] ?? "plugins");
         }
 
         public async Task<IActionResult> Index(int page = 0)
@@ -126,13 +127,6 @@ namespace Infrabot.WebUI.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        private string NormalizePluginPath(string path)
-        {
-            return Path.IsPathRooted(path)
-                ? path
-                : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, path));
         }
     }
 }

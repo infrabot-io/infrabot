@@ -15,14 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.Common", "Infrabot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.PluginEditor", "Infrabot.PluginEditor\Infrabot.PluginEditor.csproj", "{8891CD7F-12E3-4776-8561-E77512D59EEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.WebUI.Test", "Infrabot.WebUI.Test\Infrabot.WebUI.Test.csproj", "{4C3FC3DA-D0B6-49AF-9C69-9CE45D511FC7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7246FA44-930F-4FD7-BC4B-C51BBC1D8B9D}"
 	ProjectSection(SolutionItems) = preProject
 		scheme.txt = scheme.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrabot.PluginSystem.Test", "Infrabot.PluginSystem.Test\Infrabot.PluginSystem.Test.csproj", "{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.PluginSystem.Tests", "Infrabot.PluginSystem.Tests\Infrabot.PluginSystem.Tests.csproj", "{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +52,6 @@ Global
 		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C3FC3DA-D0B6-49AF-9C69-9CE45D511FC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C3FC3DA-D0B6-49AF-9C69-9CE45D511FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C3FC3DA-D0B6-49AF-9C69-9CE45D511FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C3FC3DA-D0B6-49AF-9C69-9CE45D511FC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Release|Any CPU.ActiveCfg = Release|Any CPU

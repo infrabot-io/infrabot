@@ -1,4 +1,5 @@
 ﻿using Infrabot.WebUI.Services;
+using Infrabot.WebUI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +10,21 @@ namespace Infrabot.WebUI.Controllers
     {
         private readonly ILogger<LogsController> _logger;
         private readonly IAuditLogService _auditLogService;
-        private static readonly string logsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs\\" + $"application{DateTime.Now.ToString("yyyyMMdd")}.log");
+        private readonly IConfiguration _configuration;
+        private string logsFilePath;
 
         public LogsController(
             ILogger<LogsController> logger,
-            IAuditLogService auditLogService)
+            IAuditLogService auditLogService,
+            IConfiguration configuration)
         {
             _logger = logger;
             _auditLogService = auditLogService;
+            _configuration = configuration;
+
+            logsFilePath =  PathNormalizer.NormalizePath(_configuration["Serilog:WriteTo:2:Args:path"].Replace(".log", DateTime.Now.ToString("yyyyMMdd") + ".log") ?? "logs");
+
+            _logger.LogInformation(logsFilePath);
         }
 
         public async Task<IActionResult> Index()
