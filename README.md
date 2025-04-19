@@ -71,6 +71,40 @@ Everything you need to get up and running with Infrabot:
 
 ---
 
+## 📏 Scheme
+
+Scheme of infrabot components are the following:
+
+```mermaid
+stateDiagram-v2
+    state "Web Admin Service <br>
+    - Web UI
+    - User/Group Mgmt
+    - Plugin Access Mgmt
+    - AD Auth Integration" as s1
+    state "Telegram Service <br>
+    - Telegram Client
+    - Plugin Manager 
+    - Command Manager" as s2
+    state "Worker Service  <br>
+    - Health Checker
+    - Health Data Cleaner
+    - Message Cleaner" as s3
+    state "SQLite Database
+    - Users
+    - Groups
+    - Plugins
+    - Permissions
+    - Health
+    - Logs
+    - Audit events" as s4
+    s1 --> s4
+    s2 --> s4
+    s3 --> s4
+```
+
+---
+
 ## 🔌 Plugin System
 
 Infrabot is built to be extended.
