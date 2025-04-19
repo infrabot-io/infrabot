@@ -11,6 +11,13 @@
     </div>
 </div>
 
+@if (ViewData[TempDataKeys.PluginUploaded] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Plugin uploaded! Wait couple of minutes for plugin to load or force the reload from the chat!
+    </div>
+}
+
 <div class="g-3 mt-2">
     <form class="row needs-validation" novalidate asp-action="Upload" method="post" enctype="multipart/form-data">
         @Html.AntiForgeryToken()

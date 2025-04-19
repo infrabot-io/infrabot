@@ -131,6 +131,9 @@ namespace Infrabot.WebUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError("Failed to delete Plugin file: " + ex.ToString());
+                    TempData[TempDataKeys.PluginDeleteFailed] = true;
+                    ViewBag.PluginDeleteFailReason = ex.Message;
+                    return View(plugin);
                 }
 
                 await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted plugin {plugin.Name} with guid {plugin.Guid}" });
@@ -163,7 +166,7 @@ namespace Infrabot.WebUI.Controllers
                     {
                         if (file.Length > 0)
                         {
-                            string uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                            string uniqueFileName = $"{Guid.NewGuid()}_{file.FileName.Trim()}";
                             string filePath = Path.Combine(_pluginDirectory, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -173,7 +176,7 @@ namespace Infrabot.WebUI.Controllers
 
                                 if (plugin is not null)
                                 {
-                                    _logger.LogWarning($"Will not upload file {file.FileName} because plugin with the same GUID {pluginFile.Guid} already is present.");
+                                    _logger.LogWarning($"Will not upload file {file.FileName.Trim()} because plugin with the Guid {pluginFile.Guid} is already present.");
                                     continue;
                                 }
 
@@ -181,6 +184,8 @@ namespace Infrabot.WebUI.Controllers
                             }
                         }
                     }
+
+                    ViewData[TempDataKeys.PluginUploaded] = true;
                 }
             }
 

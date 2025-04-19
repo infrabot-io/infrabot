@@ -35,13 +35,13 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 ## 📦 Features
 
-- ✅ **Runs as a secure Windows service**
-- 📁 **Fully modular architecture** — add/remove features with plugins
-- 📲 **Command & control through Telegram**
-- 🔐 **Encrypted configuration and storage**
-- 🧩 **Easy-to-create plugins using C#**
-- 🕹️ **Built-in plugin manager, service control, and configuration tooling**
-- 🧰 **No third-party cloud required**
+- **Runs as a secure Windows service**
+- **Fully modular architecture** — add/remove features with plugins
+- **Command & control through Telegram**
+- **Encrypted configuration and storage**
+- **Easy-to-create plugins using C#**
+- **Built-in plugin manager, service control, and configuration tooling**
+- **No third-party cloud required**
 
 ---
 
@@ -73,7 +73,7 @@ Everything you need to get up and running with Infrabot:
 
 ## 📏 Scheme
 
-Scheme of infrabot components are the following:
+Scheme of infrabot components is specified below.
 
 ```mermaid
 stateDiagram-v2
@@ -90,7 +90,7 @@ stateDiagram-v2
     - Health Checker
     - Health Data Cleaner
     - Message Cleaner" as s3
-    state "SQLite Database
+    state "SQLite Database <br>
     - Users
     - Groups
     - Plugins

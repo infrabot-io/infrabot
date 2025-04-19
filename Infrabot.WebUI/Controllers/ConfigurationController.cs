@@ -51,8 +51,6 @@ namespace Infrabot.WebUI.Controllers
                 _logger.LogInformation("Configuration saved: " + JsonConvert.SerializeObject(configuration));
 
                 ViewData[TempDataKeys.ConfigurationSaved] = true;
-
-                return RedirectToAction("Index");
             }
 
             return View(configuration);

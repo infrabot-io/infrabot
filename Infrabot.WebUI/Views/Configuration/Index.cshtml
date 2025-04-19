@@ -24,6 +24,8 @@
         <form class="needs-validation" novalidate="" asp-action="Index" method="post">
             @Html.AntiForgeryToken()
 
+            <input type="hidden" asp-for="Id" />
+
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Active Directory</h5>

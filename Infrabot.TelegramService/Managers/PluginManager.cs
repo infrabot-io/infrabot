@@ -86,6 +86,12 @@ namespace Infrabot.TelegramService.Managers
                     // Get plugin folder path
                     var folderPath = Path.Combine(_pluginDirectory, plugin.Guid.ToString());
 
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                        await PluginUtility.ExtractPluginFiles(plugin, folderPath);
+                    }
+
                     // Track whether it's new, updated, or same
                     if (_loadedPluginMeta.TryGetValue(plugin.Guid, out var loadedMeta))
                     {
@@ -116,12 +122,6 @@ namespace Infrabot.TelegramService.Managers
                     else
                     {
                         _logger.LogInformation("Loaded plugin '{Name}' (ID: {Id})", plugin.Name, plugin.Id);
-                    }
-
-                    if (!Directory.Exists(folderPath))
-                    {
-                        Directory.CreateDirectory(folderPath);
-                        await PluginUtility.ExtractPluginFiles(plugin, folderPath);
                     }
 
                     plugin.PluginFiles?.ForEach(file => file.FileData = Array.Empty<byte>());

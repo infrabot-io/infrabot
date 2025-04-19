@@ -36,6 +36,8 @@
         // PluginsController
         public const string PluginNotFound = "PluginNotFound";
         public const string PluginDeleted = "PluginDeleted";
+        public const string PluginDeleteFailed = "PluginDeleteFailed";
+        public const string PluginUploaded = "PluginUploaded";
 
         // UsersController
         public const string CreateUserAlreadyExists = "CreateUserAlreadyExists";
