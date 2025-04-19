@@ -1,20 +1,13 @@
-﻿using SoftFluent.ComponentModel.DataAnnotations;
-
-namespace Infrabot.Common.Models
+﻿namespace Infrabot.Common.Models
 {
     public class Configuration
     {
         public int Id { get; set; }
         public bool IsADEnabled { get; set; } = false;
-        [Encrypted]
         public string? ADServer { get; set; } = string.Empty;
-        [Encrypted]
         public string? ADLogin { get; set; } = string.Empty;
-        [Encrypted]
         public string? ADPassword { get; set; } = string.Empty;
-        [Encrypted]
         public string? ADDomainName { get; set; } = string.Empty;
-        [Encrypted]
         public string? TelegramBotToken { get; set; } = string.Empty;
         public bool TelegramEnableEmergency { get; set; } = true;
         public bool TelegramEnableShowMyId { get; set; } = true;

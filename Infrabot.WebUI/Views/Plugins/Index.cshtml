@@ -1,4 +1,5 @@
 ﻿@using Infrabot.Common.Models
+@using Infrabot.WebUI.Constants
 @model List<Plugin>
 @{
     ViewData["Title"] = "Plugins";
@@ -17,6 +18,20 @@
         </a>
     </div>
 </div>
+
+@if (ViewData[TempDataKeys.PluginNotFound] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Plugin with the specified name does not exist.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.PluginDeleted] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Plugin has been deleted.
+    </div>
+}
 
 <table class="table mt-4 mb-4">
     <thead>

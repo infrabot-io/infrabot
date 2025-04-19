@@ -46,6 +46,32 @@ namespace Infrabot.PluginSystem.Utils
             return plugin;
         }
 
+        public static Plugin GetPlugin(Stream pluginStream)
+        {
+            byte[] fileData;
+            using (var memoryStream2 = new MemoryStream())
+            {
+                pluginStream.CopyTo(memoryStream2);
+                fileData = memoryStream2.ToArray();
+            }
+
+            using var memoryStream = new MemoryStream(fileData);
+            var plugin = ProtoBuf.Serializer.Deserialize<Plugin>(memoryStream);
+
+            memoryStream.Position = 0;
+            var tempPlugin = ProtoBuf.Serializer.Deserialize<Plugin>(memoryStream);
+            tempPlugin.Checksum = null;
+
+            using var tempStream = new MemoryStream();
+            ProtoBuf.Serializer.Serialize(tempStream, tempPlugin);
+            string computedChecksum = ComputeSHA256(tempStream.ToArray());
+
+            if (plugin.Checksum != computedChecksum)
+                throw new InvalidOperationException("Plugin checksum mismatch.");
+
+            return plugin;
+        }
+
         public static async Task ExtractPluginFiles(Plugin plugin, string destinationPath)
         {
             if (string.IsNullOrWhiteSpace(destinationPath))

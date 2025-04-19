@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Infrabot.PluginSystem.Utils;
 using Infrabot.WebUI.Services;
 using Infrabot.WebUI.Utils;
+using Infrabot.WebUI.Constants;
+using Infrabot.WebUI.Models;
 
 namespace Infrabot.WebUI.Controllers
 {
@@ -42,6 +44,9 @@ namespace Infrabot.WebUI.Controllers
             ViewBag.MaxPage = maxpage;
             ViewBag.Page = page;
             ViewBag.Pages = maxpage + 1;
+
+            ViewBag.PluginNotFound = TempData[TempDataKeys.PluginNotFound] as bool?;
+            ViewBag.PluginDeleted = TempData[TempDataKeys.PluginDeleted] as bool?;
 
             return View(plugins);
         }
@@ -86,10 +91,13 @@ namespace Infrabot.WebUI.Controllers
         {
             var plugin = await _pluginsService.GetPluginById(id);
 
-            if (plugin is not null)
-                return View(plugin);
-            
-            return RedirectToAction("Index");
+            if (plugin is null)
+            {
+                TempData[TempDataKeys.PluginNotFound] = true;
+                return RedirectToAction("Index");
+            }
+
+            return View(plugin);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -100,33 +108,83 @@ namespace Infrabot.WebUI.Controllers
             {
                 var plugin = await _pluginsService.GetPluginById(id);
 
-                if (plugin is not null)
+                if (plugin is null)
                 {
-                    try
-                    {
-                        string[] files = Directory.GetFiles(_pluginDirectory, "*.plug");
-
-                        foreach (string file in files)
-                        {
-                            var pluginFile = await PluginUtility.GetPlugin(file);
-
-                            if (pluginFile.Guid != plugin.Guid)
-                                continue;
-
-                            System.IO.File.Delete(file);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Failed to delete Plugin file: " + ex.ToString());
-                    }
-
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted plugin {plugin.Name} with guid {plugin.Guid}" });
-                    await _pluginsService.DeletePlugin(plugin);
+                    TempData[TempDataKeys.PluginNotFound] = true;
+                    return RedirectToAction("Index");
                 }
+
+                try
+                {
+                    string[] files = Directory.GetFiles(_pluginDirectory, "*.plug");
+
+                    foreach (string file in files)
+                    {
+                        var pluginFile = await PluginUtility.GetPlugin(file);
+
+                        if (pluginFile.Guid != plugin.Guid)
+                            continue;
+
+                        System.IO.File.Delete(file);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Failed to delete Plugin file: " + ex.ToString());
+                }
+
+                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted plugin {plugin.Name} with guid {plugin.Guid}" });
+                await _pluginsService.DeletePlugin(plugin);
+                TempData[TempDataKeys.PluginDeleted] = true;
             }
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Upload()
+        {
+            var model = new UploadPluginViewModel
+            {
+                Files = null
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(UploadPluginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if(model.Files is not null)
+                {
+                    foreach (var file in model.Files)
+                    {
+                        if (file.Length > 0)
+                        {
+                            string uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                            string filePath = Path.Combine(_pluginDirectory, uniqueFileName);
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                var pluginFile = PluginUtility.GetPlugin(file.OpenReadStream());
+                                var plugin = await _pluginsService.GetPluginByGuid(pluginFile.Guid);
+
+                                if (plugin is not null)
+                                {
+                                    _logger.LogWarning($"Will not upload file {file.FileName} because plugin with the same GUID {pluginFile.Guid} already is present.");
+                                    continue;
+                                }
+
+                                await file.CopyToAsync(stream);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return View(model);
         }
     }
 }

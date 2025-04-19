@@ -33,6 +33,10 @@
         public const string TelegramUserSaved = "TelegramUserSaved";
         public const string TelegramUserDeleted = "TelegramUserDeleted";
 
+        // PluginsController
+        public const string PluginNotFound = "PluginNotFound";
+        public const string PluginDeleted = "PluginDeleted";
+
         // UsersController
         public const string CreateUserAlreadyExists = "CreateUserAlreadyExists";
         public const string CreateUserSucceeded = "CreateUserSucceeded";

@@ -1,26 +1,15 @@
 ﻿using Infrabot.Common.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using SoftFluent.EntityFrameworkCore.DataEncryption;
-using SoftFluent.EntityFrameworkCore.DataEncryption.Providers;
-using System.Text;
 
 namespace Infrabot.Common.Contexts
 {
     public class InfrabotContext : IdentityDbContext<User>
     {
-
-        private readonly IEncryptionProvider encryptionProvider;
-        private static readonly string _encryptionKey = "01234567890123456789012345678901"; // 32-byte key (256-bit key for AES)
-        private static readonly string _encryptionIV = "0123456789012345"; // 16-byte IV (128-bit block size for AES)
-
         public InfrabotContext(DbContextOptions<InfrabotContext> options) : base(options)
         {
-            encryptionProvider = new AesProvider(Encoding.UTF8.GetBytes(_encryptionKey), Encoding.UTF8.GetBytes(_encryptionIV));
-
             var connection = Database.GetDbConnection() as SqliteConnection;
             if (connection != null)
             {
@@ -32,8 +21,6 @@ namespace Infrabot.Common.Contexts
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseEncryption(encryptionProvider);
-
             // Configure many-to-many relationship between Plugin and Group
             modelBuilder.Entity<GroupPlugin>()
                 .HasKey(gp => new { gp.GroupId, gp.PluginId });

@@ -9,6 +9,7 @@ namespace Infrabot.WebUI.Services
     {
         Task<IEnumerable<Plugin>> GetPlugins(int page = 0, int pageSize = 50);
         Task<Plugin> GetPluginById(int id);
+        Task<Plugin> GetPluginByGuid(Guid guid);
         Task<IEnumerable<Plugin>> GetAllPlugins();
         Task<int> GetPluginsCount();
         Task DeletePlugin(Plugin plugin);
@@ -39,6 +40,12 @@ namespace Infrabot.WebUI.Services
         public async Task<Plugin> GetPluginById(int id)
         {
             var plugin = await _context.Plugins.FirstOrDefaultAsync(s => s.Id == id);
+            return plugin;
+        }
+
+        public async Task<Plugin> GetPluginByGuid(Guid guid)
+        {
+            var plugin = await _context.Plugins.FirstOrDefaultAsync(s => s.Guid == guid);
             return plugin;
         }
 
