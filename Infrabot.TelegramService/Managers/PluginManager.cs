@@ -4,6 +4,8 @@ using Infrabot.Common.Contexts;
 using Infrabot.TelegramService.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using Infrabot.PluginSystem.Enums;
+using Newtonsoft.Json.Linq;
 
 namespace Infrabot.TelegramService.Managers
 {
@@ -176,7 +178,8 @@ namespace Infrabot.TelegramService.Managers
                 .Select(sp => new Common.Models.Plugin
                 {
                     Guid = sp.Guid,
-                    Name = sp.Name
+                    Name = sp.Name,
+                    PluginType = Enum.GetName(typeof(PluginType), sp.PluginType)
                 })
                 .ToList();
 

@@ -56,7 +56,7 @@ namespace Infrabot.WebUI.Services
         public async Task<IEnumerable<PluginStat>> GetPluginStats()
         {
             var pluginCounts = await _context.Plugins
-                .GroupBy(p => p.Name)
+                .GroupBy(p => p.PluginType)
                 .Select(g => new PluginStat
                 {
                     PluginType = g.Key.ToString(),

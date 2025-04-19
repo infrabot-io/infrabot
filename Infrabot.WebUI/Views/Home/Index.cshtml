@@ -152,14 +152,12 @@
             const response = await fetch('../api/getresourcemetrics');
             const data = await response.json();
 
-            // Extract CPU usage and timestamps
-            const cpuUsage = data.map(entry => JSON.parse(entry.Data).CpuUsage);
+            const cpuUsage = data.map(entry => JSON.parse(entry.data).CpuUsage);
             const timestamps = data.map(entry => {
-                const date = new Date(entry.CreatedDate);
-                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`; // Format HH:MM
+                const date = new Date(entry.createdDate);
+                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
             });
 
-            // Update chart
             updateCpuChart(timestamps, cpuUsage);
         } catch (error) {
             console.error("Error fetching CPU usage data:", error);
@@ -207,14 +205,12 @@
             const response = await fetch('../api/getresourcemetrics');
             const data = await response.json();
 
-            // Extract RAM usage and timestamps
-            const ramUsage = data.map(entry => JSON.parse(entry.Data).RamUsage);
+            const ramUsage = data.map(entry => JSON.parse(entry.data).RamUsage);
             const timestamps = data.map(entry => {
-                const date = new Date(entry.CreatedDate);
-                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`; // Format HH:MM
+                const date = new Date(entry.createdDate);
+                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
             });
 
-            // Update chart
             updateMemoryChart(timestamps, ramUsage);
         } catch (error) {
             console.error("Error fetching RAM usage data:", error);
@@ -263,8 +259,8 @@
             const data = await response.json();
 
             // Extract labels (plugin types) and values (counts)
-            const labels = data.map(entry => entry.PluginType);
-            const counts = data.map(entry => entry.Count);
+            const labels = data.map(entry => entry.pluginType);
+            const counts = data.map(entry => entry.count);
 
             // Update chart
             updatePluginChart(labels, counts);
@@ -282,26 +278,40 @@
     setInterval(fetchPluginStats, 10000);
     fetchPluginStats();
 
+    const pluginLabels = [
+        'Monitoring',
+        'Alerting',
+        'Logging',
+        'Automation',
+        'Infrastructure',
+        'Configuration',
+        'Administration',
+        'Compliance & Audit',
+        'Other'
+    ];
+    const pluginColors = [
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(153, 102, 255, 0.6)',
+        'rgba(255, 159, 64, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(54, 162, 235, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(201, 203, 207, 0.6)',
+        'rgba(100, 149, 237, 0.6)',
+        'rgba(220, 53, 69, 0.6)'
+    ];
+    const pluginBorderColors = pluginColors.map(c => c.replace('0.6', '1'));
+
     const pluginCtx = document.getElementById('pluginChart').getContext('2d');
     const pluginChart = new Chart(pluginCtx, {
         type: 'pie',
         data: {
-            labels: ['Monitoring', 'Alerting', 'Logging', 'Automation'],
+            labels: pluginLabels,
             datasets: [{
                 label: 'Plugin Distribution',
-                data: [2, 1, 1, 1],
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(255, 99, 132, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
+                data: new Array(9).fill(0), // default empty data
+                backgroundColor: pluginColors,
+                borderColor: pluginBorderColors,
                 borderWidth: 1
             }]
         },
@@ -372,12 +382,12 @@
             const data = await response.json();
 
             // Update counts
-            document.getElementById("usersCount").textContent = data.Users;
-            document.getElementById("telegramUsersCount").textContent = data.TelegramUsers;
-            document.getElementById("pluginsCount").textContent = data.Plugins;
+            document.getElementById("usersCount").textContent = data.users;
+            document.getElementById("telegramUsersCount").textContent = data.telegramUsers;
+            document.getElementById("pluginsCount").textContent = data.plugins;
 
             // Update event log
-            updateEventLog(data.StatsEvents);
+            updateEventLog(data.statsEvents);
         } catch (error) {
             console.error("Error fetching stats:", error);
         }
@@ -388,13 +398,13 @@
         eventLog.innerHTML = ""; // Clear existing content
 
         events.forEach(event => {
-            const eventDate = new Date(event.EventDate);
+            const eventDate = new Date(event.eventDate);
             const formattedTime = `${eventDate.getHours()}:${eventDate.getMinutes().toString().padStart(2, '0')}`;
 
             const row = `<tr>
                     <td>${formattedTime}</td>
-                    <td>${getEventType(event.EventType)}</td>
-                    <td>${event.Description}</td>
+                    <td>${getEventType(event.eventType)}</td>
+                    <td>${event.description}</td>
                 </tr>`;
 
             eventLog.innerHTML += row;

@@ -35,13 +35,13 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 ## 📦 Features
 
-- **Runs as a secure Windows service**
-- **Fully modular architecture** — add/remove features with plugins
-- **Command & control through Telegram**
-- **Encrypted configuration and storage**
-- **Easy-to-create plugins using C#**
-- **Built-in plugin manager, service control, and configuration tooling**
-- **No third-party cloud required**
+- Runs as a secure Windows service
+- Fully modular architecture — add/remove features with plugins
+- Command & control through Telegram
+- Encrypted configuration and storage
+- Easy-to-create plugins using C#
+- Built-in plugin manager, service control, and configuration tooling
+- No third-party cloud required
 
 ---
 
@@ -187,10 +187,10 @@ That's it — you're ready to roll.
 
 We love community contributions! Here's how you can help:
 
-- **Report bugs** and open issues
-- **Add new functionality**
-- **Develop new plugins**
-- **Improve the documentation**
+- Report bugs and open issues
+- Add new functionality
+- Develop new plugins
+- Improve the documentation
 
 Every PR is appreciated. Let's build something epic together.
 
