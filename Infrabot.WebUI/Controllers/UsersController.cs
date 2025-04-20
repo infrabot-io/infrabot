@@ -82,7 +82,6 @@ namespace Infrabot.WebUI.Controllers
                     Email = model.Email, 
                     NormalizedEmail = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    IsADIntegrated = model.IsADIntegrated,
                     Enabled = model.Enabled,
                 };
                 
@@ -127,7 +126,6 @@ namespace Infrabot.WebUI.Controllers
                 UserName = user.UserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                IsADIntegrated = user.IsADIntegrated,
                 Enabled = user.Enabled
             };
 
@@ -169,7 +167,6 @@ namespace Infrabot.WebUI.Controllers
                 user.UserName = model.UserName;
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
-                user.IsADIntegrated = model.IsADIntegrated;
                 user.Enabled = model.Enabled;
 
                 await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated user {user.UserName}." });

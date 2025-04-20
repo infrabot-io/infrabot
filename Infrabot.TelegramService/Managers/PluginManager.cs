@@ -236,5 +236,10 @@ namespace Infrabot.TelegramService.Managers
                 ? path
                 : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, path));
         }
+
+        public string GetPluginDirectory()
+        {
+            return _pluginDirectory;
+        }
     }
 }

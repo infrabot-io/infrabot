@@ -26,55 +26,6 @@
 
             <input type="hidden" asp-for="Id" />
 
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Active Directory</h5>
-
-                    <h6 class="card-subtitle mb-4 text-muted">Integrate system login using on-premise active directory domain services server.</h6>
-
-                    <div class="row g-3">
-                        <div class="col-8">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="adLoginEnabled" asp-for="IsADEnabled">
-                                <label class="form-check-label" for="adLoginEnabled">Active Directory login enabled</label>
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <label for="adserveraddress" class="form-label">Active Directory Server</label>
-                            <input type="text" class="form-control" id="adserveraddress" placeholder="example.lan or 192.168.10.100" required="" asp-for="ADServer">
-                            <div class="invalid-feedback">
-                                Please provide active directory server address.
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <label for="addomainname" class="form-label">Active Directory Domain Name</label>
-                            <input type="text" class="form-control" id="addomainname" placeholder="example.lan" required="" asp-for="ADDomainName">
-                            <div class="invalid-feedback">
-                                Please provide active directory server domain name.
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <label for="login" class="form-label">User login</label>
-                            <input type="text" class="form-control" id="login" placeholder="svc-license" required="" asp-for="ADLogin">
-                            <div class="invalid-feedback">
-                                Please provide active directory login.
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="password" required="" asp-for="ADPassword">
-                            <div class="invalid-feedback">
-                                Please provide active directory password.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="card mt-4">
                 <div class="card-body">
                     <h5 class="card-title">Telegram</h5>

@@ -6,5 +6,6 @@ namespace Infrabot.TelegramService.Core
     {
         IReadOnlyList<Plugin> Plugins { get; }
         public void RefreshPlugins();
+        public string GetPluginDirectory();
     }
 }

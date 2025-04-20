@@ -3,11 +3,6 @@
     public class Configuration
     {
         public int Id { get; set; }
-        public bool IsADEnabled { get; set; } = false;
-        public string? ADServer { get; set; } = string.Empty;
-        public string? ADLogin { get; set; } = string.Empty;
-        public string? ADPassword { get; set; } = string.Empty;
-        public string? ADDomainName { get; set; } = string.Empty;
         public string? TelegramBotToken { get; set; } = string.Empty;
         public bool TelegramEnableEmergency { get; set; } = true;
         public bool TelegramEnableShowMyId { get; set; } = true;

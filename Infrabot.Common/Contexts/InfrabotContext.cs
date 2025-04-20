@@ -69,20 +69,19 @@ namespace Infrabot.Common.Contexts
                  new User
                  {
                      Id = Guid.NewGuid().ToString(),
-                     Name = "admin",
-                     Surname = "aa",
+                     Name = "Super",
+                     Surname = "Admin",
                      UserName = "admin",
                      NormalizedUserName = "ADMIN",
-                     Email = "admin@aa.com",
-                     NormalizedEmail = "ADMIN@AA.COM",
+                     Email = "admin@example.com",
+                     NormalizedEmail = "ADMIN@EXAMPLE.COM",
                      PasswordHash = "AQAAAAIAAYagAAAAEB7N7LlWRtWERCJRKboz8R+Tbe5iupZg6cB0PIIZfP665CpUTH2HaLgwOdLrbnfzyA==",
                      SecurityStamp = "ERGPNXFOAL2U6YZ32OIZL5URPF7O3Q77",
                      ConcurrencyStamp = "3c52c8fb-9450-4b04-9610-7bd7053801d3",
                      CreatedDate = DateTime.Now,
                      UpdatedDate = DateTime.Now,
                      LastLoginDate = DateTime.Now,
-                     PhoneNumber = "12313123",
-                     IsADIntegrated = false,
+                     PhoneNumber = "+994 00 000 00 00",
                      Enabled = true
                  }
             );
@@ -101,12 +100,7 @@ namespace Infrabot.Common.Contexts
                 new Configuration
                 {
                     Id = 1,
-                    IsADEnabled = false,
-                    ADLogin = "administrator",
-                    ADPassword = "A123456a",
-                    ADServer = "example.lan",
-                    ADDomainName = "example.lan",
-                    TelegramBotToken = "asd:asd",
+                    TelegramBotToken = "example:token",
                     TelegramEnableEmergency = true,
                     TelegramEnableShowMyId = true,
                     TelegramPowerShellPath = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",

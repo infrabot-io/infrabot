@@ -110,7 +110,7 @@ namespace Infrabot.TelegramService.Managers
                                     }
 
                                     // Check if execution file actually exists
-                                    string executionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins", plugin.Guid.ToString(), pluginExecution.ExecutionFilePath);
+                                    string executionFile = Path.Combine(_pluginRegistry.GetPluginDirectory(), plugin.Guid.ToString(), pluginExecution.ExecutionFilePath);
                                     if (!File.Exists(executionFile))
                                     {
                                         await _telegramResponder.SendMarkdown(message.Chat, $"❌ Error: File *{executionFile.Replace("\\", "\\\\")}* does not exist.\n🔄 Make sure that file specified in the plugins configuration exists or redeploy the plugin.".EscapeMarkdown());
@@ -160,7 +160,7 @@ namespace Infrabot.TelegramService.Managers
                                     }
 
                                     // If plugin execution path somehow became absent, use C:\Windows\System32 as a default working directory
-                                    string workingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", plugin.Guid.ToString());
+                                    string workingDirectory = Path.Combine(_pluginRegistry.GetPluginDirectory(), plugin.Guid.ToString());
                                     if (!Directory.Exists(workingDirectory))
                                         workingDirectory = Environment.SystemDirectory;
 
@@ -605,7 +605,7 @@ namespace Infrabot.TelegramService.Managers
                 try
                 {
                     // Get temp file path
-                    string tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins", plugin.Guid.ToString(), "tempConfigFile.json");
+                    string tempFile = Path.Combine(_pluginRegistry.GetPluginDirectory(), plugin.Guid.ToString(), "tempConfigFile.json");
 
                     // Delete if old file exists
                     if (File.Exists(tempFile)) { File.Delete(tempFile); }
