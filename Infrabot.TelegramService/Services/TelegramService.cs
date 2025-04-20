@@ -39,11 +39,24 @@ namespace Infrabot.TelegramService.Services
 
             _logger.LogInformation("Init: Reading configuration from the database");
             var configuration = await _context.Configurations.Where(x => x.Id == 1).FirstOrDefaultAsync();
-            if (configuration is null) return;
+            if (configuration is null)
+            {
+                _logger.LogError("Configuration is null. Stopping service. Fix system confiruation first!");
+                Environment.Exit(1);
+            }
 
-            _logger.LogInformation("Starting Telegram Bot service...");
-            _botClient = new TelegramBotClient(configuration.TelegramBotToken);
+            try
+            {
+                _logger.LogInformation("Starting Telegram Bot service...");
+                _botClient = new TelegramBotClient(configuration.TelegramBotToken);
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError("Could not init Telegram Client: " + ex.Message);
+                Environment.Exit(1);
+            }
 
+            _logger.LogInformation("Telegram Bot service successfully started");
             var me = await _botClient.GetMe(stoppingToken);
             _logger.LogInformation($"Telegram bot @{me.Username} is running.");
 
@@ -59,7 +72,8 @@ namespace Infrabot.TelegramService.Services
                 _loggerFactory.CreateLogger<CommandManager>(),
                 _commandHandlerFactory
             );
-            
+
+            _logger.LogInformation($"Init: Begin receiving telegram messages");
             // Begin receiving messages
             _botClient.OnMessage += OnMessage;
 
@@ -74,7 +88,7 @@ namespace Infrabot.TelegramService.Services
             }
             catch (OperationCanceledException)
             {
-                _logger.LogInformation("Telegram Bot service cancellation requested.");
+                _logger.LogInformation("Telegram Bot service cancellation requested. Stopping service.");
             }
             finally
             {
@@ -90,7 +104,7 @@ namespace Infrabot.TelegramService.Services
             if (message.Text is null) return;
 
             // Log telegram message for debug purposes. Must set MinimumLevel to Debug in the application.json file
-            _logger.LogDebug($"Message ({message.From.Username} - {message.From.Id}): " + message.Text);
+            _logger.LogDebug($"Message ({message.From?.Username} - {message.From?.Id}): " + message.Text);
             
             // Use this construction to truly run Async because of CliWrap library
             // If we simply run await HandleCommand, then commands will handle synchronously

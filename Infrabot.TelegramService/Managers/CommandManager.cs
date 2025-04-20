@@ -36,6 +36,7 @@ namespace Infrabot.TelegramService.Managers
             _telegramResponder = commandFactory.GetTelegramResponder();
             _pluginRegistry = commandFactory.GetPluginRegistry();
             _scopeFactory = commandFactory.GetServiceScopeFactory();
+            _logger.LogInformation("Init: Command manager");
         }
 
         public async Task HandleCommand(Message message)
@@ -426,13 +427,17 @@ namespace Infrabot.TelegramService.Managers
             }
         }
 
-        private bool TryParseCommand(string input, out string command, out string botName, out string pluginId, out bool isConfidential, out List<string> arguments)
+        private bool TryParseCommand(string? input, out string command, out string botName, out string pluginId, out bool isConfidential, out List<string> arguments)
         {
             command = null;
             botName = null;
             pluginId = null;
             isConfidential = false;
             arguments = new List<string>();
+
+            // Check if input is null or empty
+            if (string.IsNullOrEmpty(input))
+                return false;
 
             // Match command with optional @botName and !pluginId
             Match match = Regex.Match(input, @"^(\/\w+)(?:@(\w+))?(?:!(\w+))?(#)?");
@@ -478,8 +483,8 @@ namespace Infrabot.TelegramService.Managers
             using var scope = _scopeFactory.CreateScope();
             var _context = scope.ServiceProvider.GetRequiredService<InfrabotContext>();
 
-            // Check if user is in the list.
-            if (_configuration.TelegramEnableShowMyId && message.Text.ToLower() == "/showmyid") return true;
+            // Check if /showmyid command sent while it is enabled.
+            if (_configuration.TelegramEnableShowMyId && message.Text?.ToLower() == "/showmyid") return true;
 
             // Check if user is in the list.
             bool isInTheList = _context.TelegramUsers.Any(t => t.TelegramId == telegramUserId);

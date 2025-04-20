@@ -15,6 +15,7 @@ namespace Infrabot.TelegramService.Managers
         {
             _botClient = botClient;
             _logger = logger;
+            _logger.LogInformation("Init: Telegram responder");
         }
 
         public async Task SendPlain(Chat chat, string message, int maxLength = 12000)

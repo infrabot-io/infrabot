@@ -5,7 +5,6 @@ using Infrabot.TelegramService.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using Infrabot.PluginSystem.Enums;
-using Newtonsoft.Json.Linq;
 
 namespace Infrabot.TelegramService.Managers
 {
@@ -18,14 +17,20 @@ namespace Infrabot.TelegramService.Managers
         private readonly object _lock = new();
         private string _pluginDirectory;
         private readonly ConcurrentDictionary<Guid, (DateTime LastModified, int Version)> _loadedPluginMeta = new();
+        private readonly TimeSpan _period;
 
         public PluginManager(ILogger<PluginManager> logger, IServiceScopeFactory scopeFactory, IConfiguration configuration)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
             _configuration = configuration;
-
             _pluginDirectory = NormalizePluginPath(configuration["Plugins:PluginsDirectory"] ?? "plugins");
+
+            _logger.LogInformation("Init: Plugin Manager");
+
+            int period = Convert.ToInt32(_configuration["Services:PluginManagerRefreshIntervalSeconds"]);
+            _logger.LogInformation($" Plugin Manager interval is set to {period} seconds.");
+            _period = TimeSpan.FromSeconds(period);
         }
 
         public IReadOnlyList<Plugin> Plugins
@@ -55,7 +60,7 @@ namespace Infrabot.TelegramService.Managers
                     _logger.LogError(ex, "Error while refreshing plugins.");
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
+                await Task.Delay(_period, stoppingToken);
             }
 
             _logger.LogInformation("Plugin manager background service stopped.");
@@ -205,7 +210,7 @@ namespace Infrabot.TelegramService.Managers
             {
                 foreach (var item in pluginsToAdd)
                 {
-                    _context.EventLogs.Add(new Common.Models.EventLog { EventType = Common.Enums.EventLogType.Info, CreatedDate = DateTime.Now, Description = $"New plugin {item.Name} installed." });
+                    _context.EventLogs.Add(new Common.Models.EventLog { EventType = Common.Enums.EventLogType.Info, CreatedDate = DateTime.Now, Description = $"New plugin {item.Name} with Guid {item.Guid} installed." });
                 }
 
                 await _context.Plugins.AddRangeAsync(pluginsToAdd);
@@ -215,7 +220,7 @@ namespace Infrabot.TelegramService.Managers
             {
                 foreach (var item in pluginsToRemove)
                 {
-                    _context.EventLogs.Add(new Common.Models.EventLog { EventType = Common.Enums.EventLogType.Info, CreatedDate = DateTime.Now, Description = $"Plugin {item.Name} removed." });
+                    _context.EventLogs.Add(new Common.Models.EventLog { EventType = Common.Enums.EventLogType.Info, CreatedDate = DateTime.Now, Description = $"Plugin {item.Name} with Guid {item.Guid} removed." });
                 }
 
                 _context.Plugins.RemoveRange(pluginsToRemove);
