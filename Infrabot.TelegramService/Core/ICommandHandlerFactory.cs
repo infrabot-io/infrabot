@@ -10,6 +10,7 @@ namespace Infrabot.TelegramService.Core
         IPluginRegistry GetPluginRegistry();
         Configuration GetConfiguration();
         ITelegramResponder GetTelegramResponder();
+        IBotCommandsUpdater GetBotCommandsUpdater();
         IServiceScopeFactory GetServiceScopeFactory();
     }
 }

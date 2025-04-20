@@ -32,8 +32,6 @@ builder.Services.AddSerilog(config =>
 
 /*****************************************/
 /* Enable main Worker service            */
-//builder.Services.AddHostedService<InfrabotWorker>();
-//builder.Services.AddHostedService<PluginManager>();
 builder.Services.AddSingleton<IEmergencyStateManager, EmergencyStateManager>();
 builder.Services.AddSingleton<PluginManager>();
 builder.Services.AddSingleton<IPluginRegistry>(sp => (PluginManager)sp.GetRequiredService<PluginManager>());

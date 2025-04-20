@@ -24,11 +24,10 @@
                 <li>Infrabot will automatically load the plugin configuration.</li>
                 <li>A subdirectory will be created within /plugins using the plugin's <i>GUID</i>.</li>
                 <li>The plugin’s data content will be extracted into that subdirectory.</li>
-                <li>If a folder with the same <i>GUID</i> already exists, it will be deleted and redeployed automatically.</li>
                 <li>Plugin will be shown on Plugins web page.</li>
-                <li>If another <code>.plug</code> file with a different name but the same or lower version of the plugin is deployed, it will be ignored.</li>
-                <li>If another <code>.plug</code> file with a different name and a higher version is deployed, the system will load the newer version, delete the existing extracted folder, and extract the updated plugin files.</li>
-                <li>To trigger an immediate update, send the <code>/reloadplugins</code> command to the bot.</li>
+                <li>If another <code>.plug</code> file with a different name but the same or a lower version of an already installed plugin is deployed, it will be ignored.</li>
+                <li>If another <code>.plug</code> file with a different name and a higher version of an already installed plugin is deployed, the system will load the newer version, delete the existing extracted folder, and extract the updated plugin files.</li>
+                <li>By default plugin will be loaded during 60 seconds (PluginManagerRefreshIntervalSeconds parameter in the application.json file of the TelegramService). <b>To trigger an immediate update, send the <code>/reloadplugins</code> command to the bot.</b></li>
                 <li>No additional actions are required for installation.</li>
             </ul>
         </li>
@@ -39,9 +38,10 @@
         <li>
             <b>Deleting a <code>.plug</code> file:</b>
             <ul>
-                <li>Plugin metadata will be removed from memory. All permissions given to the plugin will be lost.</li>
+                <li>You should wait 60 seconds (PluginManagerRefreshIntervalSeconds parameter in the application.json file of the TelegramService) for changes to take effect.</li>
+                <li>Plugin metadata will be removed from memory. All permissions given to the (already nonexistent) plugin will be lost.</li>
                 <li>The <i>GUID</i> subdirectory in <code>/plugins</code> will not be cleaned up.</li>
-                <li>If you redeploy the same plugin while the old <i>GUID</i> folder still exists, it will be deleted first and then recreated with fresh file extraction.</li>
+                <li>If you redeploy (delete it first, wait for update and then upload again) the same plugin while the old <i>GUID</i> folder still exists, it will be deleted first and then recreated with fresh file extraction.</li>
             </ul>
         </li>
         <li>
@@ -53,7 +53,7 @@
         <li>
             <b>Automatic Plugin Management:</b>
             <ul>
-                <li>After deploying or deleting a plugin, no manual action is required—Infrabot will automatically detect and load the changes.</li>
+                <li>After deploying or deleting a plugin, no manual action is required — Infrabot will automatically detect and load the changes.</li>
                 <li>However, you can force a plugin reload at any time using the <code>/reloadconfig</code> command.</li>
                 <li>Plugins are also accessible from the Plugins page, where you can view detailed information about each installed plugin.</li>
             </ul>

@@ -56,6 +56,16 @@
                         </div>
 
                         <div class="col-8">
+                            <label for="telegramresultmaxlength" class="form-label">Maximum length of Telegram results</label>
+                            <input type="number" class="form-control" id="telegramresultmaxlength" placeholder="12000" required="" asp-for="TelegramResultMaxLength">
+                            <div class="invalid-feedback">
+                                Please provide telegram result max length.
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="col-8 mt-0">
                             <label for="telegrampowershellpath" class="form-label">PowerShell Path</label>
                             <input type="text" class="form-control" id="telegrampowershellpath" placeholder="C:\pwsh.exe" required="" asp-for="TelegramPowerShellPath">
                             <div class="invalid-feedback">
@@ -71,7 +81,9 @@
                             </div>
                         </div>
 
-                        <div class="col-8">
+                        <hr>
+
+                        <div class="col-8 mt-0">
                             <label for="telegramshellpath" class="form-label">Shell Path</label>
                             <input type="text" class="form-control" id="telegramshellpath" placeholder="/bin/bash" required="" asp-for="TelegramLinuxShellPath">
                             <div class="invalid-feedback">
@@ -87,7 +99,9 @@
                             </div>
                         </div>
 
-                        <div class="col-8">
+                        <hr>
+
+                        <div class="col-8 mt-0">
                             <label for="telegrampythonpath" class="form-label">Python Path</label>
                             <input type="text" class="form-control" id="telegrampythonpath" placeholder="/usr/bin/python" required="" asp-for="TelegramPythonPath">
                             <div class="invalid-feedback">
@@ -100,14 +114,6 @@
                             <input type="text" class="form-control" id="telegrampythonarguments" placeholder="" required="" asp-for="TelegramPythonArguments">
                             <div class="invalid-feedback">
                                 Please provide python arguments.
-                            </div>
-                        </div>
-
-                        <div class="col-8">
-                            <label for="telegramresultmaxlength" class="form-label">Maximum length of Telegram results</label>
-                            <input type="number" class="form-control" id="telegramresultmaxlength" placeholder="12000" required="" asp-for="TelegramResultMaxLength">
-                            <div class="invalid-feedback">
-                                Please provide telegram result max length.
                             </div>
                         </div>
                     </div>

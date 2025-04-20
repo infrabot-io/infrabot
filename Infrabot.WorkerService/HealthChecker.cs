@@ -16,6 +16,7 @@ namespace Infrabot.WorkerService
 
         private DateTime _lastPollTime;
         private HealthCheckItem _cachedHealthCheckItem;
+
         public HealthChecker(ILogger<HealthChecker> logger,  IServiceScopeFactory scopeFactory, IConfiguration configuration)
         {
             _logger = logger;

@@ -12,6 +12,7 @@ namespace Infrabot.TelegramService.Managers
         private readonly IPluginRegistry _pluginRegistry;
         private readonly IEmergencyStateManager _emergencyStateManager; 
         private readonly ITelegramResponder _telegramResponder;
+        private readonly IBotCommandsUpdater _botCommandsUpdater;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public CommandHandlerFactory(
@@ -20,6 +21,7 @@ namespace Infrabot.TelegramService.Managers
             IPluginRegistry pluginRegistry,
             IEmergencyStateManager emergencyStateManager,
             ITelegramResponder telegramResponder,
+            IBotCommandsUpdater botCommandsUpdater,
             IServiceScopeFactory scopeFactory)
         {
             _botClient = botClient;
@@ -27,6 +29,7 @@ namespace Infrabot.TelegramService.Managers
             _pluginRegistry = pluginRegistry;
             _emergencyStateManager = emergencyStateManager;
             _telegramResponder = telegramResponder;
+            _botCommandsUpdater = botCommandsUpdater;
             _scopeFactory = scopeFactory;
         }
 
@@ -65,6 +68,11 @@ namespace Infrabot.TelegramService.Managers
         public ITelegramResponder GetTelegramResponder()
         {
             return _telegramResponder;
+        }
+
+        public IBotCommandsUpdater GetBotCommandsUpdater()
+        {
+            return _botCommandsUpdater;
         }
 
         public IServiceScopeFactory GetServiceScopeFactory()

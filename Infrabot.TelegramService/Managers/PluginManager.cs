@@ -125,6 +125,9 @@ namespace Infrabot.TelegramService.Managers
                             Directory.Delete(folderPath, true);
                             WaitForDeletion(folderPath);
                         }
+
+                        Directory.CreateDirectory(folderPath);
+                        await PluginUtility.ExtractPluginFiles(plugin, folderPath);
                     }
                     else
                     {

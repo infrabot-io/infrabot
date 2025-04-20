@@ -5,6 +5,7 @@ using Infrabot.Common.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Infrabot.TelegramService.Managers;
 using Infrabot.TelegramService.Core;
+using Telegram.Bots.Http;
 
 namespace Infrabot.TelegramService.Services
 {
@@ -23,8 +24,7 @@ namespace Infrabot.TelegramService.Services
             ILogger<TelegramService> logger, 
             ILoggerFactory loggerFactory,
             IPluginRegistry pluginRegistry,
-            IServiceScopeFactory scopeFactory
-        )
+            IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _loggerFactory = loggerFactory;
@@ -65,8 +65,10 @@ namespace Infrabot.TelegramService.Services
             var emergencyStateManager = scope.ServiceProvider.GetRequiredService<IEmergencyStateManager>();
             _logger.LogInformation($"Init: TelegramResponder");
             var telegramResponder = new TelegramResponder(_botClient, _loggerFactory.CreateLogger<TelegramResponder>());
+            _logger.LogInformation($"Init: BotCommandsUpdater");
+            var botCommandsUpdater = new BotCommandsUpdater(_loggerFactory.CreateLogger<BotCommandsUpdater>(), _pluginRegistry, _botClient);
             _logger.LogInformation($"Init: CommandHandlerFactory");
-            var _commandHandlerFactory = new CommandHandlerFactory(_botClient, configuration, _pluginRegistry, emergencyStateManager, telegramResponder, _scopeFactory);
+            var _commandHandlerFactory = new CommandHandlerFactory(_botClient, configuration, _pluginRegistry, emergencyStateManager, telegramResponder, botCommandsUpdater, _scopeFactory);
             _logger.LogInformation($"Init: CommandManager"); 
             _commandManager = new CommandManager(
                 _loggerFactory.CreateLogger<CommandManager>(),
