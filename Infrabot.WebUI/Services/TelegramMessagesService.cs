@@ -28,14 +28,14 @@ namespace Infrabot.WebUI.Services
 
         public async Task<IEnumerable<TelegramMessage>> GetAllTelegramMessages()
         {
-            var users = await _context.TelegramMessages.ToListAsync();
-            return users;
+            var telegramMessages = await _context.TelegramMessages.ToListAsync();
+            return telegramMessages;
         }
 
         public async Task<int> GetTelegramMessagesCount()
         {
-            int usersCount = await _context.TelegramMessages.CountAsync();
-            return usersCount;
+            int telegramMessagesCount = await _context.TelegramMessages.CountAsync();
+            return telegramMessagesCount;
         }
     }
 }

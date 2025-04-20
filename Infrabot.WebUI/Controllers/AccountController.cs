@@ -12,18 +12,18 @@ namespace Infrabot.WebUI.Controllers
     public class AccountController : Controller
     {
         private readonly ILogger<AccountController> _logger; 
-        private readonly IAuditLogService _auditLogService;
+        private readonly IAuditLogsService _auditLogsService;
         private readonly SignInManager<User> _signManager;
         private readonly UserManager<User> _userManager;
 
         public AccountController(
             ILogger<AccountController> logger, 
-            IAuditLogService auditLogService, 
+            IAuditLogsService auditLogsService, 
             UserManager<User> userManager, 
             SignInManager<User> signManager)
         {
             _logger = logger;
-            _auditLogService = auditLogService;
+            _auditLogsService = auditLogsService;
             _signManager = signManager;
             _userManager = userManager;
         }
@@ -64,17 +64,17 @@ namespace Infrabot.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success,LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User with user name {user.UserName} logged in" });
+                    await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success,LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User with user name {user.UserName} logged in" });
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogIn,LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User with user name failed to {user.UserName} log in"});
+                    await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogIn,LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User with user name failed to {user.UserName} log in"});
                     ViewData[TempDataKeys.AccountLoginOrPasswordIncorrect] = true;
                 }
             }
 
-            await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"Log in form failure. Wrong data." });
+            await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogIn, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"Log in form failure. Wrong data." });
 
             return View(model);
         }
@@ -84,7 +84,7 @@ namespace Infrabot.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
         {
-            await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogOut, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} logged out" });
+            await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.LogOut, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} logged out" });
             await _signManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
@@ -114,7 +114,7 @@ namespace Infrabot.WebUI.Controllers
 
                 if (user == null)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.NotFound, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} failed to change a password, because user was not found in the database. This is unusual"});
+                    await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.NotFound, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} failed to change a password, because user was not found in the database. This is unusual"});
                     ViewData[TempDataKeys.AccountUserNotFound] = true;
                     return View(model);
                 }
@@ -123,18 +123,18 @@ namespace Infrabot.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} changed password" });
+                    await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} changed password" });
                     ViewData[TempDataKeys.AccountPasswordChangeFailed] = true;
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} could not change password" });
+                    await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Failure, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} could not change password" });
                     ViewData[TempDataKeys.AccountPasswordChangeFailed] = true;
                 }
             }
 
-            await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} could not change password. Form failure. Wrong data." });
+            await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.ChangePassword, LogItem = AuditLogItem.User, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} could not change password. Form failure. Wrong data." });
             
             return View(model);
         }

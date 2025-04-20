@@ -13,16 +13,16 @@ namespace Infrabot.WebUI.Controllers
     {
         private readonly ILogger<ConfigurationController> _logger;
         private readonly IConfigurationService _configurationService;
-        private readonly IAuditLogService _auditLogService;
+        private readonly IAuditLogsService _auditLogsService;
 
         public ConfigurationController(
             ILogger<ConfigurationController> logger,
             IConfigurationService configurationService,
-            IAuditLogService auditLogService)
+            IAuditLogsService auditLogsService)
         {
             _logger = logger;
             _configurationService = configurationService;
-            _auditLogService = auditLogService;
+            _auditLogsService = auditLogsService;
         }
 
         public async Task<IActionResult> Index()
@@ -31,7 +31,7 @@ namespace Infrabot.WebUI.Controllers
 
             if (configuration is null)
             {
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Access, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} accessed Configuration page but got error about system configuration absense" });
+                await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Access, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Error, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} accessed Configuration page but got error about system configuration absense" });
                 _logger.LogError("System is corrupted. No configuration in the database has been found. Please delete database and restart application.");
                 return NotFound();
             }
@@ -45,10 +45,11 @@ namespace Infrabot.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} changed system configuration" });
+                string serializedConfiguration = JsonConvert.SerializeObject(configuration);
+                await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Configuration, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} changed system configuration to: {serializedConfiguration}" });
                 await _configurationService.UpdateConfiguration(configuration);
 
-                _logger.LogInformation("Configuration saved: " + JsonConvert.SerializeObject(configuration));
+                _logger.LogInformation("Configuration saved: " + serializedConfiguration);
 
                 ViewData[TempDataKeys.ConfigurationSaved] = true;
             }

@@ -9,17 +9,17 @@ namespace Infrabot.WebUI.Controllers
     public class LogsController : Controller
     {
         private readonly ILogger<LogsController> _logger;
-        private readonly IAuditLogService _auditLogService;
+        private readonly IAuditLogsService _auditLogsService;
         private readonly IConfiguration _configuration;
         private string logsFilePath;
 
         public LogsController(
             ILogger<LogsController> logger,
-            IAuditLogService auditLogService,
+            IAuditLogsService auditLogsService,
             IConfiguration configuration)
         {
             _logger = logger;
-            _auditLogService = auditLogService;
+            _auditLogsService = auditLogsService;
             _configuration = configuration;
 
             logsFilePath =  PathNormalizer.NormalizePath(_configuration["Serilog:WriteTo:2:Args:path"].Replace(".log", DateTime.Now.ToString("yyyyMMdd") + ".log") ?? "logs");

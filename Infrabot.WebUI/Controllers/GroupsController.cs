@@ -13,20 +13,20 @@ namespace Infrabot.WebUI.Controllers
     public class GroupsController : Controller
     {
         private readonly ILogger<GroupsController> _logger;
-        private readonly IAuditLogService _auditLogService;
+        private readonly IAuditLogsService _auditLogsService;
         private readonly IGroupsService _groupsService;
         private readonly ITelegramUsersService _telegramUsersService;
         private readonly IUserGroupsService _userGroupsService;
 
         public GroupsController(
             ILogger<GroupsController> logger, 
-            IAuditLogService auditLogService, 
+            IAuditLogsService auditLogsService, 
             IGroupsService groupsService, 
             ITelegramUsersService telegramUsersService,
             IUserGroupsService userGroupsService)
         {
             _logger = logger;
-            _auditLogService = auditLogService;
+            _auditLogsService = auditLogsService;
             _groupsService = groupsService;
             _telegramUsersService = telegramUsersService;
             _userGroupsService = userGroupsService;
@@ -95,7 +95,7 @@ namespace Infrabot.WebUI.Controllers
                     await _userGroupsService.AddRangeUserGroups(userGroups);
                 }
 
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} created group {groupViewModel.Name}" });
+                await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Create, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} created group {groupViewModel.Name}" });
 
                 return RedirectToAction("Index");
             }
@@ -154,7 +154,7 @@ namespace Infrabot.WebUI.Controllers
                     : null;
 
                 await _groupsService.UpdateGroup(group);
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated group {groupViewModel.Name}" });
+                await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Update, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Medium, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} updated group {groupViewModel.Name}" });
 
                 ViewData[TempDataKeys.GroupSaved] = true;
             }
@@ -190,7 +190,7 @@ namespace Infrabot.WebUI.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted group {group.Name}" });
+                await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Group, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Higer, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted group {group.Name}" });
                 await _groupsService.DeleteGroup(group);
                 TempData[TempDataKeys.GroupDeleted] = true;
             }

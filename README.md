@@ -80,8 +80,7 @@ stateDiagram-v2
     state "Web Admin Service <br>
     - Web UI
     - User/Group Mgmt
-    - Plugin Access Mgmt
-    - AD Auth Integration" as s1
+    - Plugin Access Mgmt" as s1
     state "Telegram Service <br>
     - Telegram Client
     - Plugin Manager 

@@ -13,7 +13,7 @@ namespace Infrabot.WebUI.Extensions
         {
             services.AddScoped<IApiService, ApiService>();
             services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<IAuditLogService, AuditLogService>();
+            services.AddScoped<IAuditLogsService, AuditLogsService>();
             services.AddScoped<IGroupsService, GroupsService>();
             services.AddScoped<ITelegramUsersService, TelegramUsersService>();
             services.AddScoped<IUserGroupsService, UserGroupsService>();

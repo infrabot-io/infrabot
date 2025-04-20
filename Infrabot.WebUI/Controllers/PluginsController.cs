@@ -15,19 +15,19 @@ namespace Infrabot.WebUI.Controllers
     {
         private readonly ILogger<PluginsController> _logger;
         private readonly IPluginsService _pluginsService;
-        private readonly IAuditLogService _auditLogService;
+        private readonly IAuditLogsService _auditLogsService;
         private readonly IConfiguration _configuration;
         private string _pluginDirectory;
 
         public PluginsController(
             ILogger<PluginsController> logger,
             IPluginsService pluginsService, 
-            IAuditLogService auditLogService,
+            IAuditLogsService auditLogsService,
             IConfiguration configuration)
         {
             _logger = logger;
             _pluginsService = pluginsService;
-            _auditLogService = auditLogService;
+            _auditLogsService = auditLogsService;
             _configuration = configuration;
 
             _pluginDirectory = PathNormalizer.NormalizePath(_configuration["Plugins:PluginsDirectory"] ?? "plugins");
@@ -136,7 +136,7 @@ namespace Infrabot.WebUI.Controllers
                     return View(plugin);
                 }
 
-                await _auditLogService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted plugin {plugin.Name} with guid {plugin.Guid}" });
+                await _auditLogsService.AddAuditLog(new AuditLog { IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), LogAction = AuditLogAction.Delete, LogItem = AuditLogItem.Plugin, LogResult = AuditLogResult.Success, LogSeverity = AuditLogSeverity.Highest, CreatedDate = DateTime.Now, Description = $"User {this.User.Identity?.Name} deleted plugin {plugin.Name} with guid {plugin.Guid}" });
                 await _pluginsService.DeletePlugin(plugin);
                 TempData[TempDataKeys.PluginDeleted] = true;
             }
