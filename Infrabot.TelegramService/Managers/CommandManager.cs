@@ -58,6 +58,7 @@ namespace Infrabot.TelegramService.Managers
                     if (me.Username?.ToLower() != botName)
                     {
                         // Ignoring message because it was not addressed to bot
+                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. Will not execute because command was not adressed to bot {me.Username?.ToLower()}");
                         return;
                     }
                 }
@@ -77,7 +78,10 @@ namespace Infrabot.TelegramService.Managers
                         if (!string.IsNullOrEmpty(pluginId))
                         {
                             if (pluginId != plugin.Id)
+                            {
+                                _logger.LogDebug($"Command: {command} from {message.From?.Username}. Will not execute plugin {plugin.Id} because command was not adressed to it.");
                                 continue;
+                            }
                         }
 
                         if (HasPermissionToPlugin(plugin.Guid, Convert.ToInt32(message.From?.Id)) == false)
@@ -99,6 +103,7 @@ namespace Infrabot.TelegramService.Managers
                                     if (arguments.Count > 0 && arguments.First() == "??")
                                     {
                                         await _telegramResponder.SendPlain(message.Chat, $"Plugin: {plugin.Name}\nId: {plugin.Id}\nAuthor: {plugin.Author}\nGuid: {plugin.Guid.ToString()}\nDescription: {plugin.Description}\nVersion: {plugin.Version}\nWebsite: {plugin.WebSite}");
+                                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. First argument is ??, so will send plugin information to user");
                                         return;
                                     }
 
@@ -114,6 +119,7 @@ namespace Infrabot.TelegramService.Managers
                                     if (!File.Exists(executionFile))
                                     {
                                         await _telegramResponder.SendMarkdown(message.Chat, $"❌ Error: File *{executionFile.Replace("\\", "\\\\")}* does not exist.\n🔄 Make sure that file specified in the plugins configuration exists or redeploy the plugin.".EscapeMarkdown());
+                                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. Error: The command was aborted because execution file {executionFile} from the plugin is missing. Please redeploy the plugin.");
                                         return;
                                     }
 
@@ -122,6 +128,7 @@ namespace Infrabot.TelegramService.Managers
                                     if (plugin.PluginFiles == null || plugin.PluginFiles.All(file => file.FileHash != executableFileHash))
                                     {
                                         await _telegramResponder.SendMarkdown(message.Chat, $"❌ `Error:` The file *{executionFile.Replace("\\", "\\\\")}* does not match the original version.\n🔄 Please redeploy the plugin.".EscapeMarkdown());
+                                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. Error: The command was aborted because execution file hash differs from the original file. Please redeploy the plugin.");
                                         return;
                                     }
 
@@ -132,6 +139,7 @@ namespace Infrabot.TelegramService.Managers
                                         if (arguments.Count > pluginExecution.ExecutionFileArguments.Count)
                                         {
                                             await _telegramResponder.SendMarkdown(message.Chat, $"❌ `Error:` You specified more arguments *({arguments.Count})* than this command supports *({pluginExecution.ExecutionFileArguments.Count})*.\n ✅ Write '{command} ?' to get information.".EscapeMarkdown());
+                                            _logger.LogDebug($"Command: {command} from {message.From?.Username}. Error: The command was aborted because user specified more arguments {arguments.Count} than this command supports ({pluginExecution.ExecutionFileArguments.Count}).");
                                             return;
                                         }
 
@@ -155,6 +163,7 @@ namespace Infrabot.TelegramService.Managers
                                             }
 
                                             await _telegramResponder.SendMarkdown(message.Chat, $"❌ `Error:` There are some missing arguments :\n {missingArguments}".EscapeMarkdown());
+                                            _logger.LogDebug($"Command: {command} from {message.From?.Username}. Error: The command was aborted because there are some missing arguments {missingArguments}");
                                             return;
                                         }
                                     }
@@ -162,14 +171,23 @@ namespace Infrabot.TelegramService.Managers
                                     // If plugin execution path somehow became absent, use C:\Windows\System32 as a default working directory
                                     string workingDirectory = Path.Combine(_pluginRegistry.GetPluginDirectory(), plugin.Guid.ToString());
                                     if (!Directory.Exists(workingDirectory))
+                                    {
                                         workingDirectory = Environment.SystemDirectory;
+                                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. Working directory was set to {workingDirectory} because plugin execution path somehow became absent");
+                                    }
 
                                     // Define cancellation token for execution timeout
                                     using var cliCts = new CancellationTokenSource();
                                     if (pluginExecution.ExecutionTimeout == 0 || pluginExecution.ExecutionTimeout > 43200)
+                                    {
                                         cliCts.CancelAfter(TimeSpan.FromSeconds(43200));
+                                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. Execution timeout for {pluginExecution.CommandName} was set to 43200 because its value in the configuration was {pluginExecution.ExecutionTimeout}");
+                                    }
                                     else
+                                    {
                                         cliCts.CancelAfter(TimeSpan.FromSeconds(pluginExecution.ExecutionTimeout));
+                                        _logger.LogDebug($"Command: {command} from {message.From?.Username}. Execution timeout for {pluginExecution.CommandName} was set to {pluginExecution.ExecutionTimeout}");
+                                    }
 
                                     // Define environment variables from settings
                                     IReadOnlyDictionary<string, string> environmentVariables = AddCliWrapEnvironmentVariables(plugin.Settings);
@@ -187,6 +205,8 @@ namespace Infrabot.TelegramService.Managers
                                             {
                                                 if (await CheckEnvironmentExecutable(message, _configuration.TelegramPowerShellPath, command) == false)
                                                     continue;
+
+                                                _logger.LogDebug($"Command: {command} from {message.From?.Username}. Starting execution of PowerShell command {pluginExecution.CommandName} - {plugin.Name} {plugin.Guid}");
 
                                                 try
                                                 {
@@ -252,6 +272,8 @@ namespace Infrabot.TelegramService.Managers
                                                 if (await CheckEnvironmentExecutable(message, _configuration.TelegramLinuxShellPath, command) == false)
                                                     continue;
 
+                                                _logger.LogDebug($"Command: {command} from {message.From?.Username}. Starting execution of Bash Script command {pluginExecution.CommandName} - {plugin.Name} {plugin.Guid}");
+
                                                 try
                                                 {
                                                     var cliTask = Cli.Wrap(_configuration.TelegramLinuxShellPath)
@@ -315,6 +337,8 @@ namespace Infrabot.TelegramService.Managers
                                                 if (await CheckEnvironmentExecutable(message, _configuration.TelegramPythonPath, command) == false)
                                                     continue;
 
+                                                _logger.LogDebug($"Command: {command} from {message.From?.Username}. Starting execution of Python script command {pluginExecution.CommandName} - {plugin.Name} {plugin.Guid}");
+
                                                 try
                                                 {
                                                     var cliTask = Cli.Wrap(_configuration.TelegramPythonPath)
@@ -375,6 +399,8 @@ namespace Infrabot.TelegramService.Managers
                                             break;
                                         case CommandExecuteTypes.AppExecutable:
                                             {
+                                                _logger.LogDebug($"Command: {command} from {message.From?.Username}. Starting execution of application executable command {pluginExecution.CommandName} - {plugin.Name} {plugin.Guid}");
+
                                                 try
                                                 {
                                                     var cliTask = Cli.Wrap(executionFile)
@@ -425,6 +451,8 @@ namespace Infrabot.TelegramService.Managers
                                             break;
                                         case CommandExecuteTypes.CSharpScript:
                                             {
+                                                _logger.LogDebug($"Command: {command} from {message.From?.Username}. Starting execution of CSharp Script command {pluginExecution.CommandName} - {plugin.Name} {plugin.Guid}");
+                                                
                                                 try
                                                 {
                                                     object executionResult = await CSharpScript.EvaluateAsync(File.ReadAllText(executionFile));
@@ -523,10 +551,15 @@ namespace Infrabot.TelegramService.Managers
             var _context = scope.ServiceProvider.GetRequiredService<InfrabotContext>();
 
             // Check if /showmyid command sent while it is enabled.
-            if (_configuration.TelegramEnableShowMyId && message.Text?.ToLower() == "/showmyid") return true;
+            if (_configuration.TelegramEnableShowMyId && message.Text?.ToLower() == "/showmyid")
+            {
+                _logger.LogDebug($"Command: {message?.Text} from {message?.From?.Username}. User has permission to write to bot, because Show My Id is enabled even if he is not in the Telegram Users list");
+                return true; 
+            }
 
             // Check if user is in the list.
             bool isInTheList = _context.TelegramUsers.Any(t => t.TelegramId == telegramUserId);
+            _logger.LogDebug($"Command: {message?.Text} from {message?.From?.Username}. User {(isInTheList ? "has" : "does not have")} permission to write to bot {(isInTheList ? "because he is in the Telegram Users list" : "because he is not in the Telegram Users list")}");
 
             return isInTheList;
         }
@@ -561,6 +594,7 @@ namespace Infrabot.TelegramService.Managers
 
             if (!groupsInAssignments.Any())
             {
+                _logger.LogDebug($"Telegram user with {telegramUserId} id has direct permission to plugin");
                 return hasDirectAccess;
             }
 
@@ -575,6 +609,7 @@ namespace Infrabot.TelegramService.Managers
                 .ToList();
 
             bool hasGroupAccess = groupsInAssignments.Any(gid => userGroupIds.Contains(gid));
+            _logger.LogDebug($"Telegram user with {telegramUserId} id has permission to plugin via group");
 
             return hasDirectAccess || hasGroupAccess;
         }
@@ -590,6 +625,7 @@ namespace Infrabot.TelegramService.Managers
                 _context.TelegramMessages.Add(new Common.Models.TelegramMessage { Message = message.Text, TelegramUserId = message.From?.Id, TelegramUserUsername = message.From?.Username, CreatedDate = DateTime.Now });
 
             await _context.SaveChangesAsync();
+            _logger.LogDebug($"Command: {message?.Text} from {message?.From?.Username}. Will add Log to messages. Log mode is {(isConfidential ? "Confidential" : "Not Confidential")}.");
         }
 
         private async Task ShowHelpManual(Message message, PluginExecution pluginExecution)
@@ -608,6 +644,7 @@ namespace Infrabot.TelegramService.Managers
                 sb.AppendLine("     (no arguments for this command)");
             }
             await _telegramResponder.SendPlain(message.Chat, $"ℹ️ Help: {pluginExecution.Help}{sb.ToString()}");
+            _logger.LogDebug($"Command: {message?.Text} from {message?.From?.Username}.  First argument is ?, so will send command information to user");
         }
 
         private Dictionary<string, string> AddCliWrapEnvironmentVariables(List<PluginSetting> pluginSettings)
@@ -668,6 +705,7 @@ namespace Infrabot.TelegramService.Managers
                 return true;
 
             await _telegramResponder.SendMarkdown(message.Chat, $"❌ `Error:` The command {command} was aborted because file *{executableFilePath.Replace("\\", "\\\\").Replace(".", "\\.")}* is missing\\. Fix it in the configuration from the UI interface\\.");
+            _logger.LogDebug($"Command: {command} from {message.From?.Username}. Error: The command {command} was aborted because file {executableFilePath} is missing.");
 
             return false;
         }
