@@ -185,6 +185,9 @@ namespace Infrabot.TelegramService.Managers
                                     {
                                         case CommandExecuteTypes.PSScript:
                                             {
+                                                if (await CheckEnvironmentExecutable(message, _configuration.TelegramPowerShellPath, command) == false)
+                                                    continue;
+
                                                 try
                                                 {
                                                     var cliTask = Cli.Wrap(_configuration.TelegramPowerShellPath)
@@ -236,10 +239,19 @@ namespace Infrabot.TelegramService.Managers
                                                     await _telegramResponder.SendPlain(message.Chat, $"⚠️ `Warning:` The command {command} was aborted due to timeout ({pluginExecution.ExecutionTimeout}) expiration.\nOutput: {stdOutBuffer.ToString()}\nError: {stdErrBuffer.ToString()}");
                                                     return;
                                                 }
+                                                catch (Exception ex)
+                                                {
+                                                    _logger.LogError($"The command {command} was aborted due to an error: " + ex.Message);
+                                                    await _telegramResponder.SendPlain(message.Chat, $"❌ `Error:` The command {command} was aborted due to an error: " + ex.Message);
+                                                    return;
+                                                }
                                             }
                                             break;
                                         case CommandExecuteTypes.BashScript:
                                             {
+                                                if (await CheckEnvironmentExecutable(message, _configuration.TelegramLinuxShellPath, command) == false)
+                                                    continue;
+
                                                 try
                                                 {
                                                     var cliTask = Cli.Wrap(_configuration.TelegramLinuxShellPath)
@@ -290,10 +302,19 @@ namespace Infrabot.TelegramService.Managers
                                                     await _telegramResponder.SendPlain(message.Chat, $"⚠️ `Warning:` The command {command} was aborted due to timeout ({pluginExecution.ExecutionTimeout}) expiration.\nOutput: {stdOutBuffer.ToString()}\nError: {stdErrBuffer.ToString()}");
                                                     return;
                                                 }
+                                                catch (Exception ex)
+                                                {
+                                                    _logger.LogError($"The command {command} was aborted due to an error: " + ex.Message);
+                                                    await _telegramResponder.SendPlain(message.Chat, $"❌ `Error:` The command {command} was aborted due to an error: " + ex.Message);
+                                                    return;
+                                                }
                                             }
                                             break;
                                         case CommandExecuteTypes.PythonScript:
                                             {
+                                                if (await CheckEnvironmentExecutable(message, _configuration.TelegramPythonPath, command) == false)
+                                                    continue;
+
                                                 try
                                                 {
                                                     var cliTask = Cli.Wrap(_configuration.TelegramPythonPath)
@@ -344,6 +365,12 @@ namespace Infrabot.TelegramService.Managers
                                                     await _telegramResponder.SendPlain(message.Chat, $"⚠️ `Warning:` The command {command} was aborted due to timeout ({pluginExecution.ExecutionTimeout}) expiration.\nOutput: {stdOutBuffer.ToString()}\nError: {stdErrBuffer.ToString()}");
                                                     return;
                                                 }
+                                                catch (Exception ex)
+                                                {
+                                                    _logger.LogError($"The command {command} was aborted due to an error: " + ex.Message);
+                                                    await _telegramResponder.SendPlain(message.Chat, $"❌ `Error:` The command {command} was aborted due to an error: " + ex.Message);
+                                                    return;
+                                                }
                                             }
                                             break;
                                         case CommandExecuteTypes.AppExecutable:
@@ -388,6 +415,12 @@ namespace Infrabot.TelegramService.Managers
                                                     await _telegramResponder.SendPlain(message.Chat, $"⚠️ `Warning:` The command {command} was aborted due to timeout ({pluginExecution.ExecutionTimeout}) expiration.\nOutput: {stdOutBuffer.ToString()}\nError: {stdErrBuffer.ToString()}");
                                                     return;
                                                 }
+                                                catch (Exception ex)
+                                                {
+                                                    _logger.LogError($"The command {command} was aborted due to an error: " + ex.Message);
+                                                    await _telegramResponder.SendPlain(message.Chat, $"❌ `Error:` The command {command} was aborted due to an error: " + ex.Message);
+                                                    return;
+                                                }
                                             }
                                             break;
                                         case CommandExecuteTypes.CSharpScript:
@@ -401,6 +434,12 @@ namespace Infrabot.TelegramService.Managers
                                                 {
                                                     _logger.LogError($"Error during execution of C# script: {e.Message}");
                                                     stdErrBuffer.Append(e.Message);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    _logger.LogError($"The command {command} was aborted due to an error: " + ex.Message);
+                                                    await _telegramResponder.SendPlain(message.Chat, $"❌ `Error:` The command {command} was aborted due to an error: " + ex.Message);
+                                                    return;
                                                 }
                                             }
                                             break;
@@ -621,6 +660,16 @@ namespace Infrabot.TelegramService.Managers
                     _logger.LogError($"Error during settings to config file extraction: {ex.Message}");
                 }
             }
+        }
+
+        private async Task<bool> CheckEnvironmentExecutable(Message message, string executableFilePath, string command)
+        {
+            if (File.Exists(executableFilePath))
+                return true;
+
+            await _telegramResponder.SendMarkdown(message.Chat, $"❌ `Error:` The command {command} was aborted because file *{executableFilePath.Replace("\\", "\\\\").Replace(".", "\\.")}* is missing\\. Fix it in the configuration from the UI interface\\.");
+
+            return false;
         }
     }
 }
