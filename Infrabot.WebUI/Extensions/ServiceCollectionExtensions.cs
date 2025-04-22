@@ -28,7 +28,7 @@ namespace Infrabot.WebUI.Extensions
         public static IServiceCollection AddInfrabotAuthentication(this IServiceCollection services)
         {
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable(ConfigKeys.EnvironmentVariable) ?? "Production"}.json", true)
                 .Build();
@@ -59,7 +59,7 @@ namespace Infrabot.WebUI.Extensions
         public static IServiceCollection AddInfrabotLogging(this IServiceCollection services)
         {
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable(ConfigKeys.EnvironmentVariable) ?? "Production"}.json", true)
                 .Build();

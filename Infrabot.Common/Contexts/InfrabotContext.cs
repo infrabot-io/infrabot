@@ -86,6 +86,7 @@ namespace Infrabot.Common.Contexts
                  }
             );
 
+            /*
             modelBuilder.Entity<TelegramUser>().HasData(
                  new TelegramUser
                  {
@@ -95,6 +96,7 @@ namespace Infrabot.Common.Contexts
                      TelegramId = 816058261
                  }
             );
+            */
 
             modelBuilder.Entity<Configuration>().HasData(
                 new Configuration

@@ -3,8 +3,6 @@ using Infrabot.TelegramService.Core;
 using Infrabot.TelegramService.Managers;
 using Infrabot.TelegramService.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Configuration;
-using Microsoft.Extensions.Logging.EventLog;
 using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -20,7 +18,7 @@ builder.Services.AddDbContext<InfrabotContext>(options => options.UseSqlite(buil
 /*****************************************/
 /* Enable logs to appear in events       */
 var configuration = new ConfigurationBuilder()
-       .SetBasePath(Directory.GetCurrentDirectory())
+       .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
        .AddJsonFile("appsettings.json")
        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
        .Build();
