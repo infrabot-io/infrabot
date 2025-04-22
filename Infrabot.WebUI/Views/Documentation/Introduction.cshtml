@@ -7,7 +7,7 @@
     <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
     <hr>
 
-    <h3>Plugin Overview</h3>
+    <h3>Plugin System Overview</h3>
     <p>To enhance Infrabot’s functionality and extend its capabilities, a plugin system has been implemented. Each plugin determines the set of commands that Infrabot can execute, with no limit on the number of commands a plugin can contain. However, it is crucial to ensure that commands do not overlap.</p>
     
     <h5>Rules of the Plugin System</h5>
@@ -19,7 +19,10 @@
         <li>
             <b>
                 Plugin Installation:
-            </b> To install a plugin, simply copy the .plug file into the /plugins directory within Infrabot Telegram Service installation path. If the file is valid:
+            </b>
+
+            You can deploy plugins either through the Web UI or by manually uploading .plug files to the <code>/plugins</code> directory. If the file is valid:
+            
             <ul>
                 <li>Infrabot will automatically load the plugin configuration.</li>
                 <li>A subdirectory will be created within /plugins using the plugin's <i>GUID</i>.</li>
@@ -74,7 +77,7 @@
             <b>Telegram Command List Updates:</b>
             <ul>
                 <li>The Telegram commands menu updates automatically when changes occur.</li>
-                <li>It may take 3–5 minutes for updates to appear in the chat menu.</li>
+                <li>It may take 5 hours for updates to appear in the chat menu.</li>
             </ul>
         </li>
         <li>
@@ -84,11 +87,43 @@
                     If a plugin with the same <i>GUID</i> appears multiple times on the Plugins page, do the following:
                     <ol>
                         <li><i>Delete</i> the plugin file.</li>
-                        <li><i>Wait</i> until it disappears from the list.</li>
-                        <li><i>Redeploy</i> the plugin.</li>
+                        <li><i>Wait</i> until it disappears from the list or force reload.</li>
+                        <li><i>Upload</i> the plugin file.</li>
                     </ol>
                 </li>
             </ul>
         </li>
     </ul>
+
+    <br><br>
+
+    <h3>Integrated commands</h3>
+    <p>There are several integrated commands some of which might be turned off from the configuration:</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">/emergency</td>
+                <td>This command forcefully stops the Infrabot service and is intended for use in emergency situations. The user must be registered under Telegram Users to execute this command.</td>
+            </tr>
+            <tr>
+                <td scope="row">/getcommands</td>
+                <td>This command shows a list of available commands to execute. The user must be registered under Telegram Users to execute this command.</td>
+            </tr>
+            <tr>
+                <td scope="row">/reloadplugins</td>
+                <td>This command reloads all plugins located in the /plugins directory. The user must be registered under Telegram Users to execute this command.</td>
+            </tr>
+            <tr>
+                <td scope="row">/showmyid</td>
+                <td>This command displays the user's Telegram ID. It is useful when assigning permissions—simply ask the user to run the command and share their ID with you. If this command is enabled in the configuration, users can execute it without being registered under Telegram Users by sending the command directly to the bot.</td>
+            </tr>
+        </tbody>
+    </table>
+
 </article>

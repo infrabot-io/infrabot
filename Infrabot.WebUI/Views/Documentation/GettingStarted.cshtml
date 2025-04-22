@@ -43,12 +43,160 @@
     <h4>Step 5</h4>
     <p>Put Token into <code>Telegram bot Token</code> field on <a href="~/configuration" alt="Configuration">Configuration</a> page.</p>
     <img class="img-fluid" src="../img/documentation/gettingstarted/4.png">
-    
     <br><br>
+    
     <h4>Step 6</h4>
-    <p>Start the Telegram Service from the services list. Ensure the token is valid; otherwise, the service won't be able to launch properly.</p>
+    <p>Configure environments on <a href="~/configuration" alt="Configuration">Configuration</a> page for your scripts.</p>
+    <img class="img-fluid" src="../img/documentation/gettingstarted/5.png">
+    <br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Parameter</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">PowerShell Path</td>
+                <td>String</td>
+                <td>This parameter specifies the absolute path to the PowerShell executable. By default, it points to "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe". To use PowerShell 7, you can install it separately and update this path to the new executable. Works both for Linux and Windows operating systems.</td>
+            </tr>
+            <tr>
+                <td scope="row">PowerShell Arguments</td>
+                <td>String</td>
+                <td>This parameter sets the arguments passed to powershell.exe during each execution. By default, it uses "-ExecutionPolicy Unrestricted -NoProfile". 
+                    <br>
+                    Note: Using -ExecutionPolicy Unrestricted is not recommended for production environments due to security risks. Learn more in the official documentation <a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.5" target="_blank">here</a>.
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Shell Path</td>
+                <td>String</td>
+                <td>
+                    This parameter specifies the shell. By default it is "/bin/bash". 
+                    <br><br>
+                    Examples:
+                    <ul>
+                        <li>/bin/csh</li>
+                        <li>/bin/ksh</li>
+                        <li>/bin/zsh</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Shell Arguments</td>
+                <td>String</td>
+                <td>This parameter sets the arguments passed to shell during each execution.</td>
+            </tr>
+            <tr>
+                <td scope="row">Python Path</td>
+                <td>String</td>
+                <td>This parameter defines path to python executable. Works both for Linux and Windows operating systems.</td>
+            </tr>
+            <tr>
+                <td scope="row">Python Arguments</td>
+                <td>String</td>
+                <td>This parameter sets the arguments passed to python during each execution.</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <p>The <b>PowerShell Path</b>, <b>Shell Path</b>, and <b>Python Path</b> fields support environment variables. You can define paths using placeholders, for example: <code>{ProgramFiles}\python\python.exe</code></p>
+    <p>List of possible variables: </p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">{ApplicationData}</td>
+                <td>The directory that serves as a common repository for application-specific data for the current roaming user. A roaming user works on more than one computer on a network. A roaming user's profile is kept on a server on the network and is loaded onto a system when the user logs on.</td>
+            </tr>
+            <tr>
+                <td scope="row">{CommonApplicationData}</td>
+                <td>The directory that serves as a common repository for application-specific data that is used by all users.</td>
+            </tr>
+            <tr>
+                <td scope="row">{CommonDesktopDirectory}</td>
+                <td>The file system directory that contains files and folders that appear on the desktop for all users.</td>
+            </tr>
+            <tr>
+                <td scope="row">{DesktopDirectory}</td>
+                <td>The directory used to physically store file objects on the desktop.</td>
+            </tr>
+            <tr>
+                <td scope="row">{LocalApplicationData}</td>
+                <td>The directory that serves as a common repository for application-specific data that is used by the current, non-roaming user.</td>
+            </tr>
+            <tr>
+                <td scope="row">{MyDocuments}</td>
+                <td>The My Documents folder.</td>
+            </tr>
+            <tr>
+                <td scope="row">{ProgramFiles}</td>
+                <td>The program files directory.</td>
+            </tr>
+            <tr>
+                <td scope="row">{ProgramFilesX86}</td>
+                <td>The x86 Program Files folder.</td>
+            </tr>
+            <tr>
+                <td scope="row">{Startup}</td>
+                <td>The directory that corresponds to the user's Startup program group. The system starts these programs whenever a user logs on or starts Windows.</td>
+            </tr>
+            <tr>
+                <td scope="row">{System}</td>
+                <td>The System directory.</td>
+            </tr>
+            <tr>
+                <td scope="row">{SystemX86}</td>
+                <td>The Windows System folder.</td>
+            </tr>
+            <tr>
+                <td scope="row">{UserProfile}</td>
+                <td>The user's profile folder.</td>
+            </tr>
+            <tr>
+                <td scope="row">{Windows}</td>
+                <td>The Windows directory or SYSROOT. This corresponds to the %windir% or %SYSTEMROOT% environment variables.</td>
+            </tr>
+            <tr>
+                <td scope="row">{MachineName}</td>
+                <td>The NetBIOS name of this local computer.</td>
+            </tr>
+            <tr>
+                <td scope="row">{ProcessPath}</td>
+                <td>Returns the path of the executable that started the currently executing process.</td>
+            </tr>
+            <tr>
+                <td scope="row">{CurrentDirectory}</td>
+                <td>Gets the fully qualified path of the current working directory.</td>
+            </tr>
+            <tr>
+                <td scope="row">{UserName}</td>
+                <td>Gets the user name of the person who is associated with the current thread.</td>
+            </tr>
+            <tr>
+                <td scope="row">{UserDomainName}</td>
+                <td>Gets the network domain name associated with the current user.</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <br><br><br>
+    <br>
+    <h4>Step 7</h4>
+    <p>Start the Telegram Service from the services list. Ensure the token is valid; otherwise, the service won't be able to launch properly. After modifying the configuration, the Telegram Service must be restarted for the changes to take effect.</p>
+
+    <br>
+    <h4>Step 8</h4>
+    <p>You can deploy plugins either through the Web UI or by manually uploading .plug files to the <code>/plugins</code> folder. Once the plugin appears in the list, send the <code>/showmyid</code> command to the bot to retrieve your Telegram ID. After obtaining your ID, add yourself under Telegram Users, then assign permission to execute the command via the Permission Assignment page. Permissions can be granted either directly to a user or through one or more groups. Infrabot will ignore default commands if the user's Telegram ID is not registered under Telegram Users.</p>
+
+    <br>
     <h3>Service Account</h3>
     <p>By default, the Infrabot service runs under the <code>Local System</code> account. However, you can change it to another user account or an <code>Active Directory Managed Service Account</code> if required.</p>
     <p>Please refer to <a href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/group-managed-service-accounts/group-managed-service-accounts/group-managed-service-accounts-overview" alt="gMSA" target="_blank">this</a> article for more information</p>

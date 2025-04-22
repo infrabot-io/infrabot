@@ -210,7 +210,7 @@ namespace Infrabot.TelegramService.Managers
 
                                                 try
                                                 {
-                                                    var cliTask = Cli.Wrap(_configuration.TelegramPowerShellPath)
+                                                    var cliTask = Cli.Wrap(ReplaceEnvironmentVariables(_configuration.TelegramPowerShellPath))
                                                         .WithArguments(args =>
                                                         {
                                                             if (_configuration.TelegramPowerShellArguments?.Length > 0)
@@ -276,7 +276,7 @@ namespace Infrabot.TelegramService.Managers
 
                                                 try
                                                 {
-                                                    var cliTask = Cli.Wrap(_configuration.TelegramLinuxShellPath)
+                                                    var cliTask = Cli.Wrap(ReplaceEnvironmentVariables(_configuration.TelegramLinuxShellPath))
                                                         .WithArguments(args =>
                                                         {
                                                             if (_configuration.TelegramLinuxShellArguments?.Length > 0)
@@ -341,7 +341,7 @@ namespace Infrabot.TelegramService.Managers
 
                                                 try
                                                 {
-                                                    var cliTask = Cli.Wrap(_configuration.TelegramPythonPath)
+                                                    var cliTask = Cli.Wrap(ReplaceEnvironmentVariables(_configuration.TelegramPythonPath))
                                                         .WithArguments(args =>
                                                         {
                                                             if (_configuration.TelegramPythonArguments?.Length > 0)
@@ -708,6 +708,33 @@ namespace Infrabot.TelegramService.Managers
             _logger.LogDebug($"Command: {command} from {message.From?.Username}. Error: The command {command} was aborted because file {executableFilePath} is missing.");
 
             return false;
+        }
+
+        private string ReplaceEnvironmentVariables(string path)
+        {
+            if(path.Contains("{") && path.Contains("}"))
+            {
+                path = path.Replace("{ApplicationData}", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                path = path.Replace("{CommonApplicationData}", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+                path = path.Replace("{CommonDesktopDirectory}", Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
+                path = path.Replace("{DesktopDirectory}", Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+                path = path.Replace("{LocalApplicationData}", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+                path = path.Replace("{MyDocuments}", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+                path = path.Replace("{ProgramFiles}", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+                path = path.Replace("{ProgramFilesX86}", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86));
+                path = path.Replace("{Startup}", Environment.GetFolderPath(Environment.SpecialFolder.Startup));
+                path = path.Replace("{System}", Environment.GetFolderPath(Environment.SpecialFolder.System));
+                path = path.Replace("{SystemX86}", Environment.GetFolderPath(Environment.SpecialFolder.SystemX86));
+                path = path.Replace("{UserProfile}", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+                path = path.Replace("{Windows}", Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+                path = path.Replace("{MachineName}", Environment.MachineName);
+                path = path.Replace("{ProcessPath}", Environment.ProcessPath);
+                path = path.Replace("{CurrentDirectory}", Environment.CurrentDirectory);
+                path = path.Replace("{UserName}", Environment.UserName);
+                path = path.Replace("{UserDomainName}", Environment.UserDomainName);
+            }
+
+            return path;
         }
     }
 }
