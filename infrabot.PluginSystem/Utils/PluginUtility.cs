@@ -1,4 +1,5 @@
 ﻿using Infrabot.PluginSystem.Data;
+using Infrabot.PluginSystem.Execution;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -9,6 +10,17 @@ namespace Infrabot.PluginSystem.Utils
     {
         public static async Task<bool> SavePlugin(Plugin plugin, string filePath)
         {
+            if (plugin.Settings is not null)
+            {
+                if (plugin.Settings.Count > 0)
+                {
+                    foreach (PluginSetting pluginSetting in plugin.Settings)
+                    {
+                        pluginSetting.Value = EncryptionUtility.TripleDesEncrypt(plugin.Guid.ToString(), pluginSetting.Value);
+                    }
+                }
+            }
+
             plugin.Checksum = null;
             using var memoryStream = new MemoryStream();
             ProtoBuf.Serializer.Serialize(memoryStream, plugin);
@@ -32,6 +44,19 @@ namespace Infrabot.PluginSystem.Utils
             using var memoryStream = new MemoryStream(fileData);
             var plugin = ProtoBuf.Serializer.Deserialize<Plugin>(memoryStream);
 
+            if (plugin.Settings is not null)
+            {
+                if (plugin.Settings.Count > 0)
+                {
+                    foreach (PluginSetting pluginSetting in plugin.Settings)
+                    {
+                        Console.WriteLine("Before: " + pluginSetting.Value);
+                        pluginSetting.Value = EncryptionUtility.TripleDesDecrypt(plugin.Guid.ToString(), pluginSetting.Value);
+                        Console.WriteLine("After: " + pluginSetting.Value);
+                    }
+                }
+            }
+
             memoryStream.Position = 0;
             var tempPlugin = ProtoBuf.Serializer.Deserialize<Plugin>(memoryStream);
             tempPlugin.Checksum = null;
@@ -39,6 +64,7 @@ namespace Infrabot.PluginSystem.Utils
             using var tempStream = new MemoryStream();
             ProtoBuf.Serializer.Serialize(tempStream, tempPlugin);
             string computedChecksum = ComputeSHA256(tempStream.ToArray());
+
 
             if (plugin.Checksum != computedChecksum)
                 throw new InvalidOperationException("Plugin checksum mismatch.");
@@ -68,6 +94,19 @@ namespace Infrabot.PluginSystem.Utils
 
             if (plugin.Checksum != computedChecksum)
                 throw new InvalidOperationException("Plugin checksum mismatch.");
+
+            if (plugin.Settings is not null)
+            {
+                if (plugin.Settings.Count > 0)
+                {
+                    foreach (PluginSetting pluginSetting in plugin.Settings)
+                    {
+                        Console.WriteLine("Before: "+ pluginSetting.Value);
+                        pluginSetting.Value = EncryptionUtility.TripleDesDecrypt(plugin.Guid.ToString(), pluginSetting.Value);
+                        Console.WriteLine("After: " + pluginSetting.Value);
+                    }
+                }
+            }
 
             return plugin;
         }
