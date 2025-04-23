@@ -50,7 +50,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="mkdir &quot;$(SolutionDir)Setup\files\WebUI&quot;" />
     <Exec Command="xcopy /T /E /Y &quot;$(ProjectDir)bin\Release\net8.0\&quot;  &quot;$(SolutionDir)Setup\files\WebUI&quot;" />
   </Target>
 
