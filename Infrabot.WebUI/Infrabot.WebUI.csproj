@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -48,5 +48,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="mkdir &quot;$(SolutionDir)Setup\files\WebUI&quot;" />
+    <Exec Command="xcopy /T /E /Y &quot;$(ProjectDir)bin\Release\net8.0\&quot;  &quot;$(SolutionDir)Setup\files\WebUI&quot;" />
+  </Target>
 
 </Project>

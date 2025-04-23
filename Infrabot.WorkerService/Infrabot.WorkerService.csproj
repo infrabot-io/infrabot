@@ -31,4 +31,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrabot.Common\Infrabot.Common.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Exec Command="mkdir &quot;$(SolutionDir)Setup\files\WorkerService&quot;" />
+  	<Exec Command="xcopy /T /E /Y &quot;$(ProjectDir)bin\Release\net8.0\&quot;  &quot;$(SolutionDir)Setup\files\WorkerService&quot;" />
+  </Target>
+	
 </Project>

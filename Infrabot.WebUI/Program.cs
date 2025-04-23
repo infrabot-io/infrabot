@@ -31,7 +31,8 @@ if (!app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<InfrabotContext>();
-    dbContext.Database.EnsureCreated();
+    await dbContext.Database.MigrateAsync();
+    await dbContext.Database.EnsureCreatedAsync();
 }
 
 /*****************************************/

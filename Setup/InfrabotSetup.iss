@@ -1,4 +1,5 @@
 ﻿#include "CodeDependencies.iss"
+#include "Functions.iss"
 
 [Setup]
 AppName=infrabot
@@ -16,6 +17,7 @@ PrivilegesRequired=admin
 
 [Files]
 Source: ".\files\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\files\WebUI\appsettings.json"; DestDir: "{app}\WebUI\appsettings.json"; AfterInstall: FileReplaceString('{app}\WebUI\appsettings.json', 'database.db', '{app}\database\database.db')
 
 [Icons]
 Name: "{group}\InfraBot Plugin Editor"; Filename: "{app}\PluginEditor\infrabot.PluginEditor.exe"
