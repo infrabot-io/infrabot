@@ -65,4 +65,8 @@
     <Resource Include="Images\save.png" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  	<Exec Command="xcopy /T /E /Y &quot;$(ProjectDir)bin\Release\net8.0-windows&quot;  &quot;$(SolutionDir)Setup\files\PluginEditor&quot;" />
+  </Target>
+	
 </Project>

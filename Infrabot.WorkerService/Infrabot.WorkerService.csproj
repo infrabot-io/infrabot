@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	<Exec Command="mkdir &quot;$(SolutionDir)Setup\files\WorkerService&quot;" />
   	<Exec Command="xcopy /T /E /Y &quot;$(ProjectDir)bin\Release\net8.0\&quot;  &quot;$(SolutionDir)Setup\files\WorkerService&quot;" />
   </Target>
 	

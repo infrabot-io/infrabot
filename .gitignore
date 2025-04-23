@@ -35,6 +35,7 @@ bld/
 Setup/files/TelegramService/
 Setup/files/WebUI/
 Setup/files/WorkerService/
+Setup/files/PluginEditor/
 Setup/infrabot_3_0_0_0_full_install.exe
 
 # Visual Studio 2015/2017 cache/options directory
