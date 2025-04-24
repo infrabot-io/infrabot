@@ -61,7 +61,7 @@ Password : password
 ```
 3. Review Getting Started page which can be accessed via left side menu
 
-💡 **Manual**
+**Manual**
 1. Install the latest [ASP.NET Core Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 1. Install the latest [.NET Desktop Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 2. Download the latest ZIP release from the [Releases Page](https://github.com/infrabot-io/infrabot/releases)
