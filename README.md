@@ -32,9 +32,9 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 </div>
 
 
-<img src="assets/1.png" alt="infrabot-demo" />
-<img src="assets/2.png" alt="infrabot-demo" />
-<img src="assets/3.png" alt="infrabot-demo" />
+<img src="assets/1.PNG" alt="infrabot-demo" />
+<img src="assets/2.PNG" alt="infrabot-demo" />
+<img src="assets/3.PNG" alt="infrabot-demo" />
 
 ---
 
@@ -55,9 +55,10 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 **Automatic**
 1. Download the latest [release](https://github.com/infrabot-io/infrabot/releases) and follow the installation process to set up infrabot on your system
 2. Open [https://localhost](https://localhost) and login into the system
-\tLogin : **admin**
-\tPassword : **password**
-
+```
+ Login : ***admin***
+ Password : ***password***
+```
 
 **Manual**
 1. Install the [.NET 8 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
