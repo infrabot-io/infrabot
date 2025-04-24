@@ -14,7 +14,7 @@ namespace Infrabot.TelegramService.Commands
 
         public async Task ExecuteAsync(Message message)
         {
-            await _telegramResponder.SendMarkdown(message.Chat, $"Your id is: *{message.From.Id.ToString()}* and your username is *{message.From.Username}*\nChat id is: *{message.Chat.Id}*");
+            await _telegramResponder.SendMarkdown(message.Chat, $"Your id is: *{message.From.Id.ToString().Replace("-", "\\-")}* and your username is *{message.From.Username}*\nChat id is: *{message.Chat.Id.ToString().Replace("-", "\\-")}*");
         }
     }
 }
