@@ -54,16 +54,34 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 **Automatic**
 1. Download the latest [release](https://github.com/infrabot-io/infrabot/releases) and follow the installation process to set up infrabot on your system
-2. Open [https://localhost](https://localhost) and login into the system
+2. Open [https://localhost](https://localhost) and login into the system. Default login and password:
 ```
- Login : ***admin***
- Password : ***password***
+Login : admin
+Password : password
 ```
+3. Review Getting Started page which can be accessed via left side menu
 
 **Manual**
-1. Install the [.NET 8 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-2. Download the latest release from the [Releases Page](https://github.com/infrabot-io/infrabot/releases)
-3. Unpack, configure, and launch the service
+1. Install the latest [ASP.NET Core Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+1. Install the latest [.NET Desktop Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+2. Download the latest ZIP release from the [Releases Page](https://github.com/infrabot-io/infrabot/releases)
+3. Unpack files into the folder
+4. Open CMD and configure services using NSSM which comes with the ZIP archive
+```
+cd "C:\your\folder\infrabot\nssm-2.24\win64"
+
+nssm.exe install InfrabotWebUI "C:\your\folder\infrabot\WebUI\Infrabot.WebUI.exe"
+nssm.exe set InfrabotWebUI AppDirectory "C:\your\folder\infrabot\WebUI"
+
+nssm.exe install InfrabotTelegramService "C:\your\folder\infrabot\TelegramService\Infrabot.TelegramService.exe"
+nssm.exe set InfrabotTelegramService AppDirectory "C:\your\folder\infrabot\TelegramService"
+
+nssm.exe install InfrabotWorkerService "C:\your\folder\infrabot\WorkerService\Infrabot.WorkerService.exe"
+nssm.exe set InfrabotWorkerService AppDirectory "C:\your\folder\infrabot\WorkerService"
+```
+5. Launch the ***InfrabotWebUI*** and ***InfrabotWorkerService*** services, and open [https://localhost](https://localhost) to login into the system using credentials specified above.
+6. Configure Telegram Bot Token on the Configuration page
+7. Launch ***InfrabotTelegramService*** service
 
 💡 _Need help setting it up? Scroll down to the docs section!_
 
