@@ -50,9 +50,7 @@ namespace Infrabot.PluginSystem.Utils
                 {
                     foreach (PluginSetting pluginSetting in plugin.Settings)
                     {
-                        Console.WriteLine("Before: " + pluginSetting.Value);
                         pluginSetting.Value = EncryptionUtility.TripleDesDecrypt(plugin.Guid.ToString(), pluginSetting.Value);
-                        Console.WriteLine("After: " + pluginSetting.Value);
                     }
                 }
             }
@@ -68,6 +66,22 @@ namespace Infrabot.PluginSystem.Utils
 
             if (plugin.Checksum != computedChecksum)
                 throw new InvalidOperationException("Plugin checksum mismatch.");
+
+            return plugin;
+        }
+
+        public static Plugin DescryptPluginSecrets(Plugin plugin)
+        {
+            if (plugin.Settings is not null)
+            {
+                if (plugin.Settings.Count > 0)
+                {
+                    foreach (PluginSetting pluginSetting in plugin.Settings)
+                    {
+                        pluginSetting.Value = EncryptionUtility.TripleDesDecrypt(plugin.Guid.ToString(), pluginSetting.Value);
+                    }
+                }
+            }
 
             return plugin;
         }

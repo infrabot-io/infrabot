@@ -335,6 +335,7 @@ namespace Infrabot.PluginEditor
                     _plugin.PluginFiles = await PluginUtility.ImportPluginFiles(userTempPath + _plugin.Guid);
 
                     await PluginUtility.SavePlugin(_plugin, saveFileDialog.FileName);
+                    _plugin = PluginUtility.DescryptPluginSecrets(_plugin);
 
                     _isEditing = false;
 
