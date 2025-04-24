@@ -105,7 +105,7 @@ namespace Infrabot.TelegramService.Managers
                         if (loadedMeta.Version >= plugin.Version && loadedMeta.LastModified >= lastModified)
                         {
                             // not updated, but still valid - keep it in memory
-                            _logger.LogInformation("Plugin '{Name}' unchanged", plugin.Name);
+                            _logger.LogDebug("Plugin '{Name}' unchanged", plugin.Name);
                             plugin.PluginFiles?.ForEach(file => file.FileData = Array.Empty<byte>());
                             discoveredPlugins[plugin.Guid] = (plugin, loadedMeta.LastModified, loadedMeta.Version);
                             continue;
@@ -141,7 +141,7 @@ namespace Infrabot.TelegramService.Managers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Failed to load plugin file: {File}", file);
+                    _logger.LogError(ex, "Failed to load plugin file: {File}", file);
                 }
             }
 
@@ -151,7 +151,7 @@ namespace Infrabot.TelegramService.Managers
                 _plugins.AddRange(discoveredPlugins.Values.Select(v => v.Plugin));
             }
 
-            _logger.LogInformation("Loaded {Count} unique plugins", _plugins.Count);
+            _logger.LogDebug("Loaded {Count} unique plugins", _plugins.Count);
         }
 
         private void WaitForDeletion(string directoryName)
