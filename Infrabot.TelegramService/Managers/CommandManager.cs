@@ -87,7 +87,7 @@ namespace Infrabot.TelegramService.Managers
                         if (HasPermissionToPlugin(plugin.Guid, Convert.ToInt32(message.From?.Id)) == false)
                         {
                             _logger.LogInformation($"User {message.From?.Username} with id {message.From?.Id} does not have permission to plugin {plugin.Name} with GUID {plugin.Guid}");
-                            return;
+                            continue;
                         }
 
                         if (plugin.PluginExecutions.Count > 0)
