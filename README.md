@@ -91,24 +91,6 @@ Password : password
 6. Configure ***Telegram Bot Token*** on the Configuration page. If you do not know how to get Telegram Bot Token, review Getting Started page on the left side menu. 
 7. Launch ***InfrabotTelegramService*** service
 
-_Need help setting it up? Scroll down to the docs section!_
-
----
-
-## 📚 Documentation
-
-Everything you need to get up and running with Infrabot:
-
-📘 **Essentials**
-- [Getting Started](https://infrabot-io.github.io/documentation/gettingstarted.html)
-- [Create a Telegram Bot](https://infrabot-io.github.io/documentation/createbot.html)
-- [Configuration Overview](https://infrabot-io.github.io/documentation/configoverview.html)
-
-🧠 **Deep Dives**
-- [Plugin System](https://infrabot-io.github.io/documentation/pluginoverview.html)
-- [Service Behavior](https://infrabot-io.github.io/documentation/infrabotservice.html)
-- [Example Scripts](https://infrabot-io.github.io/documentation/examplescripts.html)
-
 ---
 
 ## 📏 Scheme
