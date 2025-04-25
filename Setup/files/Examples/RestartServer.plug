@@ -1,0 +1,29 @@
+
+	º¹ˆ*I•™Z½³rä
+PORRLtHev0Restart Server"This plugin restarts server(2AkshinB(https://github.com/infrabot-io/infrabot/JÂ
+/restartserver(Write "/restartserver" to restart serverRestartServer.ps1 <*$Failed to restart or timeout reached0:I
+
+ServerName	server0010Specify server DNS name or IP address to restartR¹
+RestartServer.ps1.@04255DAED5C93D76506D09DD6219F0C99F1E86A7CFF33B244CCD7156261D34C3"Ş# Get EnvironmentVariable type setting
+$AdminUser = $env:adminUser
+$AdminUserPassword = $env:adminUserPassword
+
+# Get Arguments
+$ServerName = $arg[0]
+
+# Init credential
+$CredentialUser = $AdminUser
+$CredentialPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+
+# Main
+try{
+    Restart-Computer -ComputerName $ServerName -Credential $Credential -Force
+    Write-Host "Server $ServerName restarted!"
+}
+catch {
+    Write-Host "Error: $($_.Exception.Message)"
+}
+Zn
+	adminUser,AhY5+ZDTEhgx5NVwoEbEfMAbSvOfk+rmcFMxjTOnZA8="3Domain administrator user in the example.lan domainZ}
+adminUserPassword ZTdrNk1Uud9KGpy7J+0qKiev4ciRteAU"FPassword for domain user with administrative privileges on the serversb@48e5bd4d55f1c9923ecc4606d6b288ac815e8d50badf1c38d5a892ba23cd2c45

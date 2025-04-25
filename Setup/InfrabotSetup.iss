@@ -19,7 +19,9 @@ Source: ".\files\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs creat
 
 [Icons]
 Name: "{group}\InfraBot Plugin Editor"; Filename: "{app}\PluginEditor\infrabot.PluginEditor.exe"
+Name: "{group}\Infrabot Admin Panel"; Filename: "https://localhost/"
 Name: "{userdesktop}\InfraBot Plugin Editor"; Filename: "{app}\PluginEditor\infrabot.PluginEditor.exe"; IconFilename: "{app}\PluginEditor\infrabot.PluginEditor.exe"
+Name: "{autodesktop}\Infrabot Admin Panel"; Filename: "https://localhost/"
 
 [Run]
 Filename: {sys}\sc.exe; Parameters: "delete InfrabotWebUI" ; Flags: runhidden

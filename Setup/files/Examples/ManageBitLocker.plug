@@ -1,0 +1,28 @@
+
+	êtqz¼I»|¤qÔb·
+cuoU1XoDUWManage BitLocker"+This plugin performs actions with BitLocker(2Akshin MustafayevB'https://github.com/infrabot-io/infrabotJâ
+/getbitlockerkeyDWrite '/getbitlockerkey' to get a key for the the specified computerGetBitlockerKey.ps1 x*0Failed to get a BitLocker key or timeout occured0:=
+ComputerNamecomp001$Computer name to get a BitLocker keyR‡
+GetBitlockerKey.ps1.@D448FE46095E5ECC06421DF624B9BA917461FB360AC0D35C2CBB4286ED422387"ªï»¿# Get variables from plugin settings
+$AdminPassword = $env:adminPassword
+
+# Arguments sent to script
+$Computer = $args[0]
+
+# Main
+try {
+	$CredentialUser = "example-domain.lan\administrator"
+    $CredentialPassword = ConvertTo-SecureString $AdminPassword -AsPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+    
+    $Result = Get-ADObject -Credential $Credential -Filter { objectclass -eq 'msFVE-RecoveryInformation' } -SearchBase "CN=$Computers,DC=example-domain,DC=lan" -Properties 'msFVE-RecoveryPassword' | Select-Object -ExpandProperty msFVE-RecoveryPassword
+    
+    foreach ($Key in $Result) {
+        Write-Host "Key: $Key"
+    }
+}
+catch {
+    Write-Host -NoNewline "Error: $($_.Exception.Message)"
+}
+ZS
+adminPassword B7dVmnaZzkAIQwxQq52M36SV5qA/Puwx" Password for administrative userb@1b55b1bb93b010ddc81f78b20ef33b6f83d8966a738683c2d0aa3df45dcb2175

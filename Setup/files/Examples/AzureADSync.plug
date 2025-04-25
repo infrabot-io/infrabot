@@ -1,0 +1,35 @@
+
+	N–„3heHM‹É†ÛÈŒ^;
+beQaa7bgkUAzureAD Cloud Management".This plugin manages your company AzureAD Cloud(2Akshin MustafayevB'https://github.com/infrabot-io/infrabotJ‹
+/forceazureadsync-Write /forceazureadsync to force AzureAD SyncForceAzureADSync.ps1 <*-Force Azure command failed or timeout occured0RØ
+ForceAzureADSync.ps1.@0B5BB8C717A4581DC7772DB297CF4C8BA3F4460ACE6CB4155060A033AE4B58B2"ú# Get variables from plugin settings
+$AdminPassword = $env:adminPassword
+$ADSyncServer = $env:adSyncServer
+
+# Init credentials to use to connect to
+$CredentialUser = "example-domain.lan\administrator"
+$CredentialPassword = ConvertTo-SecureString $AdminPassword -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+
+# Main
+try {
+    $Result = Invoke-Command -ComputerName $ADSyncServer -Credential $Credential -ScriptBlock {
+        Import-Module ADSync
+
+        $Data = Start-ADSyncSyncCycle -PolicyType Delta
+        if ($Data.Result -eq "Success") {
+            return "Started synchronization successfully"
+        }
+        else {
+            return "$($Data.Result)"
+        }
+    }
+
+    Write-Host -NoNewline "$Result"
+}
+catch {
+    Write-Host -NoNewline "$($_.Exception.Message)"
+}
+ZV
+adminPassword So89QJ9Pse4XW9U4dQrlFeA239Ml1Abd"#Password of the administrative userZY
+adSyncServer7pMTsAZCj/Z5HWBY7Aok5A=="/Server where Azure AD Sync service is installedb@3b5a5aa6bc20bd0e44cd60ebb6345dd60e381822b8963fa92a86afbada88d14f

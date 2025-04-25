@@ -47,6 +47,7 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 - Easy-to-create plugins using C#
 - Built-in plugin manager, service control, and configuration tooling
 - No third-party cloud required
+- Comes with examples
 
 ---
 
@@ -178,7 +179,7 @@ Each plugin defines the commandlets Infrabot can execute — and you can include
 <details>
 <summary><strong>🗑️ Plugin Removal</strong></summary>
 
-- Deleting the `.plug` file removes plugin metadata and disables it  
+- Deleting the `.plug` file removes plugin
 - Extracted plugin folder remains unless deleted manually  
 - If redeployed, the folder is **replaced and re-extracted** automatically  
 

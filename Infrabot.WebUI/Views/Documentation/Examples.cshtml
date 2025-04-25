@@ -16,6 +16,8 @@
     <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
     <hr>
 
+    <p>Check the <code>Examples</code> folder in the Infrabot installation directory to explore sample plugins. Open these examples in the Plugin Editor to better understand how Infrabot works and how plugins are structured.</p>
+    
     <h3>Example 1</h3>
     <p>This is the simplest plugin setup that executes a script and returns script output.</p>
 
@@ -84,7 +86,7 @@ Write-Host "Just second command output"
 
     <br><br><br>
     <h3>Example 4</h3>
-    <p>In this plugin, CSharp script will be used. Read more <a href="https://github.com/dotnet/roslyn/blob/main/docs/wiki/Scripting-API-Samples.md" target="_blank">here</a>.</p>
+    <p>In this plugin, CSharp script will be used. Read more about CSharp scripting <a href="https://github.com/dotnet/roslyn/blob/main/docs/wiki/Scripting-API-Samples.md" target="_blank">here</a>.</p>
     <pre class="pre-break rounded col-md-8 row">
         <code class="csharp hljs rounded">int test = 5;
 var count = test + 11;
@@ -98,6 +100,41 @@ return count;
     <img class="img-fluid" src="../img/documentation/examples/example4_3.png"><br>
     <img class="img-fluid" src="../img/documentation/examples/example4_4.png"><br>
     <img class="img-fluid" src="../img/documentation/examples/example4_5.png"><br>
+
+    <br><br><br>
+    <h3>Example 5</h3>
+    <p>This example shows how to access embedded plugin settings while also passing arguments to a PowerShell script. The script is structured as follows:</p>
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="powershell hljs rounded"># Get EnvironmentVariable type setting
+$AdminUser = $env:adminUser
+$AdminUserPassword = $env:adminUserPassword
+
+# Get Arguments
+$ServerName = $arg[0]
+
+# Init credential
+$CredentialUser = $AdminUser
+$CredentialPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+
+# Main
+try{
+    Restart-Computer -ComputerName $ServerName -Credential $Credential -Force
+    Write-Host "Server $ServerName restarted!"
+}
+catch {
+    Write-Host "Error: $($_.Exception.Message)"
+}
+        </code>
+    </pre>
+
+    <img class="img-fluid" src="../img/documentation/examples/example5_1.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_2.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_3.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_4.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_5.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_6.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_7.png"><br>
 
     <br><br><br>
 </article>

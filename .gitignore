@@ -62,6 +62,7 @@ Setup/files/WorkerService/*
 !Setup/files/WorkerService/.gitkeep
 
 Setup/infrabot_3_0_0_0_full_install.exe
+Setup/infrabot_3_0_0_0_PluginEditor_install.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
