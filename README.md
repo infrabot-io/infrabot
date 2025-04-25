@@ -58,7 +58,7 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 **Automatic**
 1. Download the latest [release](https://github.com/infrabot-io/infrabot/releases) and follow the installation process to set up infrabot on your system
-2. Open [https://localhost](https://localhost) and login into the system. Default credentials:
+2. Open [https://localhost:8443](https://localhost:8443) and login into the system. Default credentials:
 ```
 Login : admin
 Password : password
@@ -83,7 +83,7 @@ nssm.exe set InfrabotTelegramService AppDirectory "C:\your\folder\infrabot\Teleg
 nssm.exe install InfrabotWorkerService "C:\your\folder\infrabot\WorkerService\Infrabot.WorkerService.exe"
 nssm.exe set InfrabotWorkerService AppDirectory "C:\your\folder\infrabot\WorkerService"
 ```
-5. Launch the ***InfrabotWebUI*** and ***InfrabotWorkerService*** services, and open [https://localhost](https://localhost) to login into the system using default credentials:
+5. Launch the ***InfrabotWebUI*** and ***InfrabotWorkerService*** services, and open [https://localhost:8443](https://localhost:8443) to login into the system using default credentials:
 ```
 Login : admin
 Password : password
