@@ -15,7 +15,7 @@ ArchitecturesInstallIn64BitMode=x64
 PrivilegesRequired=admin
 
 [Files]
-Source: ".\files\PluginEditor\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\files\PluginEditor\*"; DestDir: "{app}\PluginEditor\"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\InfraBot Plugin Editor"; Filename: "{app}\PluginEditor\infrabot.PluginEditor.exe"
