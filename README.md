@@ -31,10 +31,13 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
   <img src="assets/demo.gif" alt="infrabot-demo" width="420px" />
 </div>
 
-
 <img src="assets/1.PNG" alt="infrabot-demo" />
 <img src="assets/2.PNG" alt="infrabot-demo" />
 <img src="assets/3.PNG" alt="infrabot-demo" />
+<img src="assets/4.PNG" alt="infrabot-demo" />
+<img src="assets/5.PNG" alt="infrabot-demo" />
+<img src="assets/6.PNG" alt="infrabot-demo" />
+<img src="assets/7.PNG" alt="infrabot-demo" />
 
 ---
 
