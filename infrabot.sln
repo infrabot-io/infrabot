@@ -1,15 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.2.32602.215
+VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "infrabot", "infrabot\infrabot.csproj", "{CE88268A-D9BE-4100-9F08-CCD05C094E2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.WebUI", "Infrabot.WebUI\Infrabot.WebUI.csproj", "{6BEBF620-9F02-4C1D-9458-B759713ED2AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "infrabot.PluginSystem", "infrabot.PluginSystem\infrabot.PluginSystem.csproj", "{C999D129-52BB-4300-9E67-5EB150B0A2A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.TelegramService", "Infrabot.TelegramService\Infrabot.TelegramService.csproj", "{643D1720-1478-4D86-A921-FA684E1221EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "infrabot.PluginEditor", "infrabot.PluginEditor\infrabot.PluginEditor.csproj", "{85282F94-BAA1-43EB-96C0-94951D044CC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.WorkerService", "Infrabot.WorkerService\Infrabot.WorkerService.csproj", "{F0B97C64-213A-4515-9B72-8FD78B2E740E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "infrabot.ConfigEditor", "infrabot.ConfigEditor\infrabot.ConfigEditor.csproj", "{94A5CB87-7FD0-4BA4-87C3-165FA5E95DBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.PluginSystem", "Infrabot.PluginSystem\Infrabot.PluginSystem.csproj", "{E73AA43E-13C1-42F7-8D84-40F6A61A5302}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.Common", "Infrabot.Common\Infrabot.Common.csproj", "{1FA5F0C1-37D2-49CB-960C-39A42EBDE0E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.PluginEditor", "Infrabot.PluginEditor\Infrabot.PluginEditor.csproj", "{8891CD7F-12E3-4776-8561-E77512D59EEB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7246FA44-930F-4FD7-BC4B-C51BBC1D8B9D}"
+	ProjectSection(SolutionItems) = preProject
+		scheme.txt = scheme.txt
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrabot.PluginSystem.Tests", "Infrabot.PluginSystem.Tests\Infrabot.PluginSystem.Tests.csproj", "{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,27 +28,39 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CE88268A-D9BE-4100-9F08-CCD05C094E2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE88268A-D9BE-4100-9F08-CCD05C094E2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE88268A-D9BE-4100-9F08-CCD05C094E2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE88268A-D9BE-4100-9F08-CCD05C094E2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C999D129-52BB-4300-9E67-5EB150B0A2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C999D129-52BB-4300-9E67-5EB150B0A2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C999D129-52BB-4300-9E67-5EB150B0A2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C999D129-52BB-4300-9E67-5EB150B0A2A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85282F94-BAA1-43EB-96C0-94951D044CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85282F94-BAA1-43EB-96C0-94951D044CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85282F94-BAA1-43EB-96C0-94951D044CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85282F94-BAA1-43EB-96C0-94951D044CC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94A5CB87-7FD0-4BA4-87C3-165FA5E95DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94A5CB87-7FD0-4BA4-87C3-165FA5E95DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94A5CB87-7FD0-4BA4-87C3-165FA5E95DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94A5CB87-7FD0-4BA4-87C3-165FA5E95DBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BEBF620-9F02-4C1D-9458-B759713ED2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BEBF620-9F02-4C1D-9458-B759713ED2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BEBF620-9F02-4C1D-9458-B759713ED2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BEBF620-9F02-4C1D-9458-B759713ED2AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{643D1720-1478-4D86-A921-FA684E1221EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{643D1720-1478-4D86-A921-FA684E1221EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{643D1720-1478-4D86-A921-FA684E1221EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{643D1720-1478-4D86-A921-FA684E1221EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0B97C64-213A-4515-9B72-8FD78B2E740E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0B97C64-213A-4515-9B72-8FD78B2E740E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0B97C64-213A-4515-9B72-8FD78B2E740E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0B97C64-213A-4515-9B72-8FD78B2E740E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E73AA43E-13C1-42F7-8D84-40F6A61A5302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E73AA43E-13C1-42F7-8D84-40F6A61A5302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E73AA43E-13C1-42F7-8D84-40F6A61A5302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E73AA43E-13C1-42F7-8D84-40F6A61A5302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FA5F0C1-37D2-49CB-960C-39A42EBDE0E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FA5F0C1-37D2-49CB-960C-39A42EBDE0E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FA5F0C1-37D2-49CB-960C-39A42EBDE0E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FA5F0C1-37D2-49CB-960C-39A42EBDE0E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8891CD7F-12E3-4776-8561-E77512D59EEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FBDAE75-A069-4DFE-8CC2-E504C8E0CEFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {05096262-D2E9-415F-BBB5-A30C99066859}
+		SolutionGuid = {398831E8-D180-4DEB-B98F-786C4B8B349C}
 	EndGlobalSection
 EndGlobal

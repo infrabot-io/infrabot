@@ -1,0 +1,38 @@
+﻿@using Infrabot.WebUI.Models
+@using Infrabot.WebUI.Constants
+@model UploadPluginViewModel
+@{
+    ViewData["Title"] = "Upload";
+}
+
+<div class="row mb-2 mt-4">
+    <div class="col">
+        <p class="fs-3 mb-0 pt-0">Upload plugin</p>
+    </div>
+</div>
+
+@if (ViewData[TempDataKeys.PluginUploaded] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Plugin uploaded! Wait couple of minutes for plugin to load or force the reload from the chat!
+    </div>
+}
+
+<div class="g-3 mt-2">
+    <form class="row needs-validation" novalidate asp-action="Upload" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div class="col-md-7 col-lg-8">
+            <div class="row g-3">
+                <div class="col-sm-8">
+
+                    <label for="files" class="col-form-label pt-0">Choose files</label>
+                    <input class="form-control" id="files" asp-for="Files" multiple />
+                    <div class="invalid-feedback">Please provide files.</div>
+                </div>
+            </div>
+
+            <button class="btn btn-orange mt-2" type="submit">Upload</button>
+        </div>
+    </form>
+</div>

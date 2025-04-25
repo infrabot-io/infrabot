@@ -1,0 +1,140 @@
+﻿@{
+    ViewData["Title"] = "Examples";
+}
+
+<link rel="stylesheet" href="~/lib/highlight-js/dist/css/default.min.css">
+<link rel="stylesheet" href="~/lib/highlight-js/dist/css/vs2015.min.css">
+<script src="~/lib/highlight-js/dist/js/highlight.min.js"></script>
+<script src="~/lib/highlight-js/dist/js/powershell.min.js"></script>
+<script src="~/lib/highlight-js/dist/js/csharp.min.js"></script>
+<script src="~/lib/highlight-js/dist/js/highlightjs-line-numbers.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+
+<article class="blog-post">
+    <h2 class="display-5 link-body-emphasis mb-1 mt-3">Examples</h2>
+    <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
+    <hr>
+
+    <p>Check the <code>Examples</code> folder in the Infrabot installation directory to explore sample plugins. Open these examples in the Plugin Editor to better understand how Infrabot works and how plugins are structured.</p>
+    
+    <h3>Example 1</h3>
+    <p>This is the simplest plugin setup that executes a script and returns script output.</p>
+
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="powershell hljs rounded"># Show simple message
+Write-Host "Example 1 plugin output powershell"
+        </code>
+    </pre>
+
+    <img class="img-fluid" src="../img/documentation/examples/example1_1.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example1_2.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example1_3.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example1_4.png"><br>
+
+    <br><br><br>
+    <h3>Example 2</h3>
+    <p>In this plugin, arguments are passed to the script.</p>
+
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="powershell hljs rounded"># Show arguments
+Write-Host "Example 2 plugin output powershell"
+Write-Host "    Arguments count: $($args.count)"
+Write-Host ""
+Write-Host "Argument values:"
+
+foreach ($arg in $args)
+{
+    Write-Host "    Argument: $($arg)"
+}
+        </code>
+    </pre>
+
+    <img class="img-fluid" src="../img/documentation/examples/example2_1.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example2_2.png"><br>
+
+    <p>Note that the execution file arguments are intentionally left unspecified. Consider the script in the example. The script includes logic to output all arguments passed to it, allowing it to accept any number of arguments. If we specify values here, Infrabot will ensure that the correct number of arguments are provided. In cases where arguments are missing or exceed the expected count, an error message will be displayed, indicating which arguments are required (based on the list defined here):</p>
+    <img class="img-fluid" src="../img/documentation/examples/example2_3.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example2_4.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example2_5.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example2_6.png"><br>
+
+    <br><br><br>
+    <h3>Example 3</h3>
+    <p>In this plugin, a fixed number of arguments can be passed to the script, and an additional command has been included.</p>
+
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="powershell hljs rounded"># Show argument value
+$name = $arg[0]
+Write-Host "Your name is: $($name)"
+        </code>
+    </pre>
+
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="powershell hljs rounded"># Show simple text
+Write-Host "Just second command output"
+        </code>
+    </pre>
+
+    <img class="img-fluid" src="../img/documentation/examples/example3_1.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example3_2.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example3_3.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example3_4.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example3_5.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example3_6.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example3_7.png"><br>
+
+    <br><br><br>
+    <h3>Example 4</h3>
+    <p>In this plugin, CSharp script will be used. Read more about CSharp scripting <a href="https://github.com/dotnet/roslyn/blob/main/docs/wiki/Scripting-API-Samples.md" target="_blank">here</a>.</p>
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="csharp hljs rounded">int test = 5;
+var count = test + 11;
+count++;
+return count;
+        </code>
+    </pre>
+
+    <img class="img-fluid" src="../img/documentation/examples/example4_1.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example4_2.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example4_3.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example4_4.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example4_5.png"><br>
+
+    <br><br><br>
+    <h3>Example 5</h3>
+    <p>This example shows how to access embedded plugin settings while also passing arguments to a PowerShell script. The script is structured as follows:</p>
+    <pre class="pre-break rounded col-md-8 row">
+        <code class="powershell hljs rounded"># Get EnvironmentVariable type setting
+$AdminUser = $env:adminUser
+$AdminUserPassword = $env:adminUserPassword
+
+# Get Arguments
+$ServerName = $arg[0]
+
+# Init credential
+$CredentialUser = $AdminUser
+$CredentialPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+
+# Main
+try{
+    Restart-Computer -ComputerName $ServerName -Credential $Credential -Force
+    Write-Host "Server $ServerName restarted!"
+}
+catch {
+    Write-Host "Error: $($_.Exception.Message)"
+}
+        </code>
+    </pre>
+
+    <img class="img-fluid" src="../img/documentation/examples/example5_1.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_2.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_3.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_4.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_5.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_6.png"><br>
+    <img class="img-fluid" src="../img/documentation/examples/example5_7.png"><br>
+
+    <br><br><br>
+</article>

@@ -1,0 +1,132 @@
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.Common.Models
+@model IEnumerable<PermissionAssignment>
+@{
+    ViewData["Title"] = "Permission assignments";
+}
+
+<div class="row mb-2 mt-4">
+    <div class="col">
+        <p class="fs-3 mb-0 pt-0">Permission assignments</p>
+    </div>
+    <div class="col d-flex flex-row-reverse">
+        <a asp-action="Create">
+            <button type="button" class="btn btn-orange pe-4 ps-4">
+                <img src="~/img/add.svg">
+                Add
+            </button>
+        </a>
+    </div>
+</div>
+
+@if (ViewData[TempDataKeys.PermissionAssignmentNotFound] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Specified permission assignment does not exist.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.PermissionAssignmentDeleted] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Permission assignment has been deleted.
+    </div>
+}
+
+<table class="table mt-4 mb-4">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Plugins</th>
+            <th>Telegram Users</th>
+            <th>Groups</th>
+            <th scope="col">#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var assignment in Model)
+        {
+            <tr>
+                <td>@assignment.Name</td>
+                <td>
+                    @if (assignment.Plugins != null && assignment.Plugins.Any())
+                    {
+                        foreach (var plugin in assignment.Plugins)
+                        {
+                            @plugin.Name
+
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <em>None</em>
+                    }
+                </td>
+                <td>
+                    @if (assignment.TelegramUsers != null && assignment.TelegramUsers.Any())
+                    {
+                        foreach (var user in assignment.TelegramUsers)
+                        {
+                            @($"{user.Name} {user.Surname}")
+
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <em>None</em>
+                    }
+                </td>
+                <td>
+                    @if (assignment.Groups != null && assignment.Groups.Any())
+                    {
+                        foreach (var group in assignment.Groups)
+                        {
+                            @group.Name
+
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <em>None</em>
+                    }
+                </td>
+                <td>
+                    <a class="me-2 text-decoration-none" asp-action="Edit" asp-route-id="@assignment.Id">
+                        <img class="modification-buttons" src="~/img/edit.svg" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit permission">
+                    </a>
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@assignment.Id">
+                        <img class="modification-buttons" src="~/img/delete.svg" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Delete permission">
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.Pages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center pagination-items">
+
+
+            @for (int i = 0; i < ViewBag.Pages; i++)
+            {
+                @if (i == ViewBag.Page)
+                {
+                    <li class="page-item active">
+                        <a class="page-link border-secondary bg-secondary text-white" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link border-light bg-light text-dark" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+}

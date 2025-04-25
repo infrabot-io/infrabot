@@ -1,0 +1,86 @@
+﻿@using Infrabot.Common.Models
+@using Infrabot.WebUI.Constants
+@model List<Plugin>
+@{
+    ViewData["Title"] = "Plugins";
+}
+
+<div class="row mb-2 mt-4">
+    <div class="col">
+        <p class="fs-3 mb-0 pt-0">Plugins</p>
+    </div>
+    <div class="col d-flex flex-row-reverse">
+        <a asp-action="Upload">
+            <button type="button" class="btn btn-orange pe-4 ps-4">
+                <img src="~/img/add.svg">
+                Upload
+            </button>
+        </a>
+    </div>
+</div>
+
+@if (ViewData[TempDataKeys.PluginNotFound] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Plugin with the specified name does not exist.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.PluginDeleted] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Plugin has been deleted.
+    </div>
+}
+
+<table class="table mt-4 mb-4">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">GUID</th>
+            <th scope="col">#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var plugin in Model)
+        {
+            <tr>
+                <td class="main-content-inner-table-content-col-id" scope="row">@plugin.Name</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@plugin.Guid</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">
+                    <a class="me-2 text-decoration-none" asp-action="View" asp-route-id="@plugin.Id">
+                        <img class="modification-buttons" src="~/img/view.svg" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="View user">
+                    </a>
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@plugin.Id">
+                        <img class="modification-buttons" src="~/img/delete.svg" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Delete user">
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.Pages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center pagination-items">
+
+
+            @for (int i = 0; i < ViewBag.Pages; i++)
+            {
+                @if (i == ViewBag.Page)
+                {
+                    <li class="page-item active">
+                        <a class="page-link border-secondary bg-secondary text-white" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link border-light bg-light text-dark" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+}

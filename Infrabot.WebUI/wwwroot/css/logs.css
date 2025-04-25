@@ -1,0 +1,19 @@
+﻿body {
+    background-color: #f8f9fa !important;
+}
+
+#logContainer {
+    overflow-y: auto;
+    background: #212529;
+    color: #fff;
+    padding: 10px;
+    font-family: monospace;
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+.highlight {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+}

@@ -1,0 +1,160 @@
+﻿@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - infrabot</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="shortcut icon" href="~/img/infrabot.png" type="image/x-icon">
+    <script src="~/lib/jquery/dist/jquery-3.7.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" asp-area="" asp-controller="Home" asp-action="Index">
+            <img class="navbar-brand-logo" src="~/img/infrabot.png">
+            Infrabot
+        </a>
+
+        <div class="navbar navbar-expand">
+            <div class="btn-group text-light">
+                <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                    @User.Identity.Name
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start dropdown-menu-dark">
+                    <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">Change password</a></li>
+                </ul>
+            </div>
+
+            <form asp-controller="Account" asp-action="LogOut" method="post" class="nav-link navbar-item px-3 text-light" style="width: 80px;">
+                <button type="submit" class="btn btn-link nav-link">Logout</button>
+            </form>
+            <!--
+            <a class="nav-link navbar-item px-3 text-light" asp-controller="Account" asp-action="LogOut" style="width: 80px;">Log out</a>
+            -->
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+                        <span>Common</span>
+                    </h6>
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path == "/" ? "active":"" )" aria-current="page" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/users") ? "active":"")" asp-area="" asp-controller="Users" asp-action="Index">
+                                <svg fill="#727272" width="18px" height="18px" viewBox="0 0 0.54 0.54" xmlns="http://www.w3.org/2000/svg"><path d="M0.354 0.286a0.135 0.135 0 1 0 -0.167 0 0.225 0.225 0 0 0 -0.14 0.184 0.023 0.023 0 0 0 0.045 0.005 0.18 0.18 0 0 1 0.358 0A0.023 0.023 0 0 0 0.472 0.495h0.003A0.023 0.023 0 0 0 0.493 0.471 0.225 0.225 0 0 0 0.352 0.286M0.27 0.27A0.09 0.09 0 1 1 0.36 0.18a0.09 0.09 0 0 1 -0.09 0.09" /></svg>
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/telegramusers") ? "active":"")" asp-area="" asp-controller="TelegramUsers" asp-action="Index">
+                                <svg width="18px" height="18px" style="margin-right: 2px;" viewBox="0 0 0.72 0.72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>telegram_line</title><g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Brand" transform="translate(-672)"><g id="telegram_line" transform="translate(672)"><path d="M0.72 0v0.72H0V0zM0.378 0.698l0 0 -0.002 0.001 -0.001 0 0 0 -0.002 -0.001q0 0 -0.001 0l0 0 -0.001 0.013 0 0.001 0 0 0.003 0.002 0 0 0 0 0.003 -0.002 0 0 0 -0.001 -0.001 -0.013q0 0 -0.001 -0.001m0.008 -0.003 0 0 -0.006 0.003 0 0 0 0 0.001 0.013 0 0 0 0 0.006 0.003q0.001 0 0.001 0l0 0 -0.001 -0.018q0 -0.001 -0.001 -0.001m-0.021 0a0.001 0.001 0 0 0 -0.001 0l0 0 -0.001 0.018q0 0.001 0.001 0.001l0 0 0.006 -0.003 0 0 0 0 0.001 -0.013 0 0 0 0z" id="MingCute" fill-rule="nonzero" /><path d="M0.655 0.182a0.045 0.045 0 0 0 -0.062 -0.049l-0.513 0.216c-0.036 0.015 -0.038 0.067 0 0.082a1.71 1.71 0 0 0 0.113 0.043c0.035 0.012 0.073 0.022 0.104 0.025 0.008 0.01 0.019 0.02 0.03 0.028 0.016 0.013 0.036 0.027 0.057 0.041 0.041 0.027 0.086 0.052 0.117 0.069 0.037 0.02 0.08 -0.003 0.087 -0.043zM0.138 0.39l0.454 -0.191 -0.064 0.385c-0.03 -0.016 -0.073 -0.041 -0.112 -0.066a0.6 0.6 0 0 1 -0.051 -0.037 0.24 0.24 0 0 1 -0.013 -0.011l0.119 -0.119a0.03 0.03 0 0 0 -0.042 -0.042L0.299 0.439c-0.022 -0.003 -0.053 -0.011 -0.086 -0.022a1.47 1.47 0 0 1 -0.074 -0.027" id="形状" fill="#727272" /></g></g></g></svg>
+                                Telegram Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/groups") ? "active":"")" asp-area="" asp-controller="Groups" asp-action="Index">
+                                <svg fill="#727272" width="20px" height="20px" viewBox="0 0 0.9 0.9" version="1.1" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>group-line</title><path class="clr-i-outline clr-i-outline-path-1" d="M0.447 0.433C0.515 0.433 0.567 0.377 0.567 0.31S0.513 0.19 0.445 0.19 0.325 0.245 0.325 0.31c0 0.067 0.055 0.123 0.123 0.123M0.445 0.24q0.004 0 0 0c0.04 0 0.073 0.033 0.073 0.073S0.485 0.383 0.445 0.383 0.375 0.35 0.375 0.313a0.073 0.073 0 0 1 0.07 -0.073" /><path class="clr-i-outline clr-i-outline-path-2" d="M0.817 0.417A0.255 0.255 0 0 0 0.643 0.355H0.623Q0.615 0.385 0.6 0.407 0.622 0.405 0.643 0.405a0.209 0.209 0 0 1 0.133 0.04v0.181h0.05V0.425z" /><path class="clr-i-outline clr-i-outline-path-3" d="M0.585 0.195A0.064 0.064 0 0 1 0.665 0.163a0.064 0.064 0 0 1 0.033 0.08 0.064 0.064 0 0 1 -0.055 0.037q-0.009 0 -0.018 -0.003 0.004 0.019 0.003 0.035v0.015l0.015 0.003A0.112 0.112 0 0 0 0.645 0.107a0.109 0.109 0 0 0 -0.095 0.055q0.019 0.011 0.035 0.033" /><path class="clr-i-outline clr-i-outline-path-4" d="M0.3 0.41Q0.285 0.387 0.277 0.357H0.257a0.255 0.255 0 0 0 -0.175 0.06L0.075 0.425v0.2h0.05V0.445A0.218 0.218 0 0 1 0.3 0.41" /><path class="clr-i-outline clr-i-outline-path-5" d="M0.257 0.327Q0.265 0.327 0.273 0.325V0.31Q0.273 0.291 0.275 0.275 0.266 0.278 0.257 0.277C0.225 0.277 0.197 0.25 0.197 0.217S0.225 0.157 0.257 0.157c0.025 0 0.047 0.015 0.057 0.037A0.273 0.273 0 0 1 0.353 0.16 0.109 0.109 0 0 0 0.2 0.123 0.111 0.111 0 0 0 0.257 0.327" /><path class="clr-i-outline clr-i-outline-path-6" d="M0.653 0.567 0.647 0.56A0.255 0.255 0 0 0 0.453 0.475a0.255 0.255 0 0 0 -0.197 0.085L0.25 0.567v0.19A0.042 0.042 0 0 0 0.293 0.8h0.32A0.045 0.045 0 0 0 0.655 0.757V0.567zM0.603 0.75H0.3V0.585A0.218 0.218 0 0 1 0.453 0.525a0.2 0.2 0 0 1 0.15 0.06z" /><path x="0" y="0" width="36" height="36" fill-opacity="0" d="M0 0h0.9v0.9H0z" /></svg>
+                                Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/configuration") ? "active":"")" asp-area="" asp-controller="Configuration" asp-action="Index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                Configuration
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/plugins") ? "active":"")" asp-area="" asp-controller="Plugins" asp-action="Index">
+                                <svg class="sidebar-image" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 1.56 1.56" enable-background="new 0 0 52 52" xml:space="preserve"><g><g><path d="m0.72 0.21 -0.051 -0.051c-0.015 -0.015 -0.036 -0.015 -0.051 0L0.3 0.474l-0.129 -0.126c-0.015 -0.015 -0.036 -0.015 -0.051 0l-0.051 0.051c-0.015 0.015 -0.015 0.036 0 0.051l0.177 0.177c0.015 0.015 0.033 0.021 0.051 0.021s0.036 -0.006 0.051 -0.021L0.72 0.261c0.012 -0.012 0.012 -0.036 0 -0.051" /></g></g><g><path d="M1.452 0.552H0.825c-0.027 0 -0.048 -0.021 -0.048 -0.048v-0.096c0 -0.027 0.021 -0.048 0.048 -0.048h0.627c0.027 0 0.048 0.021 0.048 0.048v0.096c0 0.027 -0.021 0.048 -0.048 0.048" /></g><g><path d="M1.452 0.981H0.681c-0.027 0 -0.048 -0.021 -0.048 -0.048v-0.096c0 -0.027 0.021 -0.048 0.048 -0.048h0.771c0.027 0 0.048 0.021 0.048 0.048v0.096c0 0.027 -0.021 0.048 -0.048 0.048" /></g><g><path d="M0.39 0.981H0.294c-0.027 0 -0.048 -0.021 -0.048 -0.048v-0.096c0 -0.027 0.021 -0.048 0.048 -0.048H0.39c0.027 0 0.048 0.021 0.048 0.048v0.096c0.003 0.027 -0.021 0.048 -0.048 0.048" /></g><g><path d="M0.39 1.41H0.294c-0.027 0 -0.048 -0.021 -0.048 -0.048v-0.096c0 -0.027 0.021 -0.048 0.048 -0.048H0.39c0.027 0 0.048 0.021 0.048 0.048v0.096c0.003 0.027 -0.021 0.048 -0.048 0.048" /></g><g><path d="M1.452 1.41H0.681c-0.027 0 -0.048 -0.021 -0.048 -0.048v-0.096c0 -0.027 0.021 -0.048 0.048 -0.048h0.771c0.027 0 0.048 0.021 0.048 0.048v0.096c0 0.027 -0.021 0.048 -0.048 0.048" /></g></svg>
+                                Plugins
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/permissionassignment") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="PermissionAssignment" asp-action="Index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file" aria-hidden="true"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                                Permission assignments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/messages") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="Messages" asp-action="Index">
+                                <svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" mirror-in-rtl="true" style="margin-right:3px"><g fill="#727272" fill-rule="evenodd"><path d="M13.62 0H2.38A2.38 2.38 0 0 0 0 2.38v5.907A2.38 2.38 0 0 0 2.38 10.667H3.333v2c0 0.566 0.359 1.072 0.893 1.26a1.342 1.342 0 0 0 1.48 -0.427l2.267 -2.834h5.647A2.38 2.38 0 0 0 16 8.286V2.38A2.38 2.38 0 0 0 13.62 0M14.667 8.286a1.053 1.053 0 0 1 -1.047 1.047H7.333l-2.667 3.333V9.333H2.38A1.053 1.053 0 0 1 1.333 8.286V2.38A1.053 1.053 0 0 1 2.38 1.333h11.24A1.053 1.053 0 0 1 14.667 2.38z" /><path cx="6" cy="8" r="2" d="M5.333 5.333a1.333 1.333 0 0 1 -1.333 1.333A1.333 1.333 0 0 1 2.667 5.333a1.333 1.333 0 0 1 2.667 0" /><path cx="12" cy="8" r="2" d="M9.333 5.333A1.333 1.333 0 0 1 8 6.667 1.333 1.333 0 0 1 6.667 5.333a1.333 1.333 0 0 1 2.667 0" /><path cx="18" cy="8" r="2" d="M13.333 5.333a1.333 1.333 0 0 1 -1.333 1.333A1.333 1.333 0 0 1 10.667 5.333a1.333 1.333 0 0 1 2.667 0" /></g></svg>
+                                Messages
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/auditlogs") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="AuditLogs" asp-action="Index">
+                                <svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="icon"><path d="M4.625 3.906c-0.069 0 -0.125 0.056 -0.125 0.125v0.75c0 0.069 0.056 0.125 0.125 0.125h6c0.069 0 0.125 -0.056 0.125 -0.125v-0.75c0 -0.069 -0.056 -0.125 -0.125 -0.125zm2.875 2.25H4.625c-0.069 0 -0.125 0.056 -0.125 0.125v0.75c0 0.069 0.056 0.125 0.125 0.125h2.875c0.069 0 0.125 -0.056 0.125 -0.125v-0.75c0 -0.069 -0.056 -0.125 -0.125 -0.125m-0.75 7.156H3.25V2.313h8.75v5c0 0.069 0.056 0.125 0.125 0.125h0.875c0.069 0 0.125 -0.056 0.125 -0.125V1.688c0 -0.277 -0.223 -0.5 -0.5 -0.5H2.625c-0.277 0 -0.5 0.223 -0.5 0.5v12.25c0 0.277 0.223 0.5 0.5 0.5h4.125c0.069 0 0.125 -0.056 0.125 -0.125v-0.875c0 -0.069 -0.056 -0.125 -0.125 -0.125m6.875 -1.375H11.375v-0.572c0.723 -0.216 1.25 -0.884 1.25 -1.678 0 -0.967 -0.783 -1.75 -1.75 -1.75s-1.75 0.783 -1.75 1.75c0 0.792 0.527 1.462 1.25 1.678V11.938H8.125c-0.138 0 -0.25 0.113 -0.25 0.25v2.375c0 0.138 0.113 0.25 0.25 0.25h5.5c0.138 0 0.25 -0.113 0.25 -0.25V12.188c0 -0.138 -0.113 -0.25 -0.25 -0.25M10.094 9.688c0 -0.431 0.35 -0.781 0.781 -0.781s0.781 0.35 0.781 0.781 -0.35 0.781 -0.781 0.781 -0.781 -0.35 -0.781 -0.781m2.813 4.156H8.844v-0.938h4.063z" /></svg>
+                                Audit logs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/logs") ? "active":"")" asp-area="" asp-controller="Logs" asp-action="Index">
+                                <svg width="16px" height="16px" style="margin-right: 3px;" viewBox="0 0 0.32 0.32" xmlns="http://www.w3.org/2000/svg" fill="none"><g fill="#727272"><path d="M0.106 0.025A0.015 0.015 0 0 1 0.105 0.047l-0.027 0.023 0.027 0.024a0.015 0.015 0 1 1 -0.02 0.023L0.045 0.082a0.015 0.015 0 0 1 0 -0.023l0.04 -0.035A0.015 0.015 0 0 1 0.107 0.026m0.037 0a0.015 0.015 0 0 0 0.001 0.021l0.027 0.023 -0.027 0.024a0.015 0.015 0 1 0 0.02 0.023l0.04 -0.035a0.015 0.015 0 0 0 0 -0.023L0.165 0.025a0.015 0.015 0 0 0 -0.021 0.001M0.055 0.15a0.015 0.015 0 0 0 0 0.03h0.21a0.015 0.015 0 0 0 0 -0.03zM0.04 0.225A0.013 0.013 0 0 1 0.055 0.21h0.21a0.015 0.015 0 0 1 0 0.03H0.055A0.013 0.013 0 0 1 0.04 0.225m0.015 0.045a0.015 0.015 0 0 0 0 0.03h0.13a0.015 0.015 0 0 0 0 -0.03z" /></g></svg>
+                                Logs
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Documentation</span>
+                    </h6>
+
+                    <ul class="nav flex-column mb-4">
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/documentation/gettingstarted") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="Documentation" asp-action="GettingStarted">
+                                <svg class="sidebar-image" width="24px" height="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" xml:space="preserve"><g><g><g><path d="M18.23 4.643H2.026c-0.773 0 -1.402 0.629 -1.402 1.402v24.506c0 0.773 0.629 1.402 1.402 1.402h16.204c0.773 0 1.402 -0.629 1.402 -1.402V6.045c0 -0.773 -0.629 -1.402 -1.402 -1.402m-1.875 24.907H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748" /><path d="M23.019 0H6.178c-0.773 0 -1.402 0.629 -1.402 1.402v1.493h13.455c1.737 0 3.15 1.413 3.15 3.15v21.757h1.639c0.773 0 1.402 -0.629 1.402 -1.402V1.402C24.421 0.629 23.792 0 23.019 0" /></g></g></g></svg>
+                                Getting started
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/documentation/introduction") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="Documentation" asp-action="Introduction">
+                                <svg class="sidebar-image" width="24px" height="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" xml:space="preserve"><g><g><g><path d="M18.23 4.643H2.026c-0.773 0 -1.402 0.629 -1.402 1.402v24.506c0 0.773 0.629 1.402 1.402 1.402h16.204c0.773 0 1.402 -0.629 1.402 -1.402V6.045c0 -0.773 -0.629 -1.402 -1.402 -1.402m-1.875 24.907H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748" /><path d="M23.019 0H6.178c-0.773 0 -1.402 0.629 -1.402 1.402v1.493h13.455c1.737 0 3.15 1.413 3.15 3.15v21.757h1.639c0.773 0 1.402 -0.629 1.402 -1.402V1.402C24.421 0.629 23.792 0 23.019 0" /></g></g></g></svg>
+                                Introduction
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/documentation/contents") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="Documentation" asp-action="Contents">
+                                <svg class="sidebar-image" width="24px" height="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" xml:space="preserve"><g><g><g><path d="M18.23 4.643H2.026c-0.773 0 -1.402 0.629 -1.402 1.402v24.506c0 0.773 0.629 1.402 1.402 1.402h16.204c0.773 0 1.402 -0.629 1.402 -1.402V6.045c0 -0.773 -0.629 -1.402 -1.402 -1.402m-1.875 24.907H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748" /><path d="M23.019 0H6.178c-0.773 0 -1.402 0.629 -1.402 1.402v1.493h13.455c1.737 0 3.15 1.413 3.15 3.15v21.757h1.639c0.773 0 1.402 -0.629 1.402 -1.402V1.402C24.421 0.629 23.792 0 23.019 0" /></g></g></g></svg>
+                                Contents
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/documentation/examples") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="Documentation" asp-action="Examples">
+                                <svg class="sidebar-image" width="24px" height="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" xml:space="preserve"><g><g><g><path d="M18.23 4.643H2.026c-0.773 0 -1.402 0.629 -1.402 1.402v24.506c0 0.773 0.629 1.402 1.402 1.402h16.204c0.773 0 1.402 -0.629 1.402 -1.402V6.045c0 -0.773 -0.629 -1.402 -1.402 -1.402m-1.875 24.907H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748" /><path d="M23.019 0H6.178c-0.773 0 -1.402 0.629 -1.402 1.402v1.493h13.455c1.737 0 3.15 1.413 3.15 3.15v21.757h1.639c0.773 0 1.402 -0.629 1.402 -1.402V1.402C24.421 0.629 23.792 0 23.019 0" /></g></g></g></svg>
+                                Examples
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.ToString().ToLower().Contains("/documentation/answerstoquestions") ? "active":"")" aria-current="page" aria-current="page" asp-area="" asp-controller="Documentation" asp-action="AnswersToQuestions">
+                                <svg class="sidebar-image" width="24px" height="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" xml:space="preserve"><g><g><g><path d="M18.23 4.643H2.026c-0.773 0 -1.402 0.629 -1.402 1.402v24.506c0 0.773 0.629 1.402 1.402 1.402h16.204c0.773 0 1.402 -0.629 1.402 -1.402V6.045c0 -0.773 -0.629 -1.402 -1.402 -1.402m-1.875 24.907H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748m0 -4.151H3.901a0.874 0.874 0 0 1 0 -1.748h12.454a0.874 0.874 0 0 1 0 1.748" /><path d="M23.019 0H6.178c-0.773 0 -1.402 0.629 -1.402 1.402v1.493h13.455c1.737 0 3.15 1.413 3.15 3.15v21.757h1.639c0.773 0 1.402 -0.629 1.402 -1.402V1.402C24.421 0.629 23.792 0 23.019 0" /></g></g></g></svg>
+                                Answers to questions
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

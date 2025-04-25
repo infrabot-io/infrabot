@@ -1,0 +1,429 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script src="~/lib/chart/dist/js/chart.js"></script>
+
+<style>
+    .card-title {
+        font-size: 1.2rem;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    canvas {
+        max-height: 300px;
+    }
+</style>
+
+<div class="container my-4 ms-0 me-0" style="max-width: 100% !important;">
+    <!-- Basic Metrics Row -->
+    <div class="row g-4">
+        <!-- Plugins Count Card -->
+        <div class="col-md-3">
+            <div class="card text-white h-100 card-plugins">
+                <div class="card-body">
+                    <h5 class="card-title">Plugins</h5>
+                    <p class="card-text display-4" id="pluginsCount">0</p>
+                    <p class="card-text">Active Plugins</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Telegram Users Count Card -->
+        <div class="col-md-3">
+            <div class="card text-white h-100 card-telegram">
+                <div class="card-body">
+                    <h5 class="card-title">Telegram Users</h5>
+                    <p class="card-text display-4" id="telegramUsersCount">0</p>
+                    <p class="card-text">Active Telegram Users</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Health Card -->
+        <div class="col-md-3">
+            <div class="card text-white h-100 card-system">
+                <div class="card-body">
+                    <h5 class="card-title">System Health</h5>
+                    <p class="card-text">Operational</p>
+                    <p class="card-text"><small>Last updated: 1 min ago</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Users Count Card -->
+        <div class="col-md-3">
+            <div class="card h-100 card-info">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text display-4" id="usersCount">0</p>
+                    <p class="card-text">Active Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Performance Metrics Row -->
+    <div class="row my-4">
+        <!-- CPU Usage Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    CPU Usage (Last Hour)
+                </div>
+                <div class="card-body">
+                    <canvas id="cpuChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Memory Usage Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Memory Usage (Last Hour)
+                </div>
+                <div class="card-body">
+                    <canvas id="memoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Metrics Row -->
+    <div class="row my-4">
+        <!-- Plugin Distribution Pie Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Plugin Distribution
+                </div>
+                <div class="card-body">
+                    <canvas id="pluginChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Telegram Messages Bar Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Telegram Messages (Last 24 Hours)
+                </div>
+                <div class="card-body">
+                    <canvas id="messageChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Log Section -->
+    <div class="row my-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Recent Events
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Event Type</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventLog"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Chart Initialization Scripts -->
+<script>
+    // CPU Usage Line Chart
+    async function fetchCpuUsage() {
+        try {
+            const response = await fetch('../api/getresourcemetrics');
+            const data = await response.json();
+
+            const cpuUsage = data.map(entry => JSON.parse(entry.data).CpuUsage);
+            const timestamps = data.map(entry => {
+                const date = new Date(entry.createdDate);
+                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+            });
+
+            updateCpuChart(timestamps, cpuUsage);
+        } catch (error) {
+            console.error("Error fetching CPU usage data:", error);
+        }
+    }
+
+    function updateCpuChart(labels, cpuData) {
+        cpuChart.data.labels = labels;
+        cpuChart.data.datasets[0].data = cpuData;
+        cpuChart.update();
+    }
+
+    setInterval(fetchCpuUsage, 10000);
+    fetchCpuUsage();
+
+    const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+    const cpuChart = new Chart(cpuCtx, {
+        type: 'line',
+        data: {
+            labels: ['-60m', '-50m', '-40m', '-30m', '-20m', '-10m', 'Now'],
+            datasets: [{
+                label: 'CPU Usage (%)',
+                data: [0, 0, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Memory Usage Line Chart
+    async function fetchMemoryUsage() {
+        try {
+            const response = await fetch('../api/getresourcemetrics');
+            const data = await response.json();
+
+            const ramUsage = data.map(entry => JSON.parse(entry.data).RamUsage);
+            const timestamps = data.map(entry => {
+                const date = new Date(entry.createdDate);
+                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+            });
+
+            updateMemoryChart(timestamps, ramUsage);
+        } catch (error) {
+            console.error("Error fetching RAM usage data:", error);
+        }
+    }
+
+    function updateMemoryChart(labels, ramData) {
+        memoryChart.data.labels = labels;
+        memoryChart.data.datasets[0].data = ramData;
+        memoryChart.update();
+    }
+
+    setInterval(fetchMemoryUsage, 10000);
+    fetchMemoryUsage();
+
+    const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+    const memoryChart = new Chart(memoryCtx, {
+        type: 'line',
+        data: {
+            labels: ['-60m', '-50m', '-40m', '-30m', '-20m', '-10m', 'Now'],
+            datasets: [{
+                label: 'Memory Usage (GB)',
+                data: [0, 0, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                    // Adjust max value based on your environment
+                }
+            }
+        }
+    });
+
+    // Plugin Distribution Pie Chart
+    async function fetchPluginStats() {
+        try {
+            const response = await fetch('../api/getpluginstats');
+            const data = await response.json();
+
+            // Extract labels (plugin types) and values (counts)
+            const labels = data.map(entry => entry.pluginType);
+            const counts = data.map(entry => entry.count);
+
+            // Update chart
+            updatePluginChart(labels, counts);
+        } catch (error) {
+            console.error("Error fetching plugin stats:", error);
+        }
+    }
+
+    function updatePluginChart(labels, data) {
+        pluginChart.data.labels = labels;
+        pluginChart.data.datasets[0].data = data;
+        pluginChart.update();
+    }
+
+    setInterval(fetchPluginStats, 10000);
+    fetchPluginStats();
+
+    const pluginLabels = [
+        'Monitoring',
+        'Alerting',
+        'Logging',
+        'Automation',
+        'Infrastructure',
+        'Configuration',
+        'Administration',
+        'Compliance & Audit',
+        'Other'
+    ];
+    const pluginColors = [
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(153, 102, 255, 0.6)',
+        'rgba(255, 159, 64, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(54, 162, 235, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(201, 203, 207, 0.6)',
+        'rgba(100, 149, 237, 0.6)',
+        'rgba(220, 53, 69, 0.6)'
+    ];
+    const pluginBorderColors = pluginColors.map(c => c.replace('0.6', '1'));
+
+    const pluginCtx = document.getElementById('pluginChart').getContext('2d');
+    const pluginChart = new Chart(pluginCtx, {
+        type: 'pie',
+        data: {
+            labels: pluginLabels,
+            datasets: [{
+                label: 'Plugin Distribution',
+                data: new Array(9).fill(0), // default empty data
+                backgroundColor: pluginColors,
+                borderColor: pluginBorderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    // Telegram Messages Bar Chart
+    async function fetchMessageStats() {
+        try {
+            const response = await fetch('../api/getmessagestats');
+            const data = await response.json();
+
+            // Extracting labels and data
+            const labels = ['00:00 - 03:59', '04:00 - 07:59', '08:00 - 11:59', '12:00 - 15:59', '16:00 - 19:59', '20:00 - 23:59'
+            ];
+            const messageCounts = labels.map((label, index) => {
+                const hour = index * 4; // Convert index to hour (0, 4, 8, etc.)
+                const found = data.find(entry => entry.Hour === hour);
+                return found ? found.Count : 0;
+            });
+
+            // Update chart
+            updateMessageChart(labels, messageCounts);
+        } catch (error) {
+            console.error("Error fetching message stats:", error);
+        }
+    }
+
+    function updateMessageChart(labels, messageData) {
+        messageChart.data.labels = labels;
+        messageChart.data.datasets[0].data = messageData;
+        messageChart.update();
+    }
+
+    setInterval(fetchMessageStats, 10000);
+    fetchMessageStats();
+
+    const messageCtx = document.getElementById('messageChart').getContext('2d');
+    const messageChart = new Chart(messageCtx, {
+        type: 'bar',
+        data: {
+            labels: ['00:00 - 03:59', '04:00 - 07:59', '08:00 - 11:59', '12:00 - 15:59', '16:00 - 19:59', '20:00 - 23:59'
+            ],
+            datasets: [{
+                label: 'Messages',
+                data: [10, 20, 15, 30, 25, 35, 40],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Set stats data
+    async function fetchStats() {
+        try {
+            const response = await fetch('../api/getstats');
+            const data = await response.json();
+
+            // Update counts
+            document.getElementById("usersCount").textContent = data.users;
+            document.getElementById("telegramUsersCount").textContent = data.telegramUsers;
+            document.getElementById("pluginsCount").textContent = data.plugins;
+
+            // Update event log
+            updateEventLog(data.statsEvents);
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+        }
+    }
+
+    function updateEventLog(events) {
+        const eventLog = document.getElementById("eventLog");
+        eventLog.innerHTML = ""; // Clear existing content
+
+        events.forEach(event => {
+            const eventDate = new Date(event.eventDate);
+            const formattedTime = `${eventDate.getHours()}:${eventDate.getMinutes().toString().padStart(2, '0')}`;
+
+            const row = `<tr>
+                    <td>${formattedTime}</td>
+                    <td>${getEventType(event.eventType)}</td>
+                    <td>${event.description}</td>
+                </tr>`;
+
+            eventLog.innerHTML += row;
+        });
+    }
+
+    // Helper function to map EventType numbers to text
+    function getEventType(eventType) {
+        const eventTypes = {
+            0: "None",
+            1: "Error",
+            2: "Warning",
+            3: "Info"
+        };
+        return eventTypes[eventType] || "Unknown";
+    }
+
+    // Fetch data initially and update every 10 seconds
+    setInterval(fetchStats, 10000);
+    fetchStats();
+
+</script>

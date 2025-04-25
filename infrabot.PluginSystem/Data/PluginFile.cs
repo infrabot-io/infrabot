@@ -1,17 +1,20 @@
 ﻿using ProtoBuf;
 
-namespace infrabot.PluginSystem.Data
+namespace Infrabot.PluginSystem.Data
 {
     [ProtoContract]
     public class PluginFile
     {
         [ProtoMember(1)]
-        public string PluginFileName;
+        public string FileName { get; set; } // File name
 
         [ProtoMember(2)]
-        public string PluginFilePath;
+        public string FilePath { get; set; } // Path within the plugin's directory
 
         [ProtoMember(3)]
-        public byte[] PluginFileData;
+        public string FileHash { get; set; } // File hash
+
+        [ProtoMember(4)]
+        public byte[] FileData { get; set; } // File content
     }
 }

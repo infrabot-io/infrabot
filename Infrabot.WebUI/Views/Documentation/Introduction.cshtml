@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Introduction";
+}
+
+<article class="blog-post">
+    <h2 class="display-5 link-body-emphasis mb-1 mt-3">Introduction</h2>
+    <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
+    <hr>
+
+    <h3>Plugin System Overview</h3>
+    <p>To enhance Infrabot’s functionality and extend its capabilities, a plugin system has been implemented. Each plugin determines the set of commands that Infrabot can execute, with no limit on the number of commands a plugin can contain. However, it is crucial to ensure that commands do not overlap.</p>
+    
+    <h5>Rules of the Plugin System</h5>
+    <ul>
+        <li><b>Plugin Format:</b> Infrabot recognizes only <code>.plug</code> files as valid plugins.</li>
+        <li><b>Unique Plugin Identifiers:</b> Each plugin is assigned a unique <i>GUID</i> and <i>ID</i> upon creation. Once generated, the <i>GUID</i> cannot be changed.</li>
+        <li><b>Plugin Structure:</b> A plugin is a binary file containing all necessary metadata and data files. These data files can include applications or scripts required for command execution. The necessary files must be correctly configured for each specific command.</li>
+        <li><b>Plugin Creation & Modification:</b> Plugins can only be created or modified using the <u>Plugin Editor</u> tool provided with Infrabot.</li>
+        <li>
+            <b>
+                Plugin Installation:
+            </b>
+
+            You can deploy plugins either through the Web UI or by manually uploading .plug files to the <code>/plugins</code> directory. If the file is valid:
+            
+            <ul>
+                <li>Infrabot will automatically load the plugin configuration.</li>
+                <li>A subdirectory will be created within /plugins using the plugin's <i>GUID</i>.</li>
+                <li>The plugin’s data content will be extracted into that subdirectory.</li>
+                <li>Plugin will be shown on Plugins web page.</li>
+                <li>If another <code>.plug</code> file with a different name but the same or a lower version of an already installed plugin is deployed, it will be ignored.</li>
+                <li>If another <code>.plug</code> file with a different name and a higher version of an already installed plugin is deployed, the system will load the newer version, delete the existing extracted folder, and extract the updated plugin files.</li>
+                <li>By default plugin will be loaded during 60 seconds (PluginManagerRefreshIntervalSeconds parameter in the application.json file of the TelegramService). <b>To trigger an immediate update, send the <code>/reloadplugins</code> command to the bot.</b></li>
+                <li>No additional actions are required for installation.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h5>Plugin Deletion & Reloading:</h5>
+    <ul>
+        <li>
+            <b>Deleting a <code>.plug</code> file:</b>
+            <ul>
+                <li>You should wait 60 seconds (PluginManagerRefreshIntervalSeconds parameter in the application.json file of the TelegramService) for changes to take effect.</li>
+                <li>Plugin metadata will be removed from memory. All permissions given to the (already nonexistent) plugin will be lost.</li>
+                <li>The <i>GUID</i> subdirectory in <code>/plugins</code> will not be cleaned up.</li>
+                <li>If you redeploy (delete it first, wait for update and then upload again) the same plugin while the old <i>GUID</i> folder still exists, it will be deleted first and then recreated with fresh file extraction.</li>
+            </ul>
+        </li>
+        <li>
+            <b>Deleting a Plugin’s <i>GUID</i> Directory:</b>
+            <ul>
+                <li>If you delete a plugin’s <i>GUID</i> subdirectory in <code>/plugins</code> folder, the plugin files will be automatically redeployed on the next scheduler tick.</li>
+            </ul>
+        </li>
+        <li>
+            <b>Automatic Plugin Management:</b>
+            <ul>
+                <li>After deploying or deleting a plugin, no manual action is required — Infrabot will automatically detect and load the changes.</li>
+                <li>However, you can force a plugin reload at any time using the <code>/reloadconfig</code> command.</li>
+                <li>Plugins are also accessible from the Plugins page, where you can view detailed information about each installed plugin.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h5>Additional Notes:</h5>
+    <ul>
+        <li>
+            <b>Execution Files:</b>
+            <ul>
+                <li>Files necessary for execution can be stored in any subdirectory within the plugin’s folder.</li>
+                <li>You must specify the relative path to the executable file in the plugin’s configuration.</li>
+                <li>Each time a command is executed, the hash of the execution file is verified against the hash stored in the <code>.plug</code> file. This ensures file integrity and helps prevent security breaches by detecting unauthorized modifications. If the hash does not match, the execution will be blocked to maintain system security.</li>
+            </ul>
+        </li>
+        <li>
+            <b>Telegram Command List Updates:</b>
+            <ul>
+                <li>The Telegram commands menu updates automatically when changes occur.</li>
+                <li>It may take 5 hours for updates to appear in the chat menu.</li>
+            </ul>
+        </li>
+        <li>
+            <b>Duplicate Plugin Entries:</b>
+            <ul>
+                <li>
+                    If a plugin with the same <i>GUID</i> appears multiple times on the Plugins page, do the following:
+                    <ol>
+                        <li><i>Delete</i> the plugin file.</li>
+                        <li><i>Wait</i> until it disappears from the list or force reload.</li>
+                        <li><i>Upload</i> the plugin file.</li>
+                    </ol>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <br><br>
+
+    <h3>Integrated commands</h3>
+    <p>There are several integrated commands some of which might be turned off from the configuration:</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">/emergency</td>
+                <td>This command forcefully stops the Infrabot service and is intended for use in emergency situations. The user must be registered under Telegram Users to execute this command.</td>
+            </tr>
+            <tr>
+                <td scope="row">/getcommands</td>
+                <td>This command shows a list of available commands to execute. The user must be registered under Telegram Users to execute this command.</td>
+            </tr>
+            <tr>
+                <td scope="row">/reloadplugins</td>
+                <td>This command reloads all plugins located in the /plugins directory. The user must be registered under Telegram Users to execute this command.</td>
+            </tr>
+            <tr>
+                <td scope="row">/showmyid</td>
+                <td>This command displays the user's Telegram ID. It is useful when assigning permissions—simply ask the user to run the command and share their ID with you. If this command is enabled in the configuration, users can execute it without being registered under Telegram Users by sending the command directly to the bot.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</article>

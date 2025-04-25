@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Answers to questions";
+}
+
+<link rel="stylesheet" href="~/lib/highlight-js/dist/css/default.min.css">
+<link rel="stylesheet" href="~/lib/highlight-js/dist/css/vs2015.min.css">
+<script src="~/lib/highlight-js/dist/js/highlight.min.js"></script>
+<script src="~/lib/highlight-js/dist/js/powershell.min.js"></script>
+<script src="~/lib/highlight-js/dist/js/csharp.min.js"></script>
+<script src="~/lib/highlight-js/dist/js/highlightjs-line-numbers.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+
+<article class="blog-post">
+    <h2 class="display-5 link-body-emphasis mb-1 mt-3">Answers to questions</h2>
+    <p class="blog-post-meta">February 4, 2025 by <a href="https://linkedin.com/in/akshinmustafayev" target="_blank">Akshin Mustafayev</a></p>
+    <hr>
+
+    <h3>Bot will have administrative access on server?</h3>
+    <p>
+        This depends on your setup. The service can run under a non-administrative user account or an Active Directory Managed Service Account.
+        However, the selected service user must have read/write access to the Infrabot installation directory and permission to execute PowerShell or Python or any linux Shell.
+    </p>
+
+    <br>
+
+    <h3>If the bot doesn't have administrative privileges, how can it perform tasks that require elevated permissions?</h3>
+    <p>
+        To handle such cases, you must configure the necessary credentials within your script or executable.
+        For example, you can embed logic to run with elevated rights or authenticate using specific administrative credentials inside the script. Example:
+    </p>
+    <pre class="pre-break rounded col-md-8 row">
+    <code class="powershell hljs rounded">#Administrative account
+$CredentialUser = "DOMAIN\admin_user"
+#Password
+$CredentialPassword = ConvertTo-SecureString "my_strong_password" -AsPlainText -Force
+#Creating Credential variable to pass to any command
+$Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+
+#Now you can pass $Credential to any command
+#For example invoke command on remote server using administrative account
+Invoke-Command -ComputerName my_server -ScriptBlock { hostname } -Credential $Credential
+        </code>
+    </pre>
+    <p>
+        You can also embed secrets into the plugin by defining a settings parameter with the type set to "EnvironmentVariable", "Argument" or "ConfigFile". See "Settings" part on the <a asp-controller="Documentation" asp-action="Contents">Contents</a> page.
+    </p>
+
+    <br>
+
+    <h3>Is infrabot safe?</h3>
+    <p>
+        Absolutely — but the level of security depends on how you configure the system.
+        For the most secure setup, it's recommended to:
+    </p>
+    <ul>
+        <li>Restrict access using Telegram user permissions</li>
+        <li>Run the service under an Active Directory Managed Service Account</li>
+        <li>Use the AllSigned PowerShell execution policy</li>
+    </ul>
+    <p>With these measures in place, the bot will only execute commands from explicitly authorized users.</p>
+    <p>Additionally, Infrabot includes a built-in mechanism that verifies the hash of the execution file, preventing unauthorized file replacement. This ensures that only the original scripts bundled with the plugin are allowed to run.</p>
+
+    <br>
+
+    <h3>What about the commands that the bot is able to execute?</h3>
+    <p>
+        That also depends on your configuration. The bot recognizes only the commands provided by installed plugins — you can create plugins to implement any functionality you need.
+        If you delete a .plug file from the /plugins directory, the corresponding command will be removed and no longer available.
+        However, there are several built-in default commands. While they cannot be deleted, some of them can be disabled through configuration settings.
+    </p>
+
+    <br><br>
+    <br><br>
+</article>

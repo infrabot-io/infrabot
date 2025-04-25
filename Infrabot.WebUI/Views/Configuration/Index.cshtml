@@ -1,0 +1,133 @@
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.Common.Models
+@model Configuration
+@{
+    ViewData["Title"] = "Configuration";
+}
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Configuration</p>
+        <p class="blog-post-meta mt-1 text-muted">Edit configuration parameters</p>
+    </div>
+</div>
+
+@if (ViewData[TempDataKeys.ConfigurationSaved] as bool? == true)
+{
+    <div class="alert alert-success" role="alert">
+        Configuration saved.
+    </div>
+}
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Telegram</h5>
+
+                    <h6 class="card-subtitle mb-4 text-muted">Configure integration with telegram service.</h6>
+
+                    <div class="row g-3">
+                        <div class="col-8">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="telegramenableemergency" asp-for="TelegramEnableEmergency">
+                                <label class="form-check-label" for="telegramenableemergency">Enable immediate application termination upon receiving the <code>/emergency</code> command.</label>
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="telegramenableehowmyid" asp-for="TelegramEnableShowMyId">
+                                <label class="form-check-label" for="telegramenableehowmyid">Provide the ability to get current user ID from chat without giving him permission (<code>/showmyid</code> command)</label>
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="telegrambottoken" class="form-label">Telegram bot Token</label>
+                            <input type="text" class="form-control" id="telegrambottoken" placeholder="1958279798:ABE..." required="" asp-for="TelegramBotToken">
+                            <div class="invalid-feedback">
+                                Please provide bot token.
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="telegramresultmaxlength" class="form-label">Maximum length of Telegram results</label>
+                            <input type="number" class="form-control" id="telegramresultmaxlength" placeholder="12000" required="" asp-for="TelegramResultMaxLength">
+                            <div class="invalid-feedback">
+                                Please provide telegram result max length.
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="col-8 mt-0">
+                            <label for="telegrampowershellpath" class="form-label">PowerShell Path</label>
+                            <input type="text" class="form-control" id="telegrampowershellpath" placeholder="C:\pwsh.exe" required="" asp-for="TelegramPowerShellPath">
+                            <div class="invalid-feedback">
+                                Please provide powershell path.
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="telegrampowershellarguments" class="form-label">PowerShell Arguments</label>
+                            <input type="text" class="form-control" id="telegrampowershellarguments" placeholder="-ExecutionPolicy Unrestricted" required="" asp-for="TelegramPowerShellArguments">
+                            <div class="invalid-feedback">
+                                Please provide powershell arguments.
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="col-8 mt-0">
+                            <label for="telegramshellpath" class="form-label">Shell Path</label>
+                            <input type="text" class="form-control" id="telegramshellpath" placeholder="/bin/bash" required="" asp-for="TelegramLinuxShellPath">
+                            <div class="invalid-feedback">
+                                Please provide shell path.
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="telegramshellarguments" class="form-label">Shell Arguments</label>
+                            <input type="text" class="form-control" id="telegramshellarguments" placeholder="" required="" asp-for="TelegramLinuxShellArguments">
+                            <div class="invalid-feedback">
+                                Please provide shell arguments.
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="col-8 mt-0">
+                            <label for="telegrampythonpath" class="form-label">Python Path</label>
+                            <input type="text" class="form-control" id="telegrampythonpath" placeholder="/usr/bin/python" required="" asp-for="TelegramPythonPath">
+                            <div class="invalid-feedback">
+                                Please provide python path.
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="telegrampythonarguments" class="form-label">Python Arguments</label>
+                            <input type="text" class="form-control" id="telegrampythonarguments" placeholder="" required="" asp-for="TelegramPythonArguments">
+                            <div class="invalid-feedback">
+                                Please provide python arguments.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>
+
+

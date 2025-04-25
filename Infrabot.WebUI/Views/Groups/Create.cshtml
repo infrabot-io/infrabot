@@ -1,0 +1,67 @@
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.WebUI.Models
+@model GroupViewModel
+@{
+    ViewData["Title"] = "Create a group";
+}
+
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2.css" />
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2-bootstrap-5-theme.min.css" />
+<script src="~/lib/select2/dist/js/select2.min.js"></script>
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Create</p>
+        <p class="blog-post-meta mt-1 text-muted">Create a new group with the given parameters</p>
+    </div>
+</div>
+
+@if (ViewData[TempDataKeys.GroupAlreadyExists] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        Group with the specified name already exists. Please provide unique group name.
+    </div>
+}
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-sm-8">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" required="" asp-for="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-8">
+                    <label for="users" class="form-label">Users</label>
+                    <select asp-for="SelectedTelegramUserIds" class="form-select select2" id="users" multiple="multiple" asp-items="Model.AvailableTelegramUsers"></select>
+                    <span asp-validation-for="SelectedTelegramUserIds" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Create</button>
+            <a class="btn btn-outline-orange" href="~/groups">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>
+
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 for the users dropdown
+        $('.select2').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+        });
+    });
+</script>
+

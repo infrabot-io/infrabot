@@ -1,17 +1,18 @@
-﻿using infrabot.PluginEditor.Windows;
+﻿using Infrabot.PluginSystem;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using infrabot.PluginSystem;
-using infrabot.PluginSystem.Utils;
-using infrabot.PluginSystem.Execution;
-using infrabot.PluginSystem.Enums;
-using System.Diagnostics;
+using Infrabot.PluginSystem.Enums;
+using Infrabot.PluginSystem.Utils;
+using Infrabot.PluginSystem.Execution;
+using Infrabot.PluginSystem.Data;
+using Infrabot.PluginEditor.Windows;
+using System.Text.Json;
 
-namespace infrabot.PluginEditor
+namespace Infrabot.PluginEditor
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -19,7 +20,7 @@ namespace infrabot.PluginEditor
     public partial class MainWindow : Window
     {
         private bool _isEditing = false;
-        private string userTempPath = System.IO.Path.GetTempPath();
+        private string userTempPath = Path.GetTempPath();
         public Plugin _plugin;
 
         public MainWindow()
@@ -27,22 +28,13 @@ namespace infrabot.PluginEditor
             InitializeComponent();
         }
 
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button? helpButton = sender as Button;
-
-            if(helpButton != null) 
-            { 
-                HelpDialog helpDialog = new HelpDialog(helpButton.Name);
-                helpDialog.ShowDialog();
-            }
-        }
-
-        private void InitFormData(Plugin plugin)
+        private void InitFormData()
         {
             // Enable Main menu items
             FileSavePluginMenuItem.IsEnabled = true;
             FileClosePluginMenuItem.IsEnabled = true;
+            FileImportPluginMetadataMenuItem.IsEnabled = true;
+            FileExportPluginMetadataMenuItem.IsEnabled = true;
 
             // Enable Form items
             MainPanelData.IsEnabled = true;
@@ -51,20 +43,17 @@ namespace infrabot.PluginEditor
             MainTabControl.SelectedIndex = 0;
 
             // Insert data to boxes
-            PluginName.Text = plugin.Name;
-            PluginGuid.Text = plugin.Guid;
-            PluginAuthor.Text = plugin.Author;
-            PluginVersion.Text = plugin.Version;
-            PluginWebSite.Text = plugin.WebSite;
-            PluginHelp.Text = plugin.Help;
-            PluginHelpShort.Text = plugin.HelpShort;
-            PluginExecutionCommand.Text = plugin.PluginExecution.ExecutionCommand;
-            PluginExecuteFile.Text = plugin.PluginExecution.ExecuteFile;
-            PluginDefaultErrorMessage.Text = plugin.PluginExecution.DefaultErrorMessage;
-            PluginExecuteType.SelectedIndex = plugin.PluginExecution.ExecuteType;
+            PluginName.Text = _plugin.Name;
+            PluginGuid.Text = _plugin.Guid.ToString();
+            PluginId.Text = _plugin.Id;
+            PluginDescription.Text = _plugin.Description;
+            PluginType.SelectedItem = _plugin.PluginType.ToString();
+            PluginAuthor.Text = _plugin.Author;
+            PluginVersion.Text = _plugin.Version.ToString();
+            PluginWebSite.Text = _plugin.WebSite;
 
             // Other actions
-            AddTextToEventsList("Loaded form data.");
+            AddTextToEventsList("Initialized form data.");
         }
 
         private void ClearFormData()
@@ -72,29 +61,64 @@ namespace infrabot.PluginEditor
             // Disable Main menu items
             FileSavePluginMenuItem.IsEnabled = false;
             FileClosePluginMenuItem.IsEnabled = false;
+            FileImportPluginMetadataMenuItem.IsEnabled = false;
+            FileExportPluginMetadataMenuItem.IsEnabled = false;
 
             // Disable Form items
             MainPanelData.IsEnabled = false;
-            MainPluginJsonDataScroll.ScrollToHome();
+            MainPluginDataScroll.ScrollToHome();
 
             // Select first Tab in TabControl
             MainTabControl.SelectedIndex = 0;
 
             // Insert data to boxes
             PluginName.Text = "";
-            PluginGuid.Text = ""; ;
+            PluginGuid.Text = "";
+            PluginId.Text = "";
+            PluginDescription.Text = "";
+            PluginType.SelectedItem = "Automation";
             PluginAuthor.Text = "";
             PluginVersion.Text = "";
             PluginWebSite.Text = "";
-            PluginHelp.Text = "";
-            PluginHelpShort.Text = "";
-            PluginExecutionCommand.Text = "";
-            PluginExecuteFile.Text = "";
-            PluginDefaultErrorMessage.Text = "";
-            PluginExecuteType.SelectedIndex = 0;
 
             // Other actions
             AddTextToEventsList("Unloaded form data.");
+        }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button? helpButton = sender as Button;
+
+            if (helpButton != null)
+            {
+                HelpDialog helpDialog = new HelpDialog(helpButton.Name);
+                helpDialog.ShowDialog();
+            }
+        }
+
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_plugin.Guid != null)
+            {
+                Process.Start("explorer.exe", userTempPath + _plugin.Guid);
+                AddTextToEventsList($"Opened folder {userTempPath + _plugin.Guid} in Windows Explorer.");
+            }
+        }
+
+        private void PluginExecuteCommands_Click(object sender, RoutedEventArgs e)
+        {
+            _isEditing = true;
+            ExecuteCommandsDialog executeCommandsDialog = new ExecuteCommandsDialog(_plugin);
+            executeCommandsDialog.ShowDialog();
+            AddTextToEventsList("Execute commands window opened.");
+        }
+
+        private void PluginSettings_Click(object sender, RoutedEventArgs e)
+        {
+            _isEditing = true;
+            PluginSettingsDialog pluginSettingsDialog = new PluginSettingsDialog(_plugin);
+            pluginSettingsDialog.ShowDialog();
+            AddTextToEventsList("Plugin settings window opened.");
         }
 
         public void AddTextToEventsList(string text)
@@ -105,23 +129,20 @@ namespace infrabot.PluginEditor
             }
 
             EventsList.Items.Add(text);
-            EventsList.ScrollIntoView(EventsList.Items.Count - 1);
+            EventsList.ScrollIntoView(text);
         }
 
-        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        private void EventsListMenuItemCopy_Click(object sender, RoutedEventArgs e)
         {
-            if(_plugin.Guid != null)
+            try
             {
-                Process.Start("explorer.exe", userTempPath + _plugin.Guid);
+                if (sender is MenuItem menuItem && menuItem.DataContext is string itemText && !string.IsNullOrWhiteSpace(itemText))
+                {
+                    Clipboard.SetText(itemText);
+                }
             }
+            catch {}
         }
-
-        private void PluginExecuteResults_Click(object sender, RoutedEventArgs e)
-        {
-            ExecuteResultsWindow executeResultsWindow = new ExecuteResultsWindow(_plugin);
-            executeResultsWindow.Show();
-        }
-
 
         #region Main Menu Handlers
 
@@ -132,82 +153,62 @@ namespace infrabot.PluginEditor
                 if (MessageBox.Show("Are you sure that you want to finish editing this file? All changes will not be saved!", "Attention", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     _isEditing = false;
+
+                    if (Directory.Exists(userTempPath + _plugin.Guid))
+                    {
+                        Directory.Delete(userTempPath + _plugin.Guid);
+                        AddTextToEventsList("Cleaning old cache folder for this plugin at " + userTempPath + _plugin.Guid);
+                    }
                 }
                 else
                 {
-                    AddTextToEventsList("Create new file is cancelled by user.");
+                    AddTextToEventsList("Create new file cancelled by user.");
                     return;
                 }
             }
-
-            List<ExecuteResult> executeResults = new List<ExecuteResult>
-            {
-                new ExecuteResult
-                {
-                    ResultValue = "0",
-                    ResultOutput = "Server {DATA} was successfully restarted!",
-                    ResultCheckType = (int) CommandResultCheckTypes.EqualsTo
-                },
-                new ExecuteResult
-                {
-                    ResultValue = "1",
-                    ResultOutput = "Server {DATA} was not restarted! Can not find such server!",
-                    ResultCheckType = (int) CommandResultCheckTypes.EqualsTo
-                },
-                new ExecuteResult
-                {
-                    ResultValue = "2",
-                    ResultOutput = "Server {DATA} was not restarted! There are still logged in users!",
-                    ResultCheckType = (int) CommandResultCheckTypes.EqualsTo
-                },
-                new ExecuteResult
-                {
-                    ResultValue = "3",
-                    ResultOutput = "Server {DATA} was not restarted! Script output was: {RESULT}",
-                    ResultCheckType = (int) CommandResultCheckTypes.EqualsTo
-                }
-            };
-
-            PluginExecution pluginExecution = new PluginExecution()
-            {
-                ExecutionCommand = "/performaction",
-                ExecuteFile = "performaction.ps1",
-                DefaultErrorMessage = "You entered `{DATA}`! Unexpected error! Result was: {RESULT}",
-                ExecuteType = (int) CommandExecuteTypes.PSScript,
-                ExecuteResults = executeResults
-            };
 
             _plugin = null;
 
             _plugin = new Plugin
             {
-                Name = "Simple name",
-                Guid = Guid.NewGuid().ToString(),
-                Author = "Author",
-                Version = "1.0.0.0",
+                Name = "New plugin",
+                Guid = Guid.NewGuid(),
+                Id = PluginUtility.GenerateUniquePluginId(),
+                Description = "This plugin deletes universe. Be careful",
+                PluginType = PluginSystem.Enums.PluginType.Automation,
+                Author = "Walter White",
+                Version = 0,
                 WebSite = "https://somesite.com",
-                Help = "Perform action. Write \"/performaction\" to restart the server",
-                HelpShort = "Restarts the specified server",
-                PluginExecution = pluginExecution,
-                PluginFiles = null
+                PluginExecutions = new List<PluginExecution>()
+                {
+                    new PluginExecution
+                    {
+                        CommandName = "/somecommand",
+                        Help = "Write /somecommand to do cool stuff",
+                        ExecutionFilePath = "some_script.ps1",
+                        ExecutionTimeout = 10,
+                        DefaultErrorMessage = "Default error message on fail or timeout",
+                        ExecuteType = CommandExecuteTypes.PSScript
+                    }
+                },
+                PluginFiles = new List<PluginFile>()
             };
 
             if (Directory.Exists(userTempPath + _plugin.Guid))
             {
                 Directory.Delete(userTempPath + _plugin.Guid);
-                AddTextToEventsList("Folder with old cache for this plugin still exists. Clearing it at " + userTempPath + _plugin.Guid);
             }
 
             Directory.CreateDirectory(userTempPath + _plugin.Guid);
             _isEditing = true;
 
             ClearFormData();
-            InitFormData(_plugin);
+            InitFormData();
 
             AddTextToEventsList("Created new plugin");
         }
 
-        private void FileOpenPluginMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void FileOpenFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (_isEditing)
             {
@@ -226,12 +227,13 @@ namespace infrabot.PluginEditor
             openFileDialog.DefaultExt = ".plug";
             openFileDialog.Filter = "Plugin Files (*.plug)|*.plug|All files (*.*)|*.*";
             bool? result = openFileDialog.ShowDialog();
+
             if (result == true)
             {
                 try
                 {
-                    // Get our plugin file
-                    _plugin = PluginActions.GetPlugin(openFileDialog.FileName);
+                    // Get plugin file
+                    _plugin = await PluginUtility.GetPlugin(openFileDialog.FileName);
 
                     if (_plugin != null)
                     {
@@ -248,14 +250,14 @@ namespace infrabot.PluginEditor
                         // Extract files to the directory
                         if (Directory.Exists(userTempPath + _plugin.Guid))
                         {
-                            if(_plugin.PluginFiles != null)
+                            if (_plugin.PluginFiles != null)
                             {
-                                PluginActions.ExtractPluginFiles(_plugin, userTempPath + _plugin.Guid);
+                                await PluginUtility.ExtractPluginFiles(_plugin, userTempPath + _plugin.Guid);
                             }
                         }
 
                         _isEditing = true;
-                        InitFormData(_plugin);
+                        InitFormData();
                         AddTextToEventsList("Loaded file: " + openFileDialog.FileName);
                     }
                 }
@@ -267,27 +269,37 @@ namespace infrabot.PluginEditor
             }
         }
 
-        private void FileSavePluginMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void FileSavePluginMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if(PluginExecutionCommand.Text.Length == 0 || PluginExecutionCommand.Text == null)
+            // Check if commands do not start with / character
+            var invalidCommands = _plugin.PluginExecutions.Where(exec => !exec.CommandName.StartsWith("/")).ToList();
+            if (invalidCommands.Any())
             {
-                MessageBox.Show("Please insert Execution Command value. It must not be empty!", "Error");
+                var sb = new StringBuilder();
+                sb.AppendLine("Error: The following commands do not start with '/'. Please fix them:");
+                foreach (var exec in invalidCommands)
+                {
+                    sb.AppendLine($"\n{exec.CommandName}");
+                }
+                MessageBox.Show(sb.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (PluginExecuteFile.Text.Length == 0 || PluginExecuteFile.Text == null)
+            // Check if not unique values speicified
+            var duplicates = _plugin.PluginExecutions.GroupBy(exec => exec.CommandName, StringComparer.OrdinalIgnoreCase).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
+            if (duplicates.Any())
             {
-                MessageBox.Show("Please insert Execute File value. It must not be empty!", "Error");
+                var message = new StringBuilder();
+                message.AppendLine("Error: The following commands are duplicated. Please remove these duplicates:");
+                foreach (var d in duplicates)
+                {
+                    message.AppendLine($"\n{d}");
+                }
+                MessageBox.Show(message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (!PluginExecutionCommand.Text.StartsWith("/"))
-            {
-                MessageBox.Show("Execution Command value must start with / character.", "Error");
-                return;
-            }
-
-            try 
+            try
             {
                 // Save file dialog
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -295,19 +307,37 @@ namespace infrabot.PluginEditor
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     _plugin.Name = PluginName.Text;
+                    _plugin.Description = PluginDescription.Text;
+
+                    if (PluginType.SelectedIndex == 0)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Monitoring;
+                    else if (PluginType.SelectedIndex == 1)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Alerting;
+                    else if (PluginType.SelectedIndex == 2)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Logging;
+                    else if (PluginType.SelectedIndex == 3)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Automation;
+                    else if (PluginType.SelectedIndex == 4)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Infrastructure;
+                    else if (PluginType.SelectedIndex == 5)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Configuration;
+                    else if (PluginType.SelectedIndex == 6)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Administration;
+                    else if (PluginType.SelectedIndex == 7)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.ComplianceAndAudit;
+                    else if (PluginType.SelectedIndex == 8)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Other;
+
                     _plugin.Author = PluginAuthor.Text;
-                    _plugin.Version = PluginVersion.Text;
+                    _plugin.Version = Convert.ToInt32(PluginVersion.Text);
                     _plugin.WebSite = PluginWebSite.Text;
-                    _plugin.Help = PluginHelp.Text;
-                    _plugin.HelpShort = PluginHelpShort.Text;
-                    _plugin.PluginExecution.ExecutionCommand = PluginExecutionCommand.Text;
-                    _plugin.PluginExecution.ExecuteFile = PluginExecuteFile.Text;
-                    _plugin.PluginExecution.DefaultErrorMessage = PluginDefaultErrorMessage.Text;
-                    _plugin.PluginExecution.ExecuteType = PluginExecuteType.SelectedIndex;
 
-                    _plugin.PluginFiles = PluginActions.ImportPluginFiles(userTempPath + _plugin.Guid);
+                    _plugin.PluginFiles = await PluginUtility.ImportPluginFiles(userTempPath + _plugin.Guid);
 
-                    PluginActions.SavePlugin(_plugin, saveFileDialog.FileName);
+                    await PluginUtility.SavePlugin(_plugin, saveFileDialog.FileName);
+                    _plugin = PluginUtility.DescryptPluginSecrets(_plugin);
+
+                    _isEditing = false;
 
                     AddTextToEventsList("File saved: " + saveFileDialog.FileName);
                 }
@@ -351,6 +381,130 @@ namespace infrabot.PluginEditor
             AddTextToEventsList("File closed.");
         }
 
+        private void FileExportPluginMetadataMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Save file dialog
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "JSON Files (*.json)|*.json";
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    _plugin.Name = PluginName.Text;
+                    _plugin.Description = PluginDescription.Text;
+
+                    if (PluginType.SelectedIndex == 0)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Monitoring;
+                    else if (PluginType.SelectedIndex == 1)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Alerting;
+                    else if (PluginType.SelectedIndex == 2)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Logging;
+                    else if (PluginType.SelectedIndex == 3)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Automation;
+                    else if (PluginType.SelectedIndex == 4)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Infrastructure;
+                    else if (PluginType.SelectedIndex == 5)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Configuration;
+                    else if (PluginType.SelectedIndex == 6)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Administration;
+                    else if (PluginType.SelectedIndex == 7)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.ComplianceAndAudit;
+                    else if (PluginType.SelectedIndex == 8)
+                        _plugin.PluginType = PluginSystem.Enums.PluginType.Other;
+
+                    _plugin.Author = PluginAuthor.Text;
+                    _plugin.Version = Convert.ToInt32(PluginVersion.Text);
+                    _plugin.WebSite = PluginWebSite.Text;
+
+                    Plugin tempPlugin = _plugin;
+                    tempPlugin.PluginFiles = null;
+
+                    var json = JsonSerializer.Serialize(tempPlugin, new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
+
+                    File.WriteAllText(saveFileDialog.FileName, json);
+
+                    AddTextToEventsList("JSON metadata saved: " + saveFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private void FileImportPluginMetadataMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isEditing)
+            {
+                if (MessageBox.Show("Are you sure that you want to import metadata? All changes will be lost!", "Attention", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.DefaultExt = ".json";
+            openFileDialog.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
+            bool? result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                try
+                {
+                    var json = File.ReadAllText(openFileDialog.FileName);
+                    Plugin tempPlugin = JsonSerializer.Deserialize<Plugin>(json);
+                    tempPlugin.PluginFiles = null;
+
+                    _plugin.Name = tempPlugin.Name;
+                    _plugin.Description = tempPlugin.Description;
+                    _plugin.PluginType = tempPlugin.PluginType;
+                    _plugin.Author = tempPlugin.Author;
+                    _plugin.Version = tempPlugin.Version;
+                    _plugin.WebSite = tempPlugin.WebSite;
+                    _plugin.PluginExecutions = tempPlugin.PluginExecutions;
+                    _plugin.Settings = tempPlugin.Settings;
+
+                    // Set Data to UI
+                    PluginName.Text = _plugin.Name;
+                    PluginDescription.Text = _plugin.Description;
+
+                    if (_plugin.PluginType == PluginSystem.Enums.PluginType.Monitoring)
+                        PluginType.SelectedIndex = 0;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Alerting )
+                        PluginType.SelectedIndex = 1;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Logging )
+                        PluginType.SelectedIndex = 2;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Automation)
+                        PluginType.SelectedIndex = 3 ;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Infrastructure )
+                        PluginType.SelectedIndex = 4;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Configuration)
+                        PluginType.SelectedIndex = 5 ;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Administration )
+                        PluginType.SelectedIndex = 6;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.ComplianceAndAudit )
+                        PluginType.SelectedIndex = 7;
+                    else if (_plugin.PluginType == PluginSystem.Enums.PluginType.Other)
+                        PluginType.SelectedIndex = 8;
+
+                    PluginAuthor.Text = _plugin.Author;
+                    PluginVersion.Text = _plugin.Version.ToString();
+                    PluginWebSite.Text = _plugin.WebSite;
+
+                    AddTextToEventsList("JSON metadata loaded from file: " + openFileDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    AddTextToEventsList("Error occured: " + ex.Message);
+                }
+            }
+        }
+
         private void FileExitMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (_isEditing)
@@ -364,14 +518,12 @@ namespace infrabot.PluginEditor
             Application.Current.Shutdown();
         }
 
-
         private void HelpAboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             AboutDialog aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
             AddTextToEventsList("About dialog opened.");
         }
-
         #endregion
 
     }

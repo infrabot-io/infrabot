@@ -1,0 +1,77 @@
+﻿@using Infrabot.WebUI.Constants
+@using Infrabot.WebUI.Models
+@model LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - infrabot</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link rel="shortcut icon" href="~/img/infrabot.png" type="image/x-icon">
+    <script src="~/lib/jquery/dist/jquery-3.7.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="logo"></div>
+        <div class="login-title">InfraBot</div>
+        <form asp-action="LogIn" method="post" asp-controller="Account">
+            <div class="mb-3">
+                <label for="login" class="form-label">Login</label>
+                <input type="text" asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Enter your login" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" autocomplete="password" aria-required="true" placeholder="Enter your password" required>
+            </div>
+            <div class="mb-3">
+                <input asp-for="RememberMe" class="form-check-input">
+                <label asp-for="RememberMe" class="form-label">Remember me</label>
+            </div>
+
+            @if (ViewData[TempDataKeys.AccountLoginOrPasswordIncorrect] as bool? == true)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Login or password is incorrect.
+                </div>
+            }
+
+            @if (ViewData[TempDataKeys.AccountLoginDenied] as bool? == true)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Login is denied.
+                </div>
+            }
+
+            @if (ViewData[TempDataKeys.AccountADAuthFailed] as bool? == true)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Could not authenticate to Active Directory. Password and login is wrong.
+                </div>
+            }
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-custom btn-lg">Login</button>
+            </div>
+            <div class="text-center mt-3">
+                <a href="https://github.com/infrabot-io/infrabot" class="text-muted" target="_blank">Version 3.0</a>
+            </div>
+        </form>
+        <div class="version">opensource</div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery-3.7.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

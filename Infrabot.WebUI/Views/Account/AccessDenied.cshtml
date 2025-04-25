@@ -1,0 +1,74 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access denied</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="shortcut icon" href="~/img/favicon.png" type="image/x-icon">
+    <script src="~/lib/jquery/dist/jquery-3.7.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-select.min.js"></script>
+    <style>
+        body {
+            background: #fff;
+            color: #F75D55;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .error-container {
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: 10rem;
+            font-weight: bold;
+            letter-spacing: -0.05em;
+        }
+
+        .error-text {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-home {
+            font-size: 1rem;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            background: #F75D55;
+            color: #fff;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+            .btn-home:hover {
+                background: #f75d5587;
+                color: #fff;
+            }
+
+        .illustration {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">---</div>
+        <div class="error-text">Oops! Access denied!</div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-home">Go Back Home</a>
+    </div>
+</body>
+</html>

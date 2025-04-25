@@ -7,7 +7,19 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Windows\ExecuteResultsWindow.xaml.cs">
+    <Compile Update="Windows\AboutDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Windows\ExecuteCommandsDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Windows\ExecutionFileArgumentsDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Windows\HelpDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Windows\PluginSettingsDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -18,10 +30,16 @@
     <Page Update="Windows\AboutDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Windows\ExecuteResultsWindow.xaml">
+    <Page Update="Windows\ExecuteCommandsDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\ExecutionFileArgumentsDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\HelpDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\PluginSettingsDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

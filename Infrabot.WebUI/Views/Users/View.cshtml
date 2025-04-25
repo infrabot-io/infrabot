@@ -1,0 +1,102 @@
+﻿@model Infrabot.Common.Models.User
+@{
+    ViewData["Title"] = "View a user";
+}
+
+<br>
+<br>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <img src="~/img/profile.svg" alt="avatar"
+                     class="rounded-circle img-fluid" style="width: 180px;background-color: #bcbcbc45;padding: 20px;">
+                <h5 class="my-3">@Model.Name @Model.Surname</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card mb-4 border-0">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Name</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.Name</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Surname</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.Surname</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.Email</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Phone</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.PhoneNumber</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Enabled</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.Enabled</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Last Login Date</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.LastLoginDate</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Created Date</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.CreatedDate</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Updated Date</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0">@Model.UpdatedDate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-orange" href="~/users">Back</a>
+
+<br>
+<br>
+

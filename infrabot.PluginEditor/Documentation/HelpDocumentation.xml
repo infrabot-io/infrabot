@@ -9,31 +9,53 @@
 	<item>
 		<name>HelpConfigurationPluginGuid</name>
 		<heading>Guid</heading>
-		<description>Specifies the plugin Guid. Generated automatically when plugin is created. This value is unique and can not be changed.</description>
+		<description>This parameter defines the plugin's unique GUID, which serves as its identifier. It is a read-only value that is generated once during the plugin's creation and cannot be changed.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginId</name>
+		<heading>Id</heading>
+		<description>This parameter specifies the plugin's ID, a read-only value that is generated once during plugin creation and cannot be changed. It is used to execute commands associated with a specific plugin when the same command exists in multiple plugins.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginDescription</name>
+		<heading>Description</heading>
+		<description>This parameter defines the plugin's description, providing details about its functionality and purpose.</description>
+		<used>Plugin configuration</used>
+	</item>
+	<item>
+		<name>HelpConfigurationPluginType</name>
+		<heading>Type</heading>
+		<description>This parameter defines the plugin type, indicating its category or functionality within the system. Possible values:&#10;&#10;
+1. Monitoring
+2. Alerting
+4. Logging
+5. Automation
+6. Infrastructure
+7. Configuration
+8. Administration
+9. Compliance and Audit
+10. Other
+		</description>
 		<used>Plugin configuration</used>
 	</item>
 	<item>
 		<name>HelpConfigurationPluginAuthor</name>
 		<heading>Author</heading>
-		<description>Specifies the plugin Author.</description>
+		<description>This parameter defines the author's name for the plugin, indicating who created or contributed to it.</description>
 		<used>Plugin configuration</used>
 	</item>
 	<item>
 		<name>HelpConfigurationPluginVersion</name>
 		<heading>Version</heading>
-		<description>Specifies the plugin Version number.</description>
+		<description>This parameter defines the plugin's version, indicating its release number for tracking updates and compatibility.</description>
 		<used>Plugin configuration</used>
 	</item>
 	<item>
 		<name>HelpConfigurationPluginWebSite</name>
 		<heading>WebSite</heading>
-		<description>Specifies the plugin WebSite url address. Can be used if author would want to share some information or documentation about his plugin.</description>
-		<used>Plugin configuration</used>
-	</item>
-	<item>
-		<name>HelpConfigurationPluginHelp</name>
-		<heading>Help</heading>
-		<description>Specifies detailed plugin functionality description. User can see this description if he writes "/YOUR_CUSTOM_COMMAND ?"</description>
+		<description>This parameter defines the author's website URL, providing a link to their official webpage or project site.</description>
 		<used>Plugin configuration</used>
 	</item>
 	<item>
@@ -43,51 +65,116 @@
 		<used>Plugin configuration</used>
 	</item>
 	<item>
-		<name>HelpConfigurationPluginExecutionCommand</name>
-		<heading>Execution command</heading>
-		<description>Specifies exact execution command. This plugin will be triggered when this command will sent to telegram bot. Maximum length of the command must be less or equal to 128 characters.&#10;&#10;Example: "/restartserver"</description>
+		<name>HelpConfigurationPluginCommands</name>
+		<heading>Commands</heading>
+		<description>This parameter defines the plugin commands that the plugin will respond to, executing the specified script or file along with other configured settings.</description>
 		<used>Plugin configuration</used>
 	</item>
 	<item>
-		<name>HelpConfigurationPluginExecuteFile</name>
-		<heading>Execute file</heading>
-		<description>Specifies file to be executed. Based on Execute Type value, service will determine how to launch file (execute PowerShell script or any other custom executable).&#10;&#10;During plugin installation, plugin files will be automatically extracted into the folder named with the plugin`s GUID. Root directory for this plugin will be GUID extracted folder and determined by infrabot automatically. If execution file located in subdirectory (subfolder is in root directory), relative path must be specified (see examples).&#10;&#10;Example 1: "main_script.ps1"&#10;Note: This file is located in the plugin`s root directory&#10;&#10;Example 2: "data/main_script.ps1"&#10;Note: This file is located in the plugin`s sub directory&#10;&#10;Example 3: "path/to/folder/myApp.exe"&#10;Note: This file is located in the plugin`s sub directory&#10;&#10;Example 4: "myApp.exe"&#10;Note: This file is located in the plugin`s root directory</description>
+		<name>HelpConfigurationPluginSettings</name>
+		<heading>Settings</heading>
+		<description>This parameter specifies various plugin settings that can be configured and utilized based on the setting's type.</description>
 		<used>Plugin configuration</used>
 	</item>
 	<item>
-		<name>HelpConfigurationPluginDefaultErrorMessage</name>
+		<name>HelpExecutionCommandsCommand</name>
+		<heading>Command</heading>
+		<description>This parameter specifies the command and must begin with the / character.</description>
+		<used>Execution commands</used>
+	</item>
+	<item>
+		<name>HelpExecutionCommandsHelp</name>
+		<heading>Help</heading>
+		<description>This parameter specifies the help information for the command. It will be displayed when the ? symbol is sent as an argument to the command.</description>
+		<used>Execution commands</used>
+	</item>
+	<item>
+		<name>HelpExecutionCommandsExecutionFilePath</name>
+		<heading>Execution file path</heading>
+		<description>This parameter defines the file to be executed when the command is triggered. Since all plugin files are extracted to %infrabot_installation_directory%/plugins/%plugin_guid_number% this directory serves as the root folder for the plugin. The path to the executable file must be specified relative to this directory.&#10;&#10;
+Example:
+RestartServer.ps1
+&#10;
+Example 2:
+scripts\RestartServer.ps1
+&#10;
+Example 3:
+bin\nodejs.exe
+		</description>
+		<used>Execution commands</used>
+	</item>
+	<item>
+		<name>HelpExecutionCommandsExecutionTimeout</name>
+		<heading>Execution timeout (in seconds)</heading>
+		<description>This parameter defines the execution timeout, specifying the maximum duration a command can run before it is forcibly terminated.</description>
+		<used>Execution commands</used>
+	</item>
+	<item>
+		<name>HelpExecutionCommandsDefaultErrorMessage</name>
 		<heading>Default error message</heading>
-		<description>Specifies default error message shown when none of the answer results matches. {DATA} - is replaced with command arguments. {RESULT} - is replaced with execution result output.&#10;&#10;Example: "Command execution with arguments `{DATA}` was not succeded! Unexpected error! Result output was: {RESULT}"</description>
-		<used>Plugin configuration</used>
+		<description>This parameter specifies the default error message that will be displayed if the script execution fails or if the timeout is exceeded.</description>
+		<used>Execution commands</used>
 	</item>
 	<item>
-		<name>HelpConfigurationPluginExecuteType</name>
-		<heading>Execute type</heading>
-		<description>Specifies execute type.</description>
-		<used>Plugin configuration</used>
+		<name>HelpExecutionCommandsType</name>
+		<heading>Type</heading>
+		<description>This parameter defines execution type. Possible values:&#10;&#10;
+AppExecutable - Run executable file.
+PSScript - Run PowerShell script.
+CSharpScript- Run CSharp cs or csx script file.
+		</description>
+		<used>Execution commands</used>
 	</item>
 	<item>
-		<name>HelpConfigurationPluginExecuteResults</name>
-		<heading>Execute results</heading>
-		<description>Specifies execute results.</description>
-		<used>Plugin configuration</used>
+		<name>HelpExecutionCommandsExecutionFileArguments</name>
+		<heading>Execution file arguments</heading>
+		<description>Specifying this parameter is not mandatory, but it is highly recommended if the script requires a fixed number of arguments. When arguments are defined here, before execution, Infrabot will validate the number of provided arguments against the expected ones. If the number of arguments does not match, Infrabot prevents command execution and displays information about the correct command format the user should follow.</description>
+		<used>Execution commands</used>
 	</item>
 	<item>
-		<name>HelpConfigurationExecuteResultIfResult</name>
-		<heading>Execute results</heading>
-		<description>Determines how to match result got from Script or Executable with the Value parameter.&#10;&#10;Check types:&#10;&#10;Equals to &#10;Not equals &#10;Greater than &#10;Less than &#10;Contains &#10;Starts with &#10;Ends with &#10;Not contains &#10;Not starts with &#10;Not ends with &#10;Ignore case equals to &#10;Ignore case contains &#10;Ignore case starts with &#10;Ignore case ends with &#10;Ignore case not contains &#10;Ignore case not starts with &#10;Ignore case not ends with</description>
-		<used>Execute results</used>
+		<name>HelpExecutionFileArgumentsName</name>
+		<heading>Name</heading>
+		<description>This parameter defines the argument name. It is not used in the execution logic, so you can specify any name here. Its primary purpose is to be displayed in help information, providing guidance to the user about the expected argument.</description>
+		<used>Execution file arguments</used>
 	</item>
 	<item>
-		<name>HelpConfigurationExecuteResultValue</name>
+		<name>HelpExecutionFileArgumentsValue</name>
 		<heading>Value</heading>
-		<description>Expected Result value from Script or Executable to check.</description>
-		<used>Execute results</used>
+		<description>This parameter defines an example value for the argument. It is not used in the execution logic, so you can specify any value. Its purpose is solely to provide users with a reference example when viewing help information.</description>
+		<used>Execution file arguments</used>
 	</item>
 	<item>
-		<name>HelpConfigurationExecuteResultOutput</name>
-		<heading>Execute results</heading>
-		<description>Specifies what to show if result received from Script or Executable matches Value data. {DATA} - specified will be replaced with all arguments sent to command. {RESULT} - will be replaced with output received from your script or executable.</description>
-		<used>Execute results</used>
+		<name>HelpExecutionFileArgumentsDescription</name>
+		<heading>Description</heading>
+		<description>This parameter defines the description of the argument, which will be displayed to the user as part of the help information, providing guidance on its purpose and usage.</description>
+		<used>Execution file arguments</used>
+	</item>
+	<item>
+		<name>HelpPluginSettingsKey</name>
+		<heading>Key</heading>
+		<description>This parameter defines the setting key name, which serves as the identifier for the specific configuration setting within the plugin.</description>
+		<used>Plugin settings</used>
+	</item>
+	<item>
+		<name>HelpPluginSettingsValue</name>
+		<heading>Value</heading>
+		<description>This parameter defines the setting key value, which represents the assigned value for the corresponding setting key name within the plugin's configuration.</description>
+		<used>Plugin settings</used>
+	</item>
+	<item>
+		<name>HelpPluginSettingsType</name>
+		<heading>Type</heading>
+		<description>This parameter defines setting type. Possible values:&#10;&#10;
+EnvironmentVariable - Defines a custom environment variable that will be accessible from the script during execution.
+Argument - Defines an argument with a value that will be passed to the script during execution. You need to implement logic within the script to read and process the specified argument.
+ConfigFile - Defines a setting that will be exported to the tempConfigFile.json file and placed in the %infrabot_installation_directory%/plugins/%plugin_guid_number% directory. You need to implement logic within the script to read and process this file.
+		</description>
+		<used>Plugin settings</used>
+	</item>
+	<item>
+		<name>HelpPluginSettingsDescription</name>
+		<heading>Description</heading>
+		<description>This parameter specifies the description of the setting, providing details about its purpose and usage.</description>
+		<used>Plugin settings</used>
 	</item>
 </items>

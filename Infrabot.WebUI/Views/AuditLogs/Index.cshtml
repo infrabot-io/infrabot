@@ -1,0 +1,41 @@
+﻿@using Infrabot.Common.Models
+@model List<AuditLog>
+@{
+    ViewData["Title"] = "Audit logs";
+}
+
+<div class="row mb-2 mt-4">
+    <div class="col">
+        <p class="fs-3 mb-0 pt-0">Audit logs</p>
+    </div>
+</div>
+
+<table class="table mt-4 mb-4">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">IP</th>
+            <th scope="col">Description</th>
+            <th scope="col">Action</th>
+            <th scope="col">Item</th>
+            <th scope="col">Result</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var auditLog in Model)
+        {
+            <tr>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.Id</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.IPAddress</td>
+                <td class="main-content-inner-table-content-col-id" scope="row" style="word-break: break-word !important;">@auditLog.Description</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.LogAction</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.LogItem</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.LogResult</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.LogSeverity</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@auditLog.CreatedDate</td>
+            </tr>
+        }
+    </tbody>
+</table>

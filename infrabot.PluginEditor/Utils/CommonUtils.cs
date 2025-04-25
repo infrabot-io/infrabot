@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
-namespace infrabot.PluginEditor.Utils
+namespace Infrabot.PluginEditor.Utils
 {
-    public class CommonUtils
+    public static class CommonUtils
     {
         public static void OpenLinkInBrowser(string url)
         {
@@ -28,10 +23,10 @@ namespace infrabot.PluginEditor.Utils
         {
             var assembly = Assembly.GetExecutingAssembly();
             string resourcePath = assembly.GetManifestResourceNames()
-                    .Single(str => str.EndsWith(@"infrabot.PluginEditor.Documentation.HelpDocumentation.xml"));
+                    .Single(str => str.EndsWith(@"PluginEditor.Documentation.HelpDocumentation.xml"));
 
-            Stream stream = assembly.GetManifestResourceStream(resourcePath);
-            StreamReader reader = new StreamReader(stream);
+            Stream? stream = assembly.GetManifestResourceStream(resourcePath);
+            StreamReader? reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
 
@@ -39,10 +34,10 @@ namespace infrabot.PluginEditor.Utils
         {
             var assembly = Assembly.GetExecutingAssembly();
             string resourcePath = assembly.GetManifestResourceNames()
-                    .Single(str => str.EndsWith(@"infrabot.PluginEditor.LICENSE.txt"));
+                    .Single(str => str.EndsWith(@"PluginEditor.LICENSE.txt"));
 
-            Stream stream = assembly.GetManifestResourceStream(resourcePath);
-            StreamReader reader = new StreamReader(stream);
+            Stream? stream = assembly.GetManifestResourceStream(resourcePath);
+            StreamReader? reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
     }

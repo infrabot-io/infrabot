@@ -1,0 +1,231 @@
+
+	<>Èö¥&F“¯þåQŽJF
+U3HDTjIHE2Manage Active Directory"#Manage your domain Active Directory(2Akshin MustafayevB'https://github.com/infrabot-io/infrabotJË
+/unlockaduser'Write "/unlockaduser" to unlock AD userUnlockADUser.ps1 <*+Failed to unlock AD user or timeout reached0:F
+	UserLoginwalter.white+Specify user login which you want to unlock:…
+AdminPasswordSuperAdminPassword123]Specify your admin account password which has access to unlock users in your Active DirectoryJÐ
+/disableaduser)Write "/disableaduser" to disable AD userDisableADUser.ps1 <*+Failed to unlock AD user or timeout reached0:G
+	UserLoginwalter.white,Specify user login which you want to disable:…
+AdminPasswordSuperAdminPassword123]Specify your admin account password which has access to unlock users in your Active DirectoryJË
+/enableaduser'Write "/enableaduser" to enable AD userEnableADUser.ps1 <*+Failed to enable AD user or timeout reached0:F
+	UserLoginwalter.white+Specify user login which you want to enable:…
+AdminPasswordSuperAdminPassword123]Specify your admin account password which has access to unlock users in your Active DirectoryJÔ
+
+/getaduser-Write "/getaduser" to get AD user informationGetADUser.ps1 <*(Failed to get AD user or timeout reached0:R
+	UserLoginwalter.white7Specify user login information of which you want to get:…
+AdminPasswordSuperAdminPassword123]Specify your admin account password which has access to unlock users in your Active DirectoryJÅ
+/resetaduserpassword6Write "/resetaduserpassword" to reset AD user passwordResetADUserPassword.ps1 <*3Failed to reset AD user password or timeout reached0:N
+	UserLoginwalter.white3Specify user login which you want to reset password:K
+UserPasswordStrongPassword123(Specify new password of a specified user:…
+AdminPasswordSuperAdminPassword123]Specify your admin account password which has access to unlock users in your Active DirectoryRÚ
+DisableADUser.ps1.@3057538EA3621365435E7EE75AF9FEF4320E91681A3D0A39811B650C9CB6E3E0"ÿï»¿# Variables
+$User = $args[0]
+$AdminAccountPassword = $args[1]
+
+# Import Functions
+. ".\functions.ps1"
+
+# Main
+try {
+    $CredentialUser = ""
+
+    $Login = CheckForAccess -AdminPassword $AdminAccountPassword
+
+    if (($Login -ne "") -and ($null -ne $Login)) {
+        $CredentialUser = $Login
+    }
+    else {
+        Write-Host "Your admin password is not configured in the application. Please modify plugin."
+        break
+    }
+
+    $CredentialPassword = ConvertTo-SecureString $AdminAccountPassword -AsPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+    Disable-ADAccount -Identity $User -Credential $Credential -Server $env:domainController -ErrorAction Stop
+	Write-Host "User $($User) successfully disabled"
+}
+catch {
+    Write-Host -NoNewline "Error: $($_.Exception.Message)"
+}
+R×
+EnableADUser.ps1.@93EA4905722C2FC33B9685DAC11726CD789EFFC98087614401A9619BA3141701"ýï»¿# Variables
+$User = $args[0]
+$AdminAccountPassword = $args[1]
+
+# Import Functions
+. ".\functions.ps1"
+
+# Main
+try {
+    $CredentialUser = ""
+
+    $Login = CheckForAccess -AdminPassword $AdminAccountPassword
+
+    if (($Login -ne "") -and ($null -ne $Login)) {
+        $CredentialUser = $Login
+    }
+    else {
+        Write-Host "Your admin password is not configured in the application. Please modify plugin."
+        break
+    }
+
+    $CredentialPassword = ConvertTo-SecureString $AdminAccountPassword -AsPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+    Enable-ADAccount -Identity $User -Credential $Credential -Server $env:domainController -ErrorAction Stop
+	Write-Host "User $($User) successfully enabled"
+}
+catch {
+    Write-Host -NoNewline "Error: $($_.Exception.Message)"
+}
+Rá
+functions.ps1.@207F6FC979F2C054CD7D12814127CB4F83E630BBC8127B15740972284BC09761"Š# Functions
+function ConvertToSHA256 {
+    param(
+        [Parameter(Mandatory = $true)] [ValidateNotNullOrEmpty()] [string] $Text
+    )
+    
+    $hasher = [System.Security.Cryptography.HashAlgorithm]::Create('sha256')
+    $hash = $hasher.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($Text))
+
+    $hashString = [System.BitConverter]::ToString($hash)
+    $hashString = $hashString.Replace('-', '')
+    return $hashString
+}
+
+function CheckForAccess {
+    param(
+        $AdminPassword
+    )
+
+    $ReturnAdmin = ""
+    $PasswordHash = ConvertToSHA256 -Text $AdminPassword
+
+    if($env:adminAkshin -eq $PasswordHash)
+	{
+		return "AdminAkshin"
+	}
+	elseif($env:adminJessie -eq $PasswordHash)
+	{
+		return "AdminJessie"
+	}
+	
+	return $ReturnAdmin
+}
+RÍ
+GetADUser.ps1.@6204E5CF15505510C66ED2B658C93C4655F832B52E077A5B113F55DBCD764714"öï»¿# Variables
+$User = $args[0]
+$AdminAccountPassword = $args[1]
+
+# Import Functions
+. ".\functions.ps1"
+
+# Main
+try {
+    $CredentialUser = ""
+
+    $Login = CheckForAccess -AdminPassword $AdminAccountPassword
+
+    if (($Login -ne "") -and ($null -ne $Login)) {
+        $CredentialUser = $Login
+    }
+    else {
+        Write-Host "Your admin password is not configured in the application. Please modify plugin."
+        break
+    }
+
+    $CredentialPassword = ConvertTo-SecureString $AdminAccountPassword -AsPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+
+    $ListItems = Get-AdUser -Filter "Name -like '*$User*'" -Properties * -Credential $Credential -Server $env:domainController | 
+    Select-Object DisplayName, Name, Surname, distinguishedname, Email, Department, Title, SamAccountName, userprincipalname, Description, `
+    @{Name = 'LastLogon'; Expression = { [DateTime]::FromFileTime($_.LastLogon).ToString('dd/MM/yyyy hh:mm:ss tt') } }, `
+    @{Name = 'LastLogonTimestamp'; Expression = { [DateTime]::FromFileTime($_.LastLogonTimestamp).ToString('dd/MM/yyyy hh:mm:ss tt') } } , Enabled
+
+    if ($null -ne $ListItems) {
+        foreach ($Item in $ListItems) {
+            Write-Host "Display Name: $($Item.DisplayName)"
+            Write-Host "Name: $($Item.Name)"
+            Write-Host "Surname: $($Item.Surname)"
+            Write-Host "Distinguished name: $($Item.distinguishedname)"
+            Write-Host "Email: $($Item.Email)"
+            Write-Host "Department: $($Item.Department)"
+            Write-Host "Title: $($Item.Title)"
+            Write-Host "SamAccountName: $($Item.SamAccountName)"
+            Write-Host "UserPrincipalName: $($Item.userprincipalname)"
+            Write-Host "Description: $($Item.Description)"
+            Write-Host "LastLogon: $($Item.LastLogon)"
+            Write-Host "LastLogonTimestamp: $($Item.LastLogonTimestamp)"
+            Write-Host "Enabled: $($Item.Enabled)"
+            Write-Host ""
+        }
+    }
+}
+catch {
+    Write-Host -NoNewline "Error: $($_.Exception.Message)"
+}
+R›	
+ResetADUserPassword.ps1.@4DE3C5BB3473453A5A137DD637D86C4D71B0B3AF0067350281F0407FD7729AD9"ºï»¿# Variables
+$User = $args[0]
+$Password = $args[1]
+$AdminAccountPassword = $args[2]
+
+# Import Functions
+. ".\functions.ps1"
+
+# Main
+try {
+    $CredentialUser = ""
+
+    $Login = CheckForAccess -AdminPassword $AdminAccountPassword
+
+    if (($Login -ne "") -and ($null -ne $Login)) {
+        $CredentialUser = $Login
+    }
+    else {
+        Write-Host "Your admin password is not configured in the application. Please modify plugin."
+        break
+    }
+
+    $CredentialPassword = ConvertTo-SecureString $AdminAccountPassword -AsPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+    Unlock-ADAccount -Identity $User -Credential $Credential -ErrorAction Stop
+    Set-ADAccountPassword -Identity $User -Reset -Credential $Credential -ErrorAction Stop -Server $env:domainController -NewPassword (ConvertTo-SecureString -AsPlainText "$Password" -Force)
+	Write-Host "Successfully changed password to user $($User)"
+}
+catch {
+    Write-Host -NoNewline "$($_.Exception.Message)"
+}
+RÕ
+UnlockADUser.ps1.@E956B2D80CBA52028D8C3B100A88A81C1FAA4F8AEA3421F380D89FB84B02739D"û# Variables
+$User = $args[0]
+$AdminAccountPassword = $args[1]
+
+# Import Functions
+. ".\functions.ps1"
+
+# Main
+try {
+    $CredentialUser = ""
+
+    $Login = CheckForAccess -AdminPassword $AdminAccountPassword
+
+    if (($Login -ne "") -and ($null -ne $Login)) {
+        $CredentialUser = $Login
+    }
+    else {
+        Write-Host "Your admin password is not configured in the application. Please modify plugin."
+        break
+    }
+
+    $CredentialPassword = ConvertTo-SecureString $AdminAccountPassword -AsPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential ($CredentialUser, $CredentialPassword)
+    Unlock-ADAccount -Identity $User -Credential $Credential -Server $env:domainController -ErrorAction Stop
+	Write-Host "User $($User) successfully unlocked"
+}
+catch {
+    Write-Host -NoNewline "Error: $($_.Exception.Message)"
+}
+Zl
+adminAkshin8mMApXs7HN2CQx7R5khm0ZL5mkZkREtQZJmbR0Yfka9KDY6Ypz1McKg=="#Hash password for admin user AkshinZl
+adminJessie8mMApXs7HN2CQx7R5khm0ZL5mkZkREtQZvAQO6QQ8QGMZcd/PleUHDA=="#Hash password for admin user JessieZa
+domainControllerZV5qiK8lK2/bLzG60NlWRg=="3Name of IP address of your domain controller serverb@e4dfd09010365663b5a38750756eaa7c2ee8001666fb3a978e1de0a4e3519107

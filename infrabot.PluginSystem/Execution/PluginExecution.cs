@@ -1,24 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using Infrabot.PluginSystem.Enums;
 using ProtoBuf;
 
-namespace infrabot.PluginSystem.Execution
+namespace Infrabot.PluginSystem.Execution
 {
     [ProtoContract]
     public class PluginExecution
     {
         [ProtoMember(1)]
-        public string ExecutionCommand;
+        public string CommandName { get; set; } // Name of the command executed by the plugin
 
         [ProtoMember(2)]
-        public string ExecuteFile;
+        public string? Help { get; set; } = string.Empty; // Show help information about command
 
         [ProtoMember(3)]
-        public string DefaultErrorMessage;
+        public string ExecutionFilePath { get; set; } // Path to the executable/script
 
         [ProtoMember(4)]
-        public int ExecuteType;
+        public int ExecutionTimeout { get; set; } = 10; // Default timeout in seconds
 
         [ProtoMember(5)]
-        public List<ExecuteResult> ExecuteResults;
+        public string? DefaultErrorMessage { get; set; } // Default error message
+
+        [ProtoMember(6)]
+        public CommandExecuteTypes ExecuteType { get; set; } // Type of execution (e.g., script, binary)
+
+        [ProtoMember(7)]
+        public List<ExecutionFileArgument>? ExecutionFileArguments { get; set; } = new(); // Dynamic argument logic
     }
 }

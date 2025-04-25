@@ -1,0 +1,33 @@
+﻿@using Infrabot.Common.Models
+@model List<TelegramMessage>
+@{
+    ViewData["Title"] = "Messages";
+}
+
+<div class="row mb-2 mt-4">
+    <div class="col">
+        <p class="fs-3 mb-0 pt-0">Messages</p>
+    </div>
+</div>
+
+<table class="table mt-4 mb-4">
+    <thead>
+        <tr>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Telegram user id</th>
+            <th scope="col">Telegram username</th>
+            <th scope="col">Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var telegramMessage in Model)
+        {
+            <tr>
+                <td class="main-content-inner-table-content-col-id" scope="row">@telegramMessage.CreatedDate</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@telegramMessage.TelegramUserId</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@telegramMessage.TelegramUserUsername</td>
+                <td class="main-content-inner-table-content-col-id" scope="row">@telegramMessage.Message</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,17 @@
+
+	rùêKÊ›µIó¡ìøp
+VqjwRzUSC0Get Service Status"This plugin gets service status(2Akshin MustafayevB'https://github.com/infrabot-io/infrabotJÅ
+/getservicestatus/Write "/getservicestatus" to get service statusGetServiceStatus.ps1 x*!Command failed or timeout reached0R…
+GetServiceStatus.ps1.@3D16336A0A262EE0398981817C492ECC3EBD0CE4702EE2892A4C4C636447EE9A"Îtry {
+    $Result = Invoke-WebRequest -Uri "https://some_service.com" -UseBasicParsing -TimeoutSec 10 -Method Get
+    if ($null -eq $Result) {
+        Write-Host "Service is not working"
+    }
+    else {
+        Write-Host "Service output: $($Result.Content)"
+    }
+}
+catch {
+    Write-Host "Service is not working. Reason: $($_.Exception.Message)"
+}
+b@6858d43f569af98578ef4115d46043a37eb84ba5a4e3f76b4e0be72f71123b3b

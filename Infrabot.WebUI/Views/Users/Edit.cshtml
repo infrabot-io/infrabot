@@ -1,0 +1,103 @@
+﻿@using Infrabot.WebUI.Constants
+@model Infrabot.WebUI.Models.UserViewModel
+@{
+    ViewData["Title"] = "Edit a user";
+}
+
+<div class="row mb-2 mt-3">
+    <div class="col">
+        <p class="fs-2 pt-0 mb-0">Edit</p>
+        <p class="blog-post-meta mt-1 text-muted">Edit user parameneters</p>
+    </div>
+</div>
+
+@if (ViewData[TempDataKeys.EditUserSuccess] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        User saved.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.EditUserSuccessWithPassword] as bool? == true)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        User saved and password updated.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.EditUserFailed] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        User not saved.
+    </div>
+}
+
+@if (ViewData[TempDataKeys.EditUserFailedWithPassword] as bool? == true)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        User not saved and password was not updated.
+    </div>
+}
+
+<div class="row g-3">
+    <div class="col-md-7 col-lg-8">
+        <form class="needs-validation" novalidate="" asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" asp-for="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" class="form-control" id="surname" placeholder="" asp-for="Surname">
+                    <span asp-validation-for="Surname" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label for="login" class="form-label">Login</label>
+                    <input type="text" class="form-control" id="login" placeholder="" asp-for="UserName">
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="" asp-for="Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="" asp-for="Password">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="" required="" asp-for="PhoneNumber">
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" id="enbaled" asp-for="Enabled">
+                    <label class="form-check-label" for="enbaled">Enabled</label>
+                </div>
+
+                <hr class="my-4">
+            </div>
+
+            <br>
+
+            <button class="btn btn-orange" type="submit">Save</button>
+            <a class="btn btn-outline-orange" href="~/users">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>

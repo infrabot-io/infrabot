@@ -1,23 +1,8 @@
-﻿using infrabot.PluginEditor.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Infrabot.PluginEditor.Utils;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Xml;
-using System.Xml.Linq;
 
-namespace infrabot.PluginEditor.Windows
+namespace Infrabot.PluginEditor.Windows
 {
     /// <summary>
     /// Interaction logic for HelpDialog.xaml
@@ -26,7 +11,7 @@ namespace infrabot.PluginEditor.Windows
     {
         public HelpDialog(string helpitem)
         {
-            InitializeComponent(); 
+            InitializeComponent();
             LoadXml(helpitem);
         }
 
@@ -34,6 +19,9 @@ namespace infrabot.PluginEditor.Windows
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(CommonUtils.ReadDocumentationFile());
+
+            if (doc is null)
+                return;
 
             XmlNodeList nodeList = doc.SelectNodes("/items/item[name='" + helpitem + "']");
 
