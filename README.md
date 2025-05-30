@@ -57,7 +57,7 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 Before installing or running Infrabot, ensure your environment meets the following requirements:
 
 ### Runtime & Platform
-- **Operating System:** Windows Server 2016 and above or 10/11 or Linux (Ubuntu, RHEL, CentOS)
+- **Operating System:** Windows Server 2012 and above or 8/10/11 or Linux (Ubuntu, RHEL, CentOS, Fedora, Alpine)
 - **.NET Runtime:** [.NET 8.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (ASP.NET Core Hosting Bundle + .NET Desktop Runtime)
 - **Architecture:** x64 (recommended)
 
@@ -67,11 +67,11 @@ Before installing or running Infrabot, ensure your environment meets the followi
 - **Disk:** At least 400 MB of free space (more if storing large plugin resources or logs)
 
 ### Permissions
-- If Windows OS (not\and AD joined) **Service Account Access:**
+- If Windows (not\and AD joined) **Service Account Access:**
   - Must have **read/write** access to the Infrabot installation directory
   - Must have permission to execute **PowerShell, Python, Shell**
   - Can be a **non-administrative user** or an **Active Directory Managed Service Account**
-- If Linux OS:
+- If Linux:
   - Must have **read/write** access to the Infrabot installation directory
   - Must have permission to execute **PowerShell, Python, Shell**
   - Can be a **non-administrative user**
