@@ -52,6 +52,48 @@ Build your own modular **commandlets**, extend functionality with **plugins**, a
 
 ---
 
+## 🧰 Technical Requirements
+
+Before installing or running Infrabot, ensure your environment meets the following requirements:
+
+### ✅ Runtime & Platform
+- **Operating System:** Windows Server 2016 and above or 10/11 or Linux (Ubuntu, RHEL, CentOS)
+- **.NET Runtime:** [.NET 8.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (ASP.NET Core Hosting Bundle + .NET Desktop Runtime)
+- **Architecture:** x64 (recommended)
+
+### ⚙️ Permissions
+- If Windows OS in AD joined environment **Service Account Access:**
+  - Must have **read/write** access to the Infrabot installation directory
+  - Must have permission to **execute PowerShell**
+  - Can be a **non-administrative user** or an **Active Directory Managed Service Account**
+  
+- If Linux OS:
+  - Must have **read/write** access to the Infrabot installation directory
+  - Must have permission to **execute PowerShell**
+  - Can be a **non-administrative user**
+
+- **For Admin-Level Commands:**  
+  Scripts or executables must handle elevation internally if the bot is not running with admin rights
+
+### 💬 Telegram Integration
+- A registered **Telegram Bot Token** from [@BotFather](https://t.me/BotFather)
+- Your Telegram ID must be added in the **Telegram Users** section to receive permissions
+
+### 📁 Files & Execution
+- The following paths must be correctly set (environment variables supported):
+  - **PowerShell Path**
+  - **Shell Path**
+  - **Python Path**
+
+- Plugins must be deployed as `.plug` files and placed into the `/plugins` directory
+
+### 🔐 Security Considerations
+- **ExecutionPolicy:** Recommended to use `AllSigned` for PowerShell
+- Plugin execution files are **hash-verified** to prevent tampering
+- Permissions can be granted per user or via user groups
+
+---
+
 ## 🛠️ Installation Guide
 
 **Automatic**
