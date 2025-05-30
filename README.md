@@ -61,6 +61,11 @@ Before installing or running Infrabot, ensure your environment meets the followi
 - **.NET Runtime:** [.NET 8.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (ASP.NET Core Hosting Bundle + .NET Desktop Runtime)
 - **Architecture:** x64 (recommended)
 
+### Hardware Requirements
+- **CPU:** Dual-core (2 GHz or higher), 64-bit
+- **RAM:** Minimum 4 GB (8 GB recommended for plugin-heavy usage)
+- **Disk:** At least 400 MB of free space (more if storing large plugin resources or logs)
+
 ### Permissions
 - If Windows OS (not\and AD joined) **Service Account Access:**
   - Must have **read/write** access to the Infrabot installation directory
